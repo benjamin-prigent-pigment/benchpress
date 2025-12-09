@@ -1,0 +1,35 @@
+.btn-icon-destruction {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: background-color 0.2s, color 0.2s;
+  color: #dc3545;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.btn-icon-destruction:hover:not(:disabled) {
+  background-color: #fee;
+  color: #c82333;
+}
+
+.btn-icon-destruction:active:not(:disabled) {
+  background-color: #fdd;
+  color: #a71e2a;
+}
+
+.btn-icon-destruction:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.btn-icon-destruction svg {
+  width: 20px;
+  height: 20px;
+}
+

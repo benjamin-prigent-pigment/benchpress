@@ -1,0 +1,47 @@
+.kpi-card {
+  background: #f9f9f9;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.kpi-label {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.kpi-value {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.comparison-indicator {
+  font-size: 0.8rem;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.comparison-positive {
+  background: #d4edda;
+  color: #155724;
+}
+
+.comparison-negative {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.kpi-count {
+  font-size: 0.75rem;
+  color: #999;
+  margin-top: 4px;
+  font-weight: normal;
+}
+

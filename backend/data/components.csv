@@ -1,0 +1,6 @@
+id,name,description,variants
+1,block_type,The types of blocks,"[""Dimension"", ""Metric"", ""Transaction"", ""Folder"", ""Table""]"
+3,persona,defining the persona of the user,"[""You are a beginner modeler at Pigment."", ""You are a senior modeler at Pigment.""]"
+4,metadata,the metadata of the change being done,"[{""a"": ""name"", ""b"": ""new_block_name""}, {""a"": ""description"", ""b"": ""this is a new block description for this block""}, {""a"": ""folder_path"", ""b"": ""allblocks/new""}]"
+5,end_result,this is the component that stores the end result,"[""{         \""block_type\"": \""dimension\"",         \""block_name\"": \""country\"",         \""block_folder\"": \""default\"",         \""properties\"": []       }"", ""{         \""block_type\"": \""table\"",         \""block_name\"": \""country\"",         \""block_folder\"": \""default\"",         \""properties\"": []       }""]"
+6,bad block names,,"[""talbe"", ""dmenton"", ""dwdwdw""]"

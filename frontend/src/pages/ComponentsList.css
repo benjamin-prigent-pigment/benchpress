@@ -1,0 +1,61 @@
+.components-list {
+  padding: 20px;
+}
+
+.components-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.components-header h1 {
+  margin: 0;
+}
+
+.components-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.component-card {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.component-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.component-card h3 {
+  margin: 0 0 10px 0;
+}
+
+.component-description {
+  color: #666;
+  font-size: 14px;
+  margin: 10px 0;
+}
+
+.component-variants-count {
+  color: #007bff;
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+.error {
+  background: #fee;
+  color: #c33;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+

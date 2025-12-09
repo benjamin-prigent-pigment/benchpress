@@ -1,0 +1,9 @@
+id,name,text,components
+1,Bench Test 1,"Here is your persona: {{persona}}. 
+
+Please take the {{block_type}} named --name-- and go update the {{metadata/a}}.
+
+The new value is {{metadata/b}}. 
+
+The final result you want is: {{end_result}}.","[""end_result"", ""block_type"", ""persona"", ""metadata""]"
+2,Benchmark V2,,[]
