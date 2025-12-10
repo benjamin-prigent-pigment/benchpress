@@ -162,7 +162,7 @@ function TemplateItem() {
       </div>
 
       <div className="template-preview-editor-container">
-        <TemplatePreview template={template} text={text} />
+        <TemplatePreview template={template} text={text} componentsMap={componentsMap} />
         <div className="template-editor">
         <div className="editor-header">
           <label htmlFor="template-text">Template (use {'{{component_name}}'} to link components)</label>
