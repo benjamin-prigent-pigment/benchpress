@@ -60,6 +60,21 @@
   background: #0056b3;
 }
 
+.template-preview-editor-container {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.template-preview-editor-container > .template-preview {
+  flex: 0 0 33%;
+  margin-bottom: 0;
+}
+
+.template-preview-editor-container > .template-editor {
+  flex: 1;
+}
+
 .template-editor {
   background: white;
   border: 1px solid #ddd;

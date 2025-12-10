@@ -1,0 +1,24 @@
+.template-preview {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.template-preview-header {
+  margin-bottom: 15px;
+}
+
+.template-preview-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.template-preview-content {
+  min-height: 100px;
+  color: #666;
+}
+
