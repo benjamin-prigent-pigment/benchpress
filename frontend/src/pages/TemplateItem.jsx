@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { IoCheckmark, IoClose, IoSave, IoDownload } from 'react-icons/io5';
 import { useTemplate } from '../hooks/useTemplate';
 import { useComponents } from '../hooks/useComponents';
 import { useAutocomplete } from '../hooks/useAutocomplete';
@@ -9,6 +10,7 @@ import TemplateEditor from '../components/TemplateEditor';
 import TemplatePreview from '../components/TemplatePreview';
 import PrimaryButton from '../components/buttons/PrimaryButton';
 import SecondaryButton from '../components/buttons/SecondaryButton';
+import IconGreyButton from '../components/buttons/IconGreyButton';
 import './TemplateItem.css';
 
 function TemplateItem() {
@@ -110,63 +112,84 @@ function TemplateItem() {
 
       {error && <div className="error">{error}</div>}
 
-      <div className="template-metadata">
-        {isEditingMetadata ? (
-          <div className="template-metadata-edit">
-            <div className="metadata-edit-field">
-              <label htmlFor="template-name">Template Name *</label>
-              <input
-                id="template-name"
-                type="text"
-                value={editName}
-                onChange={(e) => setEditName(e.target.value)}
-                placeholder="Template name"
-                disabled={savingMetadata}
-              />
-            </div>
-            <div className="metadata-edit-field">
-              <label htmlFor="template-description">Description</label>
-              <textarea
-                id="template-description"
-                value={editDescription}
-                onChange={(e) => setEditDescription(e.target.value)}
-                placeholder="Template description (optional)"
-                rows={3}
-                disabled={savingMetadata}
-              />
-            </div>
-            <div className="metadata-edit-actions">
-              <PrimaryButton 
-                onClick={handleSaveMetadata}
-                disabled={savingMetadata || !editName.trim()}
-              >
-                {savingMetadata ? 'Saving...' : 'Save'}
-              </PrimaryButton>
-              <SecondaryButton 
-                onClick={handleCancelEdit}
-                disabled={savingMetadata}
-              >
-                Cancel
-              </SecondaryButton>
-            </div>
-          </div>
-        ) : (
-          <div className="template-metadata-display">
-            {template.description && (
-              <div className="template-description">
-                {template.description}
+      <div className="template-item-body-wrapper">
+        <div className="template-metadata">
+          {isEditingMetadata ? (
+            <div className="template-metadata-edit">
+              <div className="metadata-edit-field">
+                <label htmlFor="template-name">Template Name *</label>
+                <input
+                  id="template-name"
+                  type="text"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  placeholder="Template name"
+                  disabled={savingMetadata}
+                />
               </div>
-            )}
-          </div>
-        )}
-      </div>
+              <div className="metadata-edit-field">
+                <label htmlFor="template-description">Description</label>
+                <textarea
+                  id="template-description"
+                  value={editDescription}
+                  onChange={(e) => setEditDescription(e.target.value)}
+                  placeholder="Template description (optional)"
+                  rows={3}
+                  disabled={savingMetadata}
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="template-metadata-display">
+              {template.description && (
+                <div className="template-description">
+                  {template.description}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
 
-      <div className="template-preview-editor-container">
+        <div className="template-preview-editor-container">
         <div className="template-editor">
           <div className="editor-header">
-            <label htmlFor="template-text">Template (use {'{{component_name}}'} to link components)</label>
-            <div className="permutation-counter">
-              Permutations: <strong>{permutationCount}</strong>
+            <h3>Template Editor</h3>
+            <div className="editor-header-right">
+              <div className="permutation-counter">
+                Permutations: <strong>{permutationCount}</strong>
+              </div>
+              {isEditingMetadata && (
+                <>
+                  <IconGreyButton
+                    icon={<IoCheckmark size={20} />}
+                    onClick={handleSaveMetadata}
+                    disabled={savingMetadata || !editName.trim()}
+                    ariaLabel={savingMetadata ? 'Saving...' : 'Save metadata'}
+                    title={savingMetadata ? 'Saving...' : 'Save metadata'}
+                  />
+                  <IconGreyButton
+                    icon={<IoClose size={20} />}
+                    onClick={handleCancelEdit}
+                    disabled={savingMetadata}
+                    ariaLabel="Cancel editing"
+                    title="Cancel editing"
+                  />
+                </>
+              )}
+              <IconGreyButton
+                icon={<IoSave size={20} />}
+                onClick={saveTemplate}
+                disabled={saving}
+                ariaLabel={saving ? 'Saving...' : 'Save template'}
+                title={saving ? 'Saving...' : 'Save template'}
+              />
+              <IconGreyButton
+                icon={<IoDownload size={20} />}
+                onClick={generateCSV}
+                disabled={permutationCount === 0}
+                ariaLabel="Generate CSV"
+                title="Generate CSV"
+              />
             </div>
           </div>
           <TemplateEditor
@@ -181,24 +204,9 @@ function TemplateItem() {
             onAutocompleteMouseEnter={setSelectedAutocompleteIndex}
             autocompletePosition={autocompletePosition}
           />
-          <div className="editor-actions">
-            <button 
-              className="btn-primary" 
-              onClick={saveTemplate}
-              disabled={saving}
-            >
-              {saving ? 'Saving...' : 'Save'}
-            </button>
-            <button 
-              className="btn-success" 
-              onClick={generateCSV}
-              disabled={permutationCount === 0}
-            >
-              Generate CSV
-            </button> 
-          </div>
         </div>
         <TemplatePreview template={template} text={text} componentsMap={componentsMap} />
+        </div>
       </div>
     </div>
   );

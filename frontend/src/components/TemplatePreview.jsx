@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { IoRefresh } from 'react-icons/io5';
 import { generateRandomPreview } from '../utils/templateUtils';
+import IconGreyButton from './buttons/IconGreyButton';
 import './TemplatePreview.css';
 
 /**
@@ -28,14 +30,13 @@ function TemplatePreview({ template, text, componentsMap }) {
   return (
     <div className="template-preview">
       <div className="template-preview-header">
-        <h3>Template Preview</h3>
-        <button 
-          className="template-preview-reload-btn"
+        <h3>Preview</h3>
+        <IconGreyButton
+          icon={<IoRefresh size={20} />}
           onClick={handleReload}
+          ariaLabel="Generate a new random preview"
           title="Generate a new random preview"
-        >
-          ↻ Reload
-        </button>
+        />
       </div>
       <div className="template-preview-content">
         {previewText ? (

@@ -1,5 +1,10 @@
 .template-item {
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
 .template-header {
@@ -7,6 +12,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  flex-shrink: 0;
 }
 
 .template-header h1 {
@@ -63,7 +69,9 @@
 .template-preview-editor-container {
   display: flex;
   gap: 20px;
-  margin-bottom: 20px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .template-preview-editor-container > .template-preview {
@@ -80,6 +88,10 @@
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
 }
 
 .editor-header {
@@ -87,16 +99,30 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
+  flex-shrink: 0;
 }
 
-.editor-header label {
-  font-weight: 500;
+.editor-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
   color: #333;
+}
+
+.editor-header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .permutation-counter {
   font-size: 16px;
   color: #666;
+}
+
+.editor-header label {
+  font-weight: 500;
+  color: #333;
 }
 
 .permutation-counter strong {
@@ -107,11 +133,16 @@
 .template-text-container {
   margin-bottom: 15px;
   position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .template-editor-input {
   width: 100%;
-  min-height: 200px;
+  flex: 1;
+  min-height: 0;
   padding: 12px;
   font-size: 14px;
   font-family: monospace;
@@ -233,11 +264,6 @@
   margin-left: 10px;
 }
 
-.editor-actions {
-  display: flex;
-  gap: 10px;
-}
-
 .btn-success {
   background: #28a745;
   color: white;
@@ -263,10 +289,20 @@
   padding: 10px;
   border-radius: 4px;
   margin-bottom: 20px;
+  flex-shrink: 0;
+}
+
+.template-item-body-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .template-metadata {
-  margin-bottom: 20px;
+  height: auto;
+  flex-shrink: 0;
 }
 
 .template-metadata-display {
@@ -331,11 +367,5 @@
 .metadata-edit-field textarea {
   resize: vertical;
   min-height: 80px;
-}
-
-.metadata-edit-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 15px;
 }
 
