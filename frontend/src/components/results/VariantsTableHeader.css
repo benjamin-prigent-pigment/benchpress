@@ -4,16 +4,31 @@
 }
 
 .variants-table-header-cell {
-  padding: 12px 16px;
-  text-align: left;
+  padding: 6px 8px;
+  text-align: center;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 12px;
   color: #333;
+  line-height: 1.0;
   border-right: 1px solid #e0e0e0;
+  width: 1%;
+  white-space: normal;
+  word-wrap: break-word;
+  position: relative;
+}
+
+.variants-table-header-cell-hoverable {
+  cursor: help;
 }
 
 .variants-table-header-cell:last-child {
   border-right: none;
+}
+
+.variants-table-header-cell-test-name {
+  background: #f0f0f0;
+  font-weight: 700;
+  text-align: left;
 }
 
 .variants-table-header-cell-overall {
@@ -23,8 +38,24 @@
 
 .variants-table-header-label {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
+  text-align: center;
+  line-height: 1.4;
+  gap: 2px;
+}
+
+.variants-table-header-line {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  text-align: center;
+  word-break: break-word;
 }
 
 .variants-table-header-component {
@@ -34,6 +65,7 @@
 
 .variants-table-header-separator {
   color: #999;
+  margin-right: 4px;
 }
 
 .variants-table-header-variant {

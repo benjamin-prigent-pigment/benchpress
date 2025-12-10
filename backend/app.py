@@ -17,7 +17,7 @@ from permutations import (
     generate_csv_file,
     save_csv_to_file
 )
-from results_utils import (
+from result_utils import (
     delete_result,
     parse_result_csv, validate_result_csv, save_result_csv,
     get_next_result_id, read_results_metadata, write_results_metadata,

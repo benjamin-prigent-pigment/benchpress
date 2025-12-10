@@ -4,9 +4,9 @@ import { useResult } from '../hooks/useResults';
 import { resultsAPI } from '../utils/resultsAPI';
 import SecondaryPageHeader from '../components/header/SecondaryPageHeader';
 import SectionHeader from '../components/header/SectionHeader';
-import KPICard from '../components/charts/KPICard';
 import TimeSpentDistributionChart from '../components/charts/TimeSpentDistributionChart';
 import VariantsTableHeader from '../components/results/VariantsTableHeader';
+import VariantsTableRow from '../components/results/VariantsTableRow';
 import './ResultItem.css';
 
 function ResultItem() {
@@ -139,6 +139,9 @@ function ResultItem() {
     });
   }
 
+  // Get total rows from backend (actual CSV row count)
+  const totalRows = high_level.total_rows || 0;
+
   return (
     <div className="result-item">
       
@@ -150,153 +153,110 @@ function ResultItem() {
         deleteDisabled={isDeleting}
       />
 
+      <SectionHeader 
+        title="Metrics Overview"
+        label="Key performance indicators across all variants"
+      />
       <div className="variants-table-container">
         <table className="variants-table">
-          <VariantsTableHeader variants={allVariants} />
+          <VariantsTableHeader variants={allVariants} totalRows={totalRows} />
+          <tbody>
+            <VariantsTableRow
+              testName="Pass rates"
+              overallValue={high_level.pass_rate}
+              variants={allVariants.map(({ componentName, variantKey, variantData }) => ({
+                componentName,
+                variantKey,
+                variantData: {
+                  value: variantData.pass_rate,
+                  n: variantData.row_count
+                }
+              }))}
+              format="percentage"
+            />
+            <VariantsTableRow
+              testName="Zero-Error Runs"
+              overallValue={high_level.zero_error_runs}
+              variants={allVariants.map(({ componentName, variantKey, variantData }) => ({
+                componentName,
+                variantKey,
+                variantData: {
+                  value: variantData.zero_error_runs,
+                  n: variantData.row_count
+                }
+              }))}
+              format="percentage"
+            />
+            <VariantsTableRow
+              testName="Median HITL Turns"
+              overallValue={medianHITLTurns}
+              variants={allVariants.map(({ componentName, variantKey, variantData }) => {
+                const variantBehavioralEfficiency = variantData.behavioral_efficiency || {};
+                const variantValue = variantData.median_hitl_turns ?? variantBehavioralEfficiency.median_hitl_turns;
+                return {
+                  componentName,
+                  variantKey,
+                  variantData: {
+                    value: variantValue,
+                    n: variantData.row_count
+                  }
+                };
+              })}
+              format="number"
+            />
+            <VariantsTableRow
+              testName="Median Tool Calls"
+              overallValue={medianToolCalls}
+              variants={allVariants.map(({ componentName, variantKey, variantData }) => {
+                const variantBehavioralEfficiency = variantData.behavioral_efficiency || {};
+                const variantValue = variantData.median_tool_calls ?? variantBehavioralEfficiency.median_tool_calls;
+                return {
+                  componentName,
+                  variantKey,
+                  variantData: {
+                    value: variantValue,
+                    n: variantData.row_count
+                  }
+                };
+              })}
+              format="number"
+            />
+            <VariantsTableRow
+              testName="Median ReACT Calls"
+              overallValue={medianReACTCalls}
+              variants={allVariants.map(({ componentName, variantKey, variantData }) => {
+                const variantBehavioralEfficiency = variantData.behavioral_efficiency || {};
+                const variantValue = variantData.median_react_agent_calls ?? variantBehavioralEfficiency.median_react_agent_calls;
+                return {
+                  componentName,
+                  variantKey,
+                  variantData: {
+                    value: variantValue,
+                    n: variantData.row_count
+                  }
+                };
+              })}
+              format="number"
+            />
+            <VariantsTableRow
+              testName="Forbidden Tool Call Rate"
+              overallValue={forbiddenToolCallRate}
+              variants={allVariants.map(({ componentName, variantKey, variantData }) => {
+                const variantBehavioralEfficiency = variantData.behavioral_efficiency || {};
+                const variantValue = variantData.forbidden_tool_call_rate ?? variantBehavioralEfficiency.forbidden_tool_call_rate;
+                return {
+                  componentName,
+                  variantKey,
+                  variantData: {
+                    value: variantValue,
+                    n: variantData.row_count
+                  }
+                };
+              })}
+              format="number"
+            />
+          </tbody>
         </table>
-      </div>
-    
-      
-      <SectionHeader 
-        title="Pass rates"
-        label="How many times the tests were successful"
-      />
-      <div className="kpi-grid">
-        <KPICard
-          label="Overall score"
-          value={high_level.pass_rate}
-          format="percentage"
-        />
-        {allVariants.map(({ componentName, variantKey, variantData }) => (
-          <KPICard
-            key={`${componentName}-${variantKey}`}
-            label={`${componentName}: ${variantKey}`}
-            value={variantData.pass_rate}
-            format="percentage"
-            n={variantData.row_count}
-          />
-        ))}
-      </div>
-
-      <SectionHeader 
-        title="Zero-Error Runs" 
-        label="How many times all the runs of a test were successful"
-      />
-      <div className="kpi-grid">
-        <KPICard
-          label="Overall score"
-          value={high_level.zero_error_runs}
-          format="percentage"
-        />
-        {allVariants.map(({ componentName, variantKey, variantData }) => (
-          <KPICard
-            key={`${componentName}-${variantKey}`}
-            label={`${componentName}: ${variantKey}`}
-            value={variantData.zero_error_runs}
-            format="percentage"
-            n={variantData.row_count}
-          />
-        ))}
-      </div>
-
-      <SectionHeader 
-        title="Median HITL Turns" 
-        label="How many times the fake user (the LLM passing as the user) interacted with the AI agent"
-      />
-      <div className="kpi-grid">
-        <KPICard
-          label="Overall score"
-          value={medianHITLTurns}
-          format="number"
-        />
-        {allVariants.map(({ componentName, variantKey, variantData }) => {
-          const variantBehavioralEfficiency = variantData.behavioral_efficiency || {};
-          const variantValue = variantData.median_hitl_turns ?? variantBehavioralEfficiency.median_hitl_turns;
-          return (
-            <KPICard
-              key={`${componentName}-${variantKey}`}
-              label={`${componentName}: ${variantKey}`}
-              value={variantValue}
-              format="number"
-              n={variantData.row_count}
-            />
-          );
-        })}
-      </div>
-
-      <SectionHeader 
-        title="Median Tool Calls" 
-        label="How many times AI tools was were called"
-      />
-      <div className="kpi-grid">
-        <KPICard
-          label="Overall score"
-          value={medianToolCalls}
-          format="number"
-        />
-        {allVariants.map(({ componentName, variantKey, variantData }) => {
-          const variantBehavioralEfficiency = variantData.behavioral_efficiency || {};
-          const variantValue = variantData.median_tool_calls ?? variantBehavioralEfficiency.median_tool_calls;
-          return (
-            <KPICard
-              key={`${componentName}-${variantKey}`}
-              label={`${componentName}: ${variantKey}`}
-              value={variantValue}
-              format="number"
-              n={variantData.row_count}
-            />
-          );
-        })}
-      </div>
-
-      <SectionHeader 
-        title="Median ReACT Calls" 
-        label="How many times some ReACT agent was called"
-      />
-      <div className="kpi-grid">
-        <KPICard
-          label="Overall score"
-          value={medianReACTCalls}
-          format="number"
-        />
-        {allVariants.map(({ componentName, variantKey, variantData }) => {
-          const variantBehavioralEfficiency = variantData.behavioral_efficiency || {};
-          const variantValue = variantData.median_react_agent_calls ?? variantBehavioralEfficiency.median_react_agent_calls;
-          return (
-            <KPICard
-              key={`${componentName}-${variantKey}`}
-              label={`${componentName}: ${variantKey}`}
-              value={variantValue}
-              format="number"
-              n={variantData.row_count}
-            />
-          );
-        })}
-      </div>
-
-      <SectionHeader 
-        title="Median forbidden tool call " 
-        label="How many times the AI agent called the wrong tools"
-      />
-      <div className="kpi-grid">
-        <KPICard
-          label="Overall score"
-          value={forbiddenToolCallRate}
-          format="number"
-        />
-        {allVariants.map(({ componentName, variantKey, variantData }) => {
-          const variantBehavioralEfficiency = variantData.behavioral_efficiency || {};
-          const variantValue = variantData.forbidden_tool_call_rate ?? variantBehavioralEfficiency.forbidden_tool_call_rate;
-          return (
-            <KPICard
-              key={`${componentName}-${variantKey}`}
-              label={`${componentName}: ${variantKey}`}
-              value={variantValue}
-              format="number"
-              n={variantData.row_count}
-            />
-          );
-        })}
       </div>
 
       <SectionHeader title="Performance Speed" />
