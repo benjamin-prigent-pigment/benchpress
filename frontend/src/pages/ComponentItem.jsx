@@ -6,6 +6,8 @@ import ComponentCreateModal from '../components/ComponentCreateModal';
 import PrimaryButton from '../components/buttons/PrimaryButton';
 import SecondaryButton from '../components/buttons/SecondaryButton';
 import DangerButton from '../components/buttons/DangerButton';
+import TextInput from '../components/input/TextInput';
+import '../components/ComponentCreateModal.css';
 import './ComponentItem.css';
 
 function ComponentItem() {
@@ -26,6 +28,7 @@ function ComponentItem() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [isSplit, setIsSplit] = useState(false);
   const [splitParts, setSplitParts] = useState(['a', 'b']);
+  const [numberOfSplits, setNumberOfSplits] = useState(2);
 
   // Check if we're creating a new component - either id is 'new' or undefined (when route is /components/new)
   const isNew = !id || id === 'new' || location.pathname === '/components/new';
@@ -60,6 +63,7 @@ function ComponentItem() {
       setVariants(data.variants || []);
       setIsSplit(data.isSplit || false);
       setSplitParts(data.splitParts || ['a', 'b']);
+      setNumberOfSplits(data.splitParts ? data.splitParts.length : 2);
       setError(null);
     } catch (err) {
       setError('Failed to load component');
@@ -79,12 +83,26 @@ function ComponentItem() {
       return;
     }
 
+    let finalSplitParts = null;
+
     // Validate split component structure
     if (isSplit) {
       if (!splitParts || splitParts.length < 2) {
         setError('Split component must have at least 2 parts');
         return;
       }
+      // Trim and validate all part names are non-empty
+      const trimmedParts = splitParts.map(part => part.trim());
+      if (trimmedParts.some(part => !part)) {
+        setError('All split part names must be non-empty');
+        return;
+      }
+      // Validate unique part names (after trimming)
+      if (trimmedParts.length !== new Set(trimmedParts).size) {
+        setError('Split part names must be unique');
+        return;
+      }
+      finalSplitParts = trimmedParts;
       // Check all variants have all parts
       for (let i = 0; i < variants.length; i++) {
         const variant = variants[i];
@@ -92,7 +110,7 @@ function ComponentItem() {
           setError(`Variant ${i + 1} must be an object with all parts`);
           return;
         }
-        for (const part of splitParts) {
+        for (const part of finalSplitParts) {
           if (!(part in variant) || variant[part].trim() === '') {
             setError(`Variant ${i + 1} missing or empty value for part "${part}"`);
             return;
@@ -116,7 +134,7 @@ function ComponentItem() {
         description, 
         variants,
         isSplit,
-        splitParts: isSplit ? splitParts : null
+        splitParts: finalSplitParts
       };
       
       await componentAPI.update(id, data);
@@ -244,7 +262,7 @@ function ComponentItem() {
 
         <div className="form-group">
           <label>Description</label>
-          <textarea
+          <input
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Optional description"
@@ -253,17 +271,114 @@ function ComponentItem() {
           />
         </div>
 
-        <div className="form-group">
-          <label>Component Type:</label>
-          <div style={{ padding: '8px', background: '#f5f5f5', borderRadius: '4px' }}>
-            {component?.isSplit ? 'Split Component' : 'Regular Component'}
-            {component?.isSplit && component?.splitParts && (
-              <div style={{ marginTop: '4px', fontSize: '0.9em', color: '#666' }}>
-                Parts: {component.splitParts.join(', ')}
-              </div>
-            )}
+        {!showEditModal ? (
+          <div className="form-group">
+            <label>Component Type:</label>
+            <div style={{ padding: '8px', background: '#f5f5f5', borderRadius: '4px' }}>
+              {component?.isSplit ? 'Split Component' : 'Regular Component'}
+              {component?.isSplit && component?.splitParts && (
+                <div style={{ marginTop: '4px', fontSize: '0.9em', color: '#666' }}>
+                  Parts: {component.splitParts.join(', ')}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        ) : isSplit ? (
+          <div className="split-configuration">
+            <TextInput
+              label="Number of Split Parts"
+              helpText="Minimum 2 parts required"
+              type="number"
+              value={numberOfSplits}
+              onChange={(e) => {
+                const num = parseInt(e.target.value, 10);
+                if (num >= 2) {
+                  setNumberOfSplits(num);
+                  // Update splitParts array, preserving existing names or using defaults
+                  const newParts = [];
+                  const oldParts = splitParts;
+                  for (let i = 0; i < num; i++) {
+                    if (i < oldParts.length) {
+                      newParts.push(oldParts[i]);
+                    } else {
+                      // Generate default names: a, b, c, d, etc.
+                      newParts.push(String.fromCharCode(97 + i)); // 97 is 'a'
+                    }
+                  }
+                  
+                  // Remap variants to match new split parts
+                  const remappedVariants = variants.map(variant => {
+                    if (!variant || typeof variant !== 'object') return variant;
+                    const remapped = {};
+                    for (let i = 0; i < newParts.length; i++) {
+                      if (i < oldParts.length && oldParts[i] in variant) {
+                        // Preserve value from old part if it exists
+                        remapped[newParts[i]] = variant[oldParts[i]];
+                      } else {
+                        // New part, set empty string
+                        remapped[newParts[i]] = '';
+                      }
+                    }
+                    return remapped;
+                  });
+                  
+                  setSplitParts(newParts);
+                  setVariants(remappedVariants);
+                }
+              }}
+              min="2"
+              required
+            />
+
+            <div className="split-parts-naming">
+              <label className="split-parts-label">
+                Split Part Names *
+                <span className="help-text">Each part must have a unique name</span>
+              </label>
+              <div className="split-parts-inputs">
+                {splitParts.map((part, index) => (
+                  <TextInput
+                    key={index}
+                    label={`Part ${index + 1} Name`}
+                    value={part}
+                    onChange={(e) => {
+                      const newName = e.target.value;
+                      const updated = [...splitParts];
+                      const oldName = updated[index];
+                      updated[index] = newName;
+                      
+                      // Remap variants to use new part name
+                      const remappedVariants = variants.map(variant => {
+                        if (!variant || typeof variant !== 'object') return variant;
+                        const remapped = { ...variant };
+                        if (oldName in remapped) {
+                          const value = remapped[oldName];
+                          delete remapped[oldName];
+                          remapped[newName] = value;
+                        } else {
+                          remapped[newName] = '';
+                        }
+                        return remapped;
+                      });
+                      
+                      setSplitParts(updated);
+                      setVariants(remappedVariants);
+                    }}
+                    placeholder={`e.g., ${String.fromCharCode(97 + index)}`}
+                    required
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="form-group">
+            <label>Component Type:</label>
+            <div style={{ padding: '8px', background: '#f5f5f5', borderRadius: '4px' }}>
+              Regular Component
+            </div>
+          </div>
+        )}
 
         <div className="variants-section">
           <label>Variants * (at least 2 required)</label>
@@ -480,6 +595,7 @@ function ComponentItem() {
               <SecondaryButton 
                 onClick={() => {
                   setShowEditModal(false);
+                  // Reset to original component data
                   loadComponent();
                 }}
               >

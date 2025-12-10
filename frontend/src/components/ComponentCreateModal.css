@@ -220,4 +220,37 @@
   font-size: 12px;
 }
 
+.split-configuration {
+  margin-top: 20px;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.split-parts-naming {
+  margin-top: 20px;
+}
+
+.split-parts-label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.split-parts-label .help-text {
+  display: block;
+  font-weight: 400;
+  font-size: 0.875rem;
+  color: #666;
+  margin-top: 4px;
+}
+
+.split-parts-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 

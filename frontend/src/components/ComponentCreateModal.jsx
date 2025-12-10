@@ -20,6 +20,7 @@ function ComponentCreateModal({ isOpen, onClose }) {
   const [error, setError] = useState(null);
   const [isSplit, setIsSplit] = useState(false);
   const [splitParts, setSplitParts] = useState(['a', 'b']);
+  const [numberOfSplits, setNumberOfSplits] = useState(2);
 
   useEffect(() => {
     if (isOpen) {
@@ -30,6 +31,7 @@ function ComponentCreateModal({ isOpen, onClose }) {
       setError(null);
       setIsSplit(false);
       setSplitParts(['a', 'b']);
+      setNumberOfSplits(2);
     }
   }, [isOpen]);
 
@@ -45,12 +47,27 @@ function ComponentCreateModal({ isOpen, onClose }) {
       return;
     }
 
+    let finalSplitParts = null;
+
     // Validate split component structure
     if (isSplit) {
       if (!splitParts || splitParts.length < 2) {
         setError('Split component must have at least 2 parts');
         return;
       }
+      // Trim and validate all part names are non-empty
+      const trimmedParts = splitParts.map(part => part.trim());
+      if (trimmedParts.some(part => !part)) {
+        setError('All split part names must be non-empty');
+        return;
+      }
+      // Validate unique part names (after trimming)
+      if (trimmedParts.length !== new Set(trimmedParts).size) {
+        setError('Split part names must be unique');
+        return;
+      }
+      // Store trimmed parts
+      finalSplitParts = trimmedParts;
       // Check all variants have all parts
       for (let i = 0; i < validVariants.length; i++) {
         const variant = validVariants[i];
@@ -58,7 +75,7 @@ function ComponentCreateModal({ isOpen, onClose }) {
           setError(`Variant ${i + 1} must be an object with all parts`);
           return;
         }
-        for (const part of splitParts) {
+        for (const part of finalSplitParts) {
           if (!(part in variant) || variant[part].trim() === '') {
             setError(`Variant ${i + 1} missing or empty value for part "${part}"`);
             return;
@@ -82,7 +99,7 @@ function ComponentCreateModal({ isOpen, onClose }) {
         description, 
         variants: validVariants,
         isSplit,
-        splitParts: isSplit ? splitParts : null
+        splitParts: finalSplitParts
       };
       
       const newComponent = await componentAPI.create(data);
@@ -139,6 +156,7 @@ function ComponentCreateModal({ isOpen, onClose }) {
     setError(null);
     setIsSplit(false);
     setSplitParts(['a', 'b']);
+    setNumberOfSplits(2);
     onClose();
   };
 
@@ -188,14 +206,73 @@ function ComponentCreateModal({ isOpen, onClose }) {
             onChange={(e) => {
               setIsSplit(e.target.checked);
               if (e.target.checked) {
+                setNumberOfSplits(2);
                 setSplitParts(['a', 'b']);
                 setVariants([null]); // Start with one empty variant
               } else {
-                setSplitParts(null);
+                setNumberOfSplits(2);
+                setSplitParts(['a', 'b']);
                 setVariants([null]); // Start with one empty variant
               }
             }}
           />
+
+          {isSplit && (
+            <div className="split-configuration">
+              <TextInput
+                label="Number of Split Parts"
+                helpText="Minimum 2 parts required"
+                type="number"
+                value={numberOfSplits}
+                onChange={(e) => {
+                  const num = parseInt(e.target.value, 10);
+                  if (num >= 2) {
+                    setNumberOfSplits(num);
+                    // Update splitParts array, preserving existing names or using defaults
+                    const newParts = [];
+                    for (let i = 0; i < num; i++) {
+                      if (i < splitParts.length) {
+                        newParts.push(splitParts[i]);
+                      } else {
+                        // Generate default names: a, b, c, d, etc.
+                        newParts.push(String.fromCharCode(97 + i)); // 97 is 'a'
+                      }
+                    }
+                    setSplitParts(newParts);
+                    setVariants([null]); // Reset variants when split config changes
+                  }
+                }}
+                min="2"
+                required
+              />
+
+              <div className="split-parts-naming">
+                <label className="split-parts-label">
+                  Split Part Names *
+                  <span className="help-text">Each part must have a unique name</span>
+                </label>
+                <div className="split-parts-inputs">
+                  {splitParts.map((part, index) => (
+                    <TextInput
+                      key={index}
+                      label={`Part ${index + 1} Name`}
+                      value={part}
+                      onChange={(e) => {
+                        const newName = e.target.value;
+                        const updated = [...splitParts];
+                        updated[index] = newName;
+                        setSplitParts(updated);
+                        // Reset variants when part names change
+                        setVariants([null]);
+                      }}
+                      placeholder={`e.g., ${String.fromCharCode(97 + index)}`}
+                      required
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
 
 
           <div className="variants-section">
