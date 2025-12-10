@@ -10,11 +10,15 @@ function SecondaryPageHeader({
   onDelete, 
   deleteLabel,
   deleteDisabled = false,
+  onEdit,
+  editLabel,
+  editDisabled = false,
   className = '' 
 }) {
   const navigate = useNavigate();
   
   const defaultDeleteLabel = deleteLabel || `Delete ${backPath === '/templates' ? 'Template' : 'Component'}`;
+  const defaultEditLabel = editLabel || `Edit ${backPath === '/templates' ? 'Template' : 'Component'}`;
 
   return (
     <div className={`secondary-page-header ${className}`}>
@@ -44,6 +48,40 @@ function SecondaryPageHeader({
         <h1>{title}</h1>
       </div>
       <div className="header-actions">
+        {onEdit && (
+          <IconGreyButton
+            icon={
+              <svg 
+                width="20" 
+                height="20" 
+                viewBox="0 0 20 20" 
+                fill="none" 
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path 
+                  d="M11.05 3.00002L4.20835 10.2417C3.95002 10.5167 3.70002 11.0584 3.65002 11.4334L3.34169 14.1334C3.23335 15.1084 3.93335 15.775 4.90002 15.6084L7.58335 15.15C7.95835 15.0834 8.48335 14.8084 8.74169 14.525L15.5834 7.28335C16.7667 6.03335 17.3 4.60835 15.4584 2.86668C13.625 1.14168 12.2334 1.75002 11.05 3.00002Z" 
+                  stroke="currentColor" 
+                  strokeWidth="1.5" 
+                  strokeMiterlimit="10" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round"
+                />
+                <path 
+                  d="M9.90833 4.20831C10.2667 6.00831 11.7 7.31665 13.5167 7.49998M2.5 18.3333H17.5" 
+                  stroke="currentColor" 
+                  strokeWidth="1.5" 
+                  strokeMiterlimit="10" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round"
+                />
+              </svg>
+            }
+            onClick={onEdit}
+            disabled={editDisabled}
+            ariaLabel={defaultEditLabel}
+            title={defaultEditLabel}
+          />
+        )}
         {onDelete && (
           <IconDestructionButton
             icon={

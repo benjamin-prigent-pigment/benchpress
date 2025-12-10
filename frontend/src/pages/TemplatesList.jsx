@@ -11,6 +11,7 @@ function TemplatesList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [newTemplateName, setNewTemplateName] = useState('');
+  const [newTemplateDescription, setNewTemplateDescription] = useState('');
   const [showCreateForm, setShowCreateForm] = useState(false);
   const navigate = useNavigate();
 
@@ -37,8 +38,12 @@ function TemplatesList() {
     if (!newTemplateName.trim()) return;
 
     try {
-      const newTemplate = await templateAPI.create({ name: newTemplateName });
+      const newTemplate = await templateAPI.create({ 
+        name: newTemplateName,
+        description: newTemplateDescription 
+      });
       setNewTemplateName('');
+      setNewTemplateDescription('');
       setShowCreateForm(false);
       navigate(`/templates/${newTemplate.id}`);
     } catch (err) {
@@ -70,6 +75,12 @@ function TemplatesList() {
               onChange={(e) => setNewTemplateName(e.target.value)}
               autoFocus
             />
+            <input
+              type="text"
+              placeholder="Template description (optional)"
+              value={newTemplateDescription}
+              onChange={(e) => setNewTemplateDescription(e.target.value)}
+            />
             <div className="form-actions">
               <PrimaryButton type="submit">Save</PrimaryButton>
               <SecondaryButton 
@@ -77,6 +88,7 @@ function TemplatesList() {
                 onClick={() => {
                   setShowCreateForm(false);
                   setNewTemplateName('');
+                  setNewTemplateDescription('');
                 }}
               >
                 Cancel

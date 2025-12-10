@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTemplate } from '../hooks/useTemplate';
 import { useComponents } from '../hooks/useComponents';
@@ -6,11 +6,17 @@ import { useAutocomplete } from '../hooks/useAutocomplete';
 import { useTemplateEditor } from '../hooks/useTemplateEditor';
 import SecondaryPageHeader from '../components/header/SecondaryPageHeader';
 import TemplateEditor from '../components/TemplateEditor';
+import PrimaryButton from '../components/buttons/PrimaryButton';
+import SecondaryButton from '../components/buttons/SecondaryButton';
 import './TemplateItem.css';
 
 function TemplateItem() {
   const { id } = useParams();
   const editorRef = useRef(null);
+  const [isEditingMetadata, setIsEditingMetadata] = useState(false);
+  const [editName, setEditName] = useState('');
+  const [editDescription, setEditDescription] = useState('');
+  const [savingMetadata, setSavingMetadata] = useState(false);
   
   // Template operations
   const {
@@ -23,7 +29,8 @@ function TemplateItem() {
     error,
     saveTemplate,
     generateCSV,
-    deleteTemplate
+    deleteTemplate,
+    updateTemplateMetadata
   } = useTemplate(id);
 
   // Components data
@@ -43,6 +50,42 @@ function TemplateItem() {
   const { handleEditorInput, handleEditorKeyDown, selectComponent } = 
     useTemplateEditor(text, setText, componentsMap, autocomplete, editorRef);
 
+  // Initialize edit fields when template loads or when entering edit mode
+  useEffect(() => {
+    if (template) {
+      setEditName(template.name || '');
+      setEditDescription(template.description || '');
+    }
+  }, [template, isEditingMetadata]);
+
+  const handleStartEdit = () => {
+    setIsEditingMetadata(true);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditingMetadata(false);
+    if (template) {
+      setEditName(template.name || '');
+      setEditDescription(template.description || '');
+    }
+  };
+
+  const handleSaveMetadata = async () => {
+    if (!editName.trim()) {
+      return;
+    }
+
+    try {
+      setSavingMetadata(true);
+      await updateTemplateMetadata(editName.trim(), editDescription.trim());
+      setIsEditingMetadata(false);
+    } catch (err) {
+      console.error('Failed to save template metadata:', err);
+    } finally {
+      setSavingMetadata(false);
+    }
+  };
+
   if (loading) {
     return <div className="template-item">Loading...</div>;
   }
@@ -57,12 +100,65 @@ function TemplateItem() {
         title={template.name}
         backPath="/templates"
         backLabel="Back to Templates"
+        onEdit={!isEditingMetadata ? handleStartEdit : undefined}
+        editLabel="Edit template name and description"
         onDelete={deleteTemplate}
         deleteLabel="Delete Template"
         className="template-header"
       />
 
       {error && <div className="error">{error}</div>}
+
+      <div className="template-metadata">
+        {isEditingMetadata ? (
+          <div className="template-metadata-edit">
+            <div className="metadata-edit-field">
+              <label htmlFor="template-name">Template Name *</label>
+              <input
+                id="template-name"
+                type="text"
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                placeholder="Template name"
+                disabled={savingMetadata}
+              />
+            </div>
+            <div className="metadata-edit-field">
+              <label htmlFor="template-description">Description</label>
+              <textarea
+                id="template-description"
+                value={editDescription}
+                onChange={(e) => setEditDescription(e.target.value)}
+                placeholder="Template description (optional)"
+                rows={3}
+                disabled={savingMetadata}
+              />
+            </div>
+            <div className="metadata-edit-actions">
+              <PrimaryButton 
+                onClick={handleSaveMetadata}
+                disabled={savingMetadata || !editName.trim()}
+              >
+                {savingMetadata ? 'Saving...' : 'Save'}
+              </PrimaryButton>
+              <SecondaryButton 
+                onClick={handleCancelEdit}
+                disabled={savingMetadata}
+              >
+                Cancel
+              </SecondaryButton>
+            </div>
+          </div>
+        ) : (
+          <div className="template-metadata-display">
+            {template.description && (
+              <div className="template-description">
+                {template.description}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
 
       <div className="template-editor">
         <div className="editor-header">

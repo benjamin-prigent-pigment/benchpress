@@ -262,6 +262,7 @@ def create_template():
     try:
         data = request.get_json()
         name = data.get('name', '').strip()
+        description = data.get('description', '').strip()
         text = data.get('text', '')
         
         if not name:
@@ -275,6 +276,7 @@ def create_template():
         new_template = {
             'id': get_next_id(templates),
             'name': name,
+            'description': description,
             'text': text,
             'components': unique_components
         }
@@ -318,6 +320,9 @@ def update_template(template_id):
         
         if 'name' in data:
             template['name'] = data['name'].strip()
+        
+        if 'description' in data:
+            template['description'] = data['description'].strip()
         
         write_templates(templates)
         return jsonify(template), 200

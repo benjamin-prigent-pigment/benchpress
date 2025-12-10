@@ -116,6 +116,33 @@ export const useTemplate = (templateId) => {
     }
   };
 
+  // Update template metadata (name and description)
+  const updateTemplateMetadata = async (name, description) => {
+    console.log('[useTemplate] updateTemplateMetadata called', { templateId, name, description });
+    try {
+      console.log('[useTemplate] Starting metadata update...');
+      setSaving(true);
+      console.log('[useTemplate] Updating template metadata via PUT /api/templates/' + templateId);
+      const updatedTemplate = await templateAPI.update(templateId, { name, description });
+      console.log('[useTemplate] Template metadata updated successfully');
+      setTemplate(updatedTemplate);
+      setError(null);
+    } catch (err) {
+      console.error('[useTemplate] Metadata update failed:', err);
+      console.error('[useTemplate] Error details:', {
+        message: err.message,
+        stack: err.stack,
+        name: err.name
+      });
+      setError('Failed to update template metadata');
+      console.error(err);
+      throw err;
+    } finally {
+      setSaving(false);
+      console.log('[useTemplate] updateTemplateMetadata finished');
+    }
+  };
+
   // Delete template
   const deleteTemplate = async () => {
     console.log('[useTemplate] deleteTemplate called for id:', templateId);
@@ -173,6 +200,7 @@ export const useTemplate = (templateId) => {
     saveTemplate,
     generateCSV,
     deleteTemplate,
+    updateTemplateMetadata,
     updatePermutationCount
   };
 };

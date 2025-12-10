@@ -35,7 +35,7 @@ def init_csv_files():
     if not TEMPLATES_FILE.exists():
         with open(TEMPLATES_FILE, 'w', newline='', encoding='utf-8') as f:
             writer = csv.writer(f)
-            writer.writerow(['id', 'name', 'text', 'components'])
+            writer.writerow(['id', 'name', 'description', 'text', 'components'])
     
     # Initialize results_metadata.csv
     if not RESULTS_METADATA_FILE.exists():
@@ -110,9 +110,13 @@ def read_templates():
                 except (json.JSONDecodeError, ValueError):
                     components = []
             
+            # Handle description with backward compatibility (default to empty string)
+            description = row.get('description', '')
+            
             templates.append({
                 'id': int(row['id']),
                 'name': row['name'],
+                'description': description,
                 'text': row['text'],
                 'components': components
             })
@@ -124,13 +128,16 @@ def write_templates(templates):
     ensure_data_dir()
     with open(TEMPLATES_FILE, 'w', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
-        writer.writerow(['id', 'name', 'text', 'components'])
+        writer.writerow(['id', 'name', 'description', 'text', 'components'])
         for template in templates:
             # Get components, default to empty list if not present
             components = template.get('components', [])
+            # Get description, default to empty string if not present
+            description = template.get('description', '')
             writer.writerow([
                 template['id'],
                 template['name'],
+                description,
                 template['text'],
                 json.dumps(components)
             ])
