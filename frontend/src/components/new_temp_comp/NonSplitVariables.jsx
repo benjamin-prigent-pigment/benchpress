@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import IconGreyButton from '../buttons/IconGreyButton';
-import PrimaryButton from '../buttons/PrimaryButton';
-import SecondaryButton from '../buttons/SecondaryButton';
-import { IoPencil } from 'react-icons/io5';
+import IconPrimaryButton from '../buttons/IconPrimaryButton';
+import { IoPencil, IoCheckmark, IoClose } from 'react-icons/io5';
 import './NonSplitVariables.css';
 
 function NonSplitVariables({
@@ -59,31 +58,33 @@ function NonSplitVariables({
   if (isEditing) {
     return (
       <div className="non-split-variable editing">
-        <textarea
-          value={editValue}
-          onChange={(e) => setEditValue(e.target.value)}
-          onKeyDown={handleKeyPress}
-          placeholder="Enter variable value"
-          className="non-split-variable-input"
-          autoFocus
-          disabled={disabled}
-          rows={4}
-        />
-        <div className="non-split-variable-actions">
-          <PrimaryButton
-            onClick={handleSave}
-            disabled={!editValue || !editValue.trim() || disabled}
-            className="btn-small"
-          >
-            Save
-          </PrimaryButton>
-          <SecondaryButton
-            onClick={handleCancel}
+        <div className="non-split-variable-input-wrapper">
+          <textarea
+            value={editValue}
+            onChange={(e) => setEditValue(e.target.value)}
+            onKeyDown={handleKeyPress}
+            placeholder="Enter variable value"
+            className="non-split-variable-input"
+            autoFocus
             disabled={disabled}
-            className="btn-small"
-          >
-            Cancel
-          </SecondaryButton>
+            rows={4}
+          />
+          <div className="non-split-variable-actions">
+            <IconGreyButton
+              icon={<IoClose size={18} />}
+              onClick={handleCancel}
+              disabled={disabled}
+              ariaLabel="Cancel editing"
+              title="Cancel editing"
+            />
+            <IconPrimaryButton
+              icon={<IoCheckmark size={18} />}
+              onClick={handleSave}
+              disabled={!editValue || !editValue.trim() || disabled}
+              ariaLabel="Save variable"
+              title="Save variable"
+            />
+          </div>
         </div>
       </div>
     );

@@ -49,10 +49,17 @@
   white-space: pre-wrap;
 }
 
+.split-variable-edit-parts {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-grow: 1;
+}
+
 .split-variable-edit-form {
   width: 100%;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 12px;
 }
 
@@ -90,10 +97,22 @@
   cursor: not-allowed;
 }
 
+.split-variable-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.split-variable-input-wrapper .split-variable-input {
+  flex: 1;
+}
+
 .split-variable-edit-actions {
   display: flex;
   gap: 8px;
-  margin-top: 8px;
+  flex-shrink: 0;
+  padding-top: 22px;
 }
 
 .split-variable-delete {

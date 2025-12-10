@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import IconGreyButton from '../buttons/IconGreyButton';
-import PrimaryButton from '../buttons/PrimaryButton';
-import SecondaryButton from '../buttons/SecondaryButton';
-import { IoPencil } from 'react-icons/io5';
+import IconPrimaryButton from '../buttons/IconPrimaryButton';
+import IconDestructionButton from '../buttons/IconDestructionButton';
+import { IoTrash, IoPencil, IoCheckmark, IoClose } from 'react-icons/io5';
 import './SplitVariable.css';
 
 function SplitVariable({
@@ -46,11 +46,10 @@ function SplitVariable({
   };
 
   const handleCancel = () => {
-    setIsEditing(false);
     if (variable && typeof variable === 'object') {
+      setIsEditing(false);
       setEditValues({ ...variable });
     } else {
-      // If it's a new variable, call onDelete to cancel
       onDelete?.();
     }
   };
@@ -68,6 +67,12 @@ function SplitVariable({
     setIsEditing(false);
   };
 
+  const handleDelete = () => {
+    if (window.confirm('Are you sure you want to delete this variable? This action cannot be undone.')) {
+      onDelete?.();
+    }
+  };
+
   const handlePartChange = (part, value) => {
     setEditValues({
       ...editValues,
@@ -76,39 +81,44 @@ function SplitVariable({
   };
 
   if (isEditing) {
+    const lastPartIndex = splitParts.length - 1;
     return (
       <div className="split-variable editing">
         <div className="split-variable-edit-form">
-          {splitParts.map(part => (
-            <div key={part} className="split-variable-edit-part">
-              <label className="split-variable-part-label">
-                <strong>{part}:</strong>
-              </label>
-              <textarea
-                value={editValues[part] || ''}
-                onChange={(e) => handlePartChange(part, e.target.value)}
-                placeholder={`Enter ${part} value`}
-                className="split-variable-input"
-                rows={3}
-                disabled={disabled}
-              />
-            </div>
-          ))}
+          <div className="split-variable-edit-parts">
+            {splitParts.map((part, index) => (
+              <div key={part} className={`split-variable-edit-part ${index === lastPartIndex ? 'split-variable-edit-part-last' : ''}`}>
+                <label className="split-variable-part-label">
+                  <strong>{part}:</strong>
+                </label>
+                <div className="split-variable-input-wrapper">
+                  <textarea
+                    value={editValues[part] || ''}
+                    onChange={(e) => handlePartChange(part, e.target.value)}
+                    placeholder={`Enter ${part} value`}
+                    className="split-variable-input"
+                    rows={3}
+                    disabled={disabled}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
           <div className="split-variable-edit-actions">
-            <PrimaryButton
-              onClick={handleSave}
-              disabled={!splitParts.every(part => editValues[part]?.trim()) || disabled}
-              className="btn-small"
-            >
-              Save
-            </PrimaryButton>
-            <SecondaryButton
+            <IconGreyButton
+              icon={<IoClose size={18} />}
               onClick={handleCancel}
               disabled={disabled}
-              className="btn-small"
-            >
-              Cancel
-            </SecondaryButton>
+              ariaLabel="Cancel editing"
+              title="Cancel editing"
+            />
+            <IconPrimaryButton
+              icon={<IoCheckmark size={18} />}
+              onClick={handleSave}
+              disabled={!splitParts.every(part => editValues[part]?.trim()) || disabled}
+              ariaLabel="Save variable"
+              title="Save variable"
+            />
           </div>
         </div>
       </div>
@@ -135,20 +145,17 @@ function SplitVariable({
           title="Edit variable"
           disabled={disabled}
         />
-      </div>
-      {canDelete && (
-        <div className="split-variable-delete">
-          <button
-            type="button"
-            onClick={() => onDelete?.()}
+        {canDelete && (
+          <IconDestructionButton
+            icon={<IoTrash size={18} />}
+            onClick={handleDelete}
             disabled={disabled}
-            className="split-variable-delete-btn"
-            aria-label="Delete variable"
-          >
-            Delete
-          </button>
-        </div>
-      )}
+            ariaLabel="Delete variable"
+            title="Delete variable"
+          />
+        )}
+      </div>
+      
     </div>
   );
 }

@@ -7,6 +7,10 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  font-weight: 600;
+  color: #696969;
 }
 
 .non-split-variable.editing {
@@ -22,16 +26,21 @@
 
 .non-split-variable-text {
   flex: 1;
-  font-size: 14px;
-  color: #333;
   line-height: 1.5;
   word-wrap: break-word;
   white-space: pre-wrap;
   min-height: 20px;
 }
 
+.non-split-variable-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
 .non-split-variable-input {
-  width: 100%;
+  flex: 1;
   padding: 10px;
   font-size: 14px;
   border: 1px solid #ddd;
@@ -55,7 +64,8 @@
 .non-split-variable-actions {
   display: flex;
   gap: 8px;
-  margin-top: 8px;
+  flex-shrink: 0;
+  padding-top: 4px;
 }
 
 .non-split-variable-delete {

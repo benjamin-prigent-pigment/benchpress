@@ -2,9 +2,8 @@ import { useState, useEffect } from 'react';
 import TextInput from '../input/TextInput';
 import TextDescriptionInput from '../input/TextDescriptionInput';
 import IconGreyButton from '../buttons/IconGreyButton';
-import PrimaryButton from '../buttons/PrimaryButton';
-import SecondaryButton from '../buttons/SecondaryButton';
-import { IoPencil } from 'react-icons/io5';
+import IconPrimaryButton from '../buttons/IconPrimaryButton';
+import { IoPencil, IoCheckmark, IoClose } from 'react-icons/io5';
 import './ComponentAbout.css';
 
 function ComponentAbout({ name, description, onSave, onError }) {
@@ -51,8 +50,25 @@ function ComponentAbout({ name, description, onSave, onError }) {
   return (
     <div className="component-about">
       <div className="component-about-header">
-        <h3 className="component-about-title">About</h3>
-        {!isEditing && (
+        <h3 className="component-about-title">About this component</h3>
+        {isEditing ? (
+          <div className="component-about-actions">
+            <IconGreyButton
+              icon={<IoClose size={18} />}
+              onClick={handleCancel}
+              disabled={saving}
+              ariaLabel="Cancel editing"
+              title="Cancel editing"
+            />
+            <IconPrimaryButton
+              icon={<IoCheckmark size={18} />}
+              onClick={handleSave}
+              disabled={saving || !editName.trim()}
+              ariaLabel="Save component"
+              title={saving ? 'Saving...' : 'Save component'}
+            />
+          </div>
+        ) : (
           <IconGreyButton
             icon={<IoPencil size={18} />}
             onClick={handleStartEdit}
@@ -70,7 +86,6 @@ function ComponentAbout({ name, description, onSave, onError }) {
               value={editName}
               onChange={(e) => setEditName(e.target.value)}
               placeholder="Placeholder"
-              helpText="Helper text goes here"
               required
             />
             <TextDescriptionInput
@@ -78,23 +93,8 @@ function ComponentAbout({ name, description, onSave, onError }) {
               value={editDescription}
               onChange={(e) => setEditDescription(e.target.value)}
               placeholder="Placeholder"
-              helpText="Helper text goes here"
               rows={3}
             />
-            <div className="component-about-actions">
-              <PrimaryButton
-                onClick={handleSave}
-                disabled={saving || !editName.trim()}
-              >
-                {saving ? 'Saving...' : 'Save'}
-              </PrimaryButton>
-              <SecondaryButton
-                onClick={handleCancel}
-                disabled={saving}
-              >
-                Cancel
-              </SecondaryButton>
-            </div>
           </div>
         ) : (
           <div className="component-about-display">

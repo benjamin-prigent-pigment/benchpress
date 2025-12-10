@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import IconGreyButton from '../buttons/IconGreyButton';
-import PrimaryButton from '../buttons/PrimaryButton';
-import SecondaryButton from '../buttons/SecondaryButton';
+import IconPrimaryButton from '../buttons/IconPrimaryButton'; 
 import TextInput from '../input/TextInput';
-import { IoPencil } from 'react-icons/io5';
+import { IoPencil, IoCheckmark, IoClose } from 'react-icons/io5';
 import './SplitNumberSystem.css';
 
 function SplitNumberSystem({
@@ -80,45 +79,42 @@ function SplitNumberSystem({
         <div className="split-number-system-edit">
           <TextInput
             label="Number of Splits"
-            helpText="Minimum 2 splits required"
+            helpText="Splits enable you to split variables inside a template, minimum 2 splits required"
             type="number"
             value={numberOfSplits}
             onChange={handleNumberOfSplitsChange}
             min="2"
             required
           />
-          <div className="split-parts-edit">
-            <label className="split-parts-edit-label">Split Part Names *</label>
-            <div className="split-parts-edit-inputs">
-              {editSplitParts.map((part, index) => (
-                <TextInput
-                  key={index}
-                  label={`Part ${index + 1} Name`}
-                  value={part}
-                  onChange={(e) => handlePartNameChange(index, e.target.value)}
-                  placeholder={`e.g., ${String.fromCharCode(65 + index)}`}
-                  required
-                />
-              ))}
-            </div>
-          </div>
-          <div className="split-number-system-actions">
-            <PrimaryButton
-              onClick={handleSave}
-              disabled={disabled}
-              className="btn-small"
-            >
-              Save
-            </PrimaryButton>
-            <SecondaryButton
-              onClick={handleCancel}
-              disabled={disabled}
-              className="btn-small"
-            >
-              Cancel
-            </SecondaryButton>
+          <div className="split-parts-edit-inputs">
+            {editSplitParts.map((part, index) => (
+              <TextInput
+                key={index}
+                label={`Split ${index + 1} Name`}
+                value={part}
+                onChange={(e) => handlePartNameChange(index, e.target.value)}
+                placeholder={`e.g., ${String.fromCharCode(65 + index)}`}
+                required
+              />
+            ))}
           </div>
         </div>
+        <div className="split-number-system-actions">
+            <IconGreyButton
+              icon={<IoClose size={18} />}
+              onClick={handleCancel}
+              disabled={disabled}
+              ariaLabel="Cancel splits"
+              title="Cancel splits"
+            />
+            <IconPrimaryButton
+              icon={<IoCheckmark size={18} />}
+              onClick={handleSave}
+              disabled={disabled}
+              ariaLabel="Save splits"
+              title="Save splits"
+            />
+          </div>
       </div>
     );
   }
@@ -126,10 +122,12 @@ function SplitNumberSystem({
   return (
     <div className="split-number-system display">
       <div className="split-number-system-content">
-        <span className="split-number-system-label">Splits:</span>
-        <span className="split-number-system-parts">
-          {splitParts.length > 0 ? splitParts.join(', ') : '—'}
-        </span>
+        <div className="split-number-system-parts-wrapper">
+          <span className="split-number-system-label">Splits:</span>
+          <span className="split-number-system-parts">
+            {splitParts.length > 0 ? splitParts.join(', ') : '—'}
+          </span>
+        </div>
         <IconGreyButton
           icon={<IoPencil size={18} />}
           onClick={handleStartEdit}
