@@ -6,6 +6,7 @@ import { useAutocomplete } from '../hooks/useAutocomplete';
 import { useTemplateEditor } from '../hooks/useTemplateEditor';
 import SecondaryPageHeader from '../components/header/SecondaryPageHeader';
 import TemplateEditor from '../components/TemplateEditor';
+import TemplatePreview from '../components/TemplatePreview';
 import PrimaryButton from '../components/buttons/PrimaryButton';
 import SecondaryButton from '../components/buttons/SecondaryButton';
 import './TemplateItem.css';
@@ -160,9 +161,11 @@ function TemplateItem() {
         )}
       </div>
 
-      <div className="template-editor">
+      <div className="template-preview-editor-container">
+        <TemplatePreview template={template} text={text} componentsMap={componentsMap} />
+        <div className="template-editor">
         <div className="editor-header">
-          <label htmlFor="template-text">Template Text (use {'{{component_name}}'} for placeholders)</label>
+          <label htmlFor="template-text">Template (use {'{{component_name}}'} to link components)</label>
           <div className="permutation-counter">
             Permutations: <strong>{permutationCount}</strong>
           </div>
@@ -194,6 +197,7 @@ function TemplateItem() {
           >
             Generate CSV
           </button>
+        </div>
         </div>
       </div>
     </div>

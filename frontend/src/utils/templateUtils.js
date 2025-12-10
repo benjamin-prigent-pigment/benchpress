@@ -200,3 +200,113 @@ export const getCursorPosition = (range, editor) => {
   return preCaretRange.toString().length;
 };
 
+/**
+ * Extract component usages from template text
+ * Returns a list of objects with 'name' and optional 'part' for split components
+ * @param {string} templateText - The template text
+ * @returns {Array<{name: string, part: string|null}>} List of component usages
+ */
+export const extractComponentsFromTemplate = (templateText) => {
+  if (!templateText) return [];
+  
+  // Pattern matches: {{component_name}} or {{component_name/part}}
+  const placeholderRegex = /\{\{([^}/]+)(?:\/([^}]+))?\}\}/g;
+  const matches = [];
+  let match;
+  
+  while ((match = placeholderRegex.exec(templateText)) !== null) {
+    const name = match[1].trim();
+    const part = match[2] ? match[2].trim() : null;
+    matches.push({ name, part });
+  }
+  
+  return matches;
+};
+
+/**
+ * Generate a random preview of the template by replacing placeholders with random variants
+ * This generates one random permutation (one row from the permutations CSV)
+ * @param {string} templateText - The template text with placeholders
+ * @param {Object} componentsMap - Map of component names to component objects
+ * @returns {string} The generated text with placeholders replaced
+ */
+export const generateRandomPreview = (templateText, componentsMap) => {
+  if (!templateText || !componentsMap) return templateText || '';
+  
+  // Extract all component usages from template
+  const componentUsages = extractComponentsFromTemplate(templateText);
+  if (componentUsages.length === 0) {
+    return templateText; // No components, return as-is
+  }
+  
+  // Group usages by component name (split parts of same component are grouped together)
+  const componentGroups = {};
+  for (const usage of componentUsages) {
+    const { name } = usage;
+    if (!componentsMap[name]) {
+      // Component not found, skip it
+      continue;
+    }
+    
+    if (!componentGroups[name]) {
+      componentGroups[name] = {
+        component: componentsMap[name],
+        parts: []
+      };
+    }
+    
+    if (usage.part) {
+      componentGroups[name].parts.push(usage.part);
+    }
+  }
+  
+  // Randomly select one variant for each unique component
+  const selectedVariants = {};
+  for (const [name, group] of Object.entries(componentGroups)) {
+    const component = group.component;
+    const variants = component.variants || [];
+    
+    if (variants.length === 0) {
+      continue; // No variants available
+    }
+    
+    // Randomly select one variant
+    const randomIndex = Math.floor(Math.random() * variants.length);
+    selectedVariants[name] = variants[randomIndex];
+  }
+  
+  // Replace placeholders in template text
+  let result = templateText;
+  
+  for (const [name, variant] of Object.entries(selectedVariants)) {
+    const component = componentsMap[name];
+    const group = componentGroups[name];
+    
+    // Check if this component is split
+    if (component.isSplit && group.parts.length > 0) {
+      // Split component: replace all part placeholders
+      // Variant is an object like {a: "value1", b: "value2"}
+      if (typeof variant === 'object' && variant !== null) {
+        for (const part of group.parts) {
+          if (variant[part] !== undefined) {
+            const placeholder = `{{${name}/${part}}}`;
+            // Escape special regex characters in placeholder and replace globally
+            const escapedPlaceholder = placeholder.replace(/[{}]/g, '\\$&');
+            result = result.replace(new RegExp(escapedPlaceholder, 'g'), variant[part]);
+          }
+        }
+      }
+    } else {
+      // Regular component: replace simple placeholder
+      // Variant is a string
+      const placeholder = `{{${name}}}`;
+      const value = typeof variant === 'string' ? variant : String(variant);
+      // Escape special regex characters in placeholder and replace globally
+      const escapedPlaceholder = placeholder.replace(/[{}]/g, '\\$&');
+      result = result.replace(new RegExp(escapedPlaceholder, 'g'), value);
+    }
+  }
+  
+  return result;
+};
+
