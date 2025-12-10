@@ -138,6 +138,22 @@ function TemplateItem() {
                   disabled={savingMetadata}
                 />
               </div>
+              <div className="metadata-edit-actions">
+                <IconGreyButton
+                  icon={<IoClose size={20} />}
+                  onClick={handleCancelEdit}
+                  disabled={savingMetadata}
+                  ariaLabel="Cancel editing"
+                  title="Cancel editing"
+                />
+                <IconGreyButton
+                  icon={<IoCheckmark size={20} />}
+                  onClick={handleSaveMetadata}
+                  disabled={savingMetadata || !editName.trim()}
+                  ariaLabel={savingMetadata ? 'Saving...' : 'Save metadata'}
+                  title={savingMetadata ? 'Saving...' : 'Save metadata'}
+                />
+              </div>
             </div>
           ) : (
             <div className="template-metadata-display">
@@ -158,24 +174,6 @@ function TemplateItem() {
               <div className="permutation-counter">
                 Permutations: <strong>{permutationCount}</strong>
               </div>
-              {isEditingMetadata && (
-                <>
-                  <IconGreyButton
-                    icon={<IoCheckmark size={20} />}
-                    onClick={handleSaveMetadata}
-                    disabled={savingMetadata || !editName.trim()}
-                    ariaLabel={savingMetadata ? 'Saving...' : 'Save metadata'}
-                    title={savingMetadata ? 'Saving...' : 'Save metadata'}
-                  />
-                  <IconGreyButton
-                    icon={<IoClose size={20} />}
-                    onClick={handleCancelEdit}
-                    disabled={savingMetadata}
-                    ariaLabel="Cancel editing"
-                    title="Cancel editing"
-                  />
-                </>
-              )}
               <IconGreyButton
                 icon={<IoSave size={20} />}
                 onClick={saveTemplate}
