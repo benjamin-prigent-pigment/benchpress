@@ -1,0 +1,70 @@
+.component-about {
+  width: 33%;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.component-about-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.component-about-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.component-about-content {
+  flex: 1;
+}
+
+.component-about-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.component-about-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.component-about-display {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.component-about-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.component-about-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.component-about-value {
+  font-size: 14px;
+  color: #666;
+  padding: 10px;
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  min-height: 20px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+

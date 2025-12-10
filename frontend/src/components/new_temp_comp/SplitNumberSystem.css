@@ -1,0 +1,65 @@
+.split-number-system {
+  margin-bottom: 20px;
+  padding: 12px;
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.split-number-system.display {
+  padding: 8px 12px;
+}
+
+.split-number-system-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.split-number-system-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.split-number-system-parts {
+  font-size: 14px;
+  color: #666;
+  flex: 1;
+}
+
+.split-number-system-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.split-parts-edit {
+  margin-top: 8px;
+}
+
+.split-parts-edit-label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 14px;
+}
+
+.split-parts-edit-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.split-number-system-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.btn-small {
+  padding: 4px 8px;
+  font-size: 12px;
+}
+

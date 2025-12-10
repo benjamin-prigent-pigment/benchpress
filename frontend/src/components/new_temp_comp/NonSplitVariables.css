@@ -1,0 +1,91 @@
+.non-split-variable {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 12px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.non-split-variable.editing {
+  padding: 16px;
+}
+
+.non-split-variable-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.non-split-variable-text {
+  flex: 1;
+  font-size: 14px;
+  color: #333;
+  line-height: 1.5;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  min-height: 20px;
+}
+
+.non-split-variable-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 80px;
+}
+
+.non-split-variable-input:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.1);
+}
+
+.non-split-variable-input:disabled {
+  background: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.non-split-variable-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.non-split-variable-delete {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #eee;
+}
+
+.non-split-variable-delete-btn {
+  background: transparent;
+  border: none;
+  color: #c33;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.non-split-variable-delete-btn:hover:not(:disabled) {
+  background: #fee;
+}
+
+.non-split-variable-delete-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-small {
+  padding: 4px 8px;
+  font-size: 12px;
+}
+

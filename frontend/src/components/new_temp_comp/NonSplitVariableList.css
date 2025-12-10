@@ -1,0 +1,31 @@
+.non-split-variable-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.non-split-variable-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.non-split-variable-list-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.new-variable-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+}
+
+.non-split-variable-list-content {
+  display: flex;
+  flex-direction: column;
+}
+

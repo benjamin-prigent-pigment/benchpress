@@ -131,7 +131,7 @@
 }
 
 .template-text-container {
-  margin-bottom: 15px;
+  margin-bottom: 0px;
   position: relative;
   flex: 1;
   min-height: 0;
