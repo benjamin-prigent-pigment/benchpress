@@ -8,7 +8,7 @@ Data Structure:
     Each result row contains:
     - permutation_item_id: Unique identifier for the permutation being tested
     - run_id: Identifier for a specific run of a permutation
-    - test_array: List of binary values (0 or 1) indicating pass/fail for each test
+    - test_array: List of binary values (0 or 1) indicating pass/fail for each test, multiple things are being tested in each permutation
     - HITL_turns_int: Number of Human-In-The-Loop turns required
     - tool_call_int: Number of tool calls made
     - ReACT_agent_calls: Number of ReACT agent calls
@@ -51,7 +51,7 @@ def calculate_high_level_kpis(result_data):
     - Median HITL turns: Middle value of HITL_turns_int
     - Median tool calls: Middle value of tool_call_int
     - Median ReACT calls: Middle value of ReACT_agent_calls
-    - Forbidden tool calls: Total count (sum across all rows)
+    - Median Forbidden tool calls: Middle value of forbidden_tool_calls
     
     Args:
         result_data: List of dicts from parse_result_csv or read_result_csv
@@ -77,7 +77,7 @@ def calculate_high_level_kpis(result_data):
                 'median_hitl_turns': float,
                 'median_tool_calls': float,
                 'median_react_agent_calls': float,
-                'forbidden_tool_call_rate': int  # Actually a count, not a rate
+                'median_forbidden_tool_calls': float
             }
         }
     """
@@ -98,7 +98,7 @@ def calculate_high_level_kpis(result_data):
                 'median_hitl_turns': 0.0,
                 'median_tool_calls': 0.0,
                 'median_react_agent_calls': 0.0,
-                'forbidden_tool_call_rate': 0
+                'median_forbidden_tool_calls': 0.0
             }
         }
     
@@ -239,21 +239,19 @@ def calculate_high_level_kpis(result_data):
     #   - More robust than mean when data has outliers
     #   - Represents the "typical" value
     #
-    # Forbidden tool calls: Total count (sum across all rows)
+    # Median Forbidden tool calls: Middle value of forbidden_tool_calls
     #   - Note: Despite the name "rate", this actually returns a count
     
     hitl_turns_values = [row['HITL_turns_int'] for row in result_data]
     tool_calls_values = [row['tool_call_int'] for row in result_data]
     react_calls_values = [row['ReACT_agent_calls'] for row in result_data]
-    forbidden_calls_sum = sum(row['forbidden_tool_calls'] for row in result_data)
+    forbidden_calls_values = [row['forbidden_tool_calls'] for row in result_data]
     
     # Calculate medians (returns 0.0 if list is empty)
     median_hitl_turns = statistics.median(hitl_turns_values) if hitl_turns_values else 0.0
     median_tool_calls = statistics.median(tool_calls_values) if tool_calls_values else 0.0
     median_react_agent_calls = statistics.median(react_calls_values) if react_calls_values else 0.0
-    
-    # Return count instead of rate (despite the key name)
-    forbidden_tool_call_count = int(forbidden_calls_sum)
+    median_forbidden_tool_calls = statistics.median(forbidden_calls_values) if forbidden_calls_values else 0.0
     
     return {
         'pass_rate': pass_rate,
@@ -270,7 +268,7 @@ def calculate_high_level_kpis(result_data):
             'median_hitl_turns': median_hitl_turns,
             'median_tool_calls': median_tool_calls,
             'median_react_agent_calls': median_react_agent_calls,
-            'forbidden_tool_call_rate': forbidden_tool_call_count
+            'median_forbidden_tool_calls': median_forbidden_tool_calls
         }
     }
 
@@ -435,12 +433,12 @@ def calculate_component_kpis(result_data, component_name, permutation_lookup=Non
         hitl_turns_values = [row['HITL_turns_int'] for row in variant_rows]
         tool_calls_values = [row['tool_call_int'] for row in variant_rows]
         react_calls_values = [row['ReACT_agent_calls'] for row in variant_rows]
-        forbidden_calls_sum = sum(row['forbidden_tool_calls'] for row in variant_rows)
+        forbidden_calls_values = [row['forbidden_tool_calls'] for row in variant_rows]
         
         median_hitl_turns = statistics.median(hitl_turns_values) if hitl_turns_values else 0.0
         median_tool_calls = statistics.median(tool_calls_values) if tool_calls_values else 0.0
         median_react_agent_calls = statistics.median(react_calls_values) if react_calls_values else 0.0
-        forbidden_tool_call_count = int(forbidden_calls_sum)
+        median_forbidden_tool_calls = statistics.median(forbidden_calls_values) if forbidden_calls_values else 0.0
         
         variant_kpis[variant_key] = {
             'pass_rate': pass_rate,
@@ -455,7 +453,7 @@ def calculate_component_kpis(result_data, component_name, permutation_lookup=Non
                 'median_hitl_turns': median_hitl_turns,
                 'median_tool_calls': median_tool_calls,
                 'median_react_agent_calls': median_react_agent_calls,
-                'forbidden_tool_call_rate': forbidden_tool_call_count
+                'median_forbidden_tool_calls': median_forbidden_tool_calls
             },
             'row_count': len(variant_rows)
         }
@@ -503,7 +501,7 @@ def calculate_component_kpis(result_data, component_name, permutation_lookup=Non
             all_hitl_turns = [row['HITL_turns_int'] for rows in variant_data.values() for row in rows]
             all_tool_calls = [row['tool_call_int'] for rows in variant_data.values() for row in rows]
             all_react_calls = [row['ReACT_agent_calls'] for rows in variant_data.values() for row in rows]
-            all_forbidden_calls = sum(row['forbidden_tool_calls'] for rows in variant_data.values() for row in rows)
+            all_forbidden_calls = [row['forbidden_tool_calls'] for rows in variant_data.values() for row in rows]
             
             aggregated_performance = {
                 'median': statistics.median(all_time_spent) if all_time_spent else 0.0,
@@ -516,7 +514,7 @@ def calculate_component_kpis(result_data, component_name, permutation_lookup=Non
                 'median_hitl_turns': statistics.median(all_hitl_turns) if all_hitl_turns else 0.0,
                 'median_tool_calls': statistics.median(all_tool_calls) if all_tool_calls else 0.0,
                 'median_react_agent_calls': statistics.median(all_react_calls) if all_react_calls else 0.0,
-                'forbidden_tool_call_rate': int(all_forbidden_calls)
+                'median_forbidden_tool_calls': statistics.median(all_forbidden_calls) if all_forbidden_calls else 0.0
             }
         else:
             aggregated_pass_rate = 0.0
@@ -526,7 +524,7 @@ def calculate_component_kpis(result_data, component_name, permutation_lookup=Non
                 'median_hitl_turns': 0.0,
                 'median_tool_calls': 0.0,
                 'median_react_agent_calls': 0.0,
-                'forbidden_tool_call_rate': 0
+                'median_forbidden_tool_calls': 0.0
             }
     else:
         aggregated_pass_rate = 0.0
@@ -536,7 +534,7 @@ def calculate_component_kpis(result_data, component_name, permutation_lookup=Non
             'median_hitl_turns': 0.0,
             'median_tool_calls': 0.0,
             'median_react_agent_calls': 0.0,
-            'forbidden_tool_call_rate': 0
+            'median_forbidden_tool_calls': 0.0
         }
     
     # Add a flag to indicate if data is unavailable (no matching permutation IDs)

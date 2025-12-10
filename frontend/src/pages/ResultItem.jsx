@@ -121,7 +121,7 @@ function ResultItem() {
   const medianHITLTurns = high_level.median_hitl_turns ?? behavioralEfficiency.median_hitl_turns;
   const medianToolCalls = high_level.median_tool_calls ?? behavioralEfficiency.median_tool_calls;
   const medianReACTCalls = high_level.median_react_agent_calls ?? behavioralEfficiency.median_react_agent_calls;
-  const forbiddenToolCallRate = high_level.forbidden_tool_call_rate ?? behavioralEfficiency.forbidden_tool_call_rate;
+  const medianForbiddenToolCalls = high_level.median_forbidden_tool_calls ?? behavioralEfficiency.median_forbidden_tool_calls;
 
   // Collect all variants from all components
   const allVariants = [];
@@ -239,11 +239,11 @@ function ResultItem() {
               format="number"
             />
             <VariantsTableRow
-              testName="Forbidden Tool Call Rate"
-              overallValue={forbiddenToolCallRate}
+              testName="Median Forbidden Tool Calls"
+              overallValue={medianForbiddenToolCalls}
               variants={allVariants.map(({ componentName, variantKey, variantData }) => {
                 const variantBehavioralEfficiency = variantData.behavioral_efficiency || {};
-                const variantValue = variantData.forbidden_tool_call_rate ?? variantBehavioralEfficiency.forbidden_tool_call_rate;
+                const variantValue = variantData.median_forbidden_tool_calls ?? variantBehavioralEfficiency.median_forbidden_tool_calls;
                 return {
                   componentName,
                   variantKey,

@@ -28,10 +28,10 @@ function BehavioralEfficiencyCard({ data, comparison }) {
           comparison={comparison?.median_react_agent_calls}
         />
         <KPICard
-          label="Forbidden Tool Call Rate"
-          value={data.forbidden_tool_call_rate}
+          label="Median Forbidden Tool Calls"
+          value={data.median_forbidden_tool_calls}
           format="number"
-          comparison={comparison?.forbidden_tool_call_rate}
+          comparison={comparison?.median_forbidden_tool_calls}
         />
       </div>
     </div>
