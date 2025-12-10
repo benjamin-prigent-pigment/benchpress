@@ -273,19 +273,26 @@ def calculate_high_level_kpis(result_data):
     }
 
 
-def calculate_component_kpis(result_data, component_name, permutation_lookup=None):
+def calculate_component_kpis(result_data, component_name, permutation_lookup=None, overall_kpis=None):
     """Calculate KPIs for a specific component, broken down by variant.
     
     This function performs component-level analysis by:
     1. Grouping result rows by component variant
     2. Calculating the same KPIs as high-level for each variant
-    3. Aggregating across all variants for component-level summary
+    3. Calculating deltas (differences) from overall metrics for each variant
+    4. Aggregating across all variants for component-level summary
     
     Mathematical Approach:
     
     Variant-Level KPIs:
     - Same calculations as calculate_high_level_kpis, but filtered to rows
       where the component uses a specific variant
+    
+    Variant Deltas:
+    - Delta = variant_value - overall_value
+    - Provides context for how each variant performs relative to the overall average
+    - Example: pass_rate_delta = variant_pass_rate - overall_pass_rate
+      (positive = better than average, negative = worse than average)
     
     Aggregated Component KPIs:
     - Pass Rate: Weighted average across variants
@@ -299,6 +306,20 @@ def calculate_component_kpis(result_data, component_name, permutation_lookup=Non
         permutation_lookup: Optional dict mapping permutation_item_id → 
                           {component_name: variant_used}
                           If None, will try to extract from permutation_object in row data
+        overall_kpis: Optional dict from calculate_high_level_kpis containing overall metrics.
+                      If provided, deltas will be calculated for each variant.
+                      Expected format:
+                      {
+                          'pass_rate': float,
+                          'zero_error_runs': float,
+                          'performance_speed': {'median': float, ...},
+                          'behavioral_efficiency': {
+                              'median_hitl_turns': float,
+                              'median_tool_calls': float,
+                              'median_react_agent_calls': float,
+                              'median_forbidden_tool_calls': float
+                          }
+                      }
         
     Returns:
         Dict with component-level KPIs:
@@ -307,9 +328,24 @@ def calculate_component_kpis(result_data, component_name, permutation_lookup=Non
             'variants': {
                 variant_key: {
                     'pass_rate': float,
+                    'pass_rate_delta': float,  # variant - overall
                     'zero_error_runs': float,
-                    'performance_speed': {...},
-                    'behavioral_efficiency': {...},
+                    'zero_error_runs_delta': float,  # variant - overall
+                    'performance_speed': {
+                        'median': float,
+                        'median_delta': float,  # variant - overall
+                        ...
+                    },
+                    'behavioral_efficiency': {
+                        'median_hitl_turns': float,
+                        'median_hitl_turns_delta': float,  # variant - overall
+                        'median_tool_calls': float,
+                        'median_tool_calls_delta': float,  # variant - overall
+                        'median_react_agent_calls': float,
+                        'median_react_agent_calls_delta': float,  # variant - overall
+                        'median_forbidden_tool_calls': float,
+                        'median_forbidden_tool_calls_delta': float,  # variant - overall
+                    },
                     'row_count': int
                 },
                 ...
@@ -440,20 +476,53 @@ def calculate_component_kpis(result_data, component_name, permutation_lookup=Non
         median_react_agent_calls = statistics.median(react_calls_values) if react_calls_values else 0.0
         median_forbidden_tool_calls = statistics.median(forbidden_calls_values) if forbidden_calls_values else 0.0
         
+        # ========================================================================
+        # CALCULATE DELTAS FROM OVERALL METRICS
+        # ========================================================================
+        # Delta = variant_value - overall_value
+        # Positive delta means variant performs better than overall (for metrics where higher is better)
+        # Negative delta means variant performs worse than overall
+        
+        # Extract overall values if provided
+        overall_pass_rate = overall_kpis.get('pass_rate') if overall_kpis else None
+        overall_zero_error_runs = overall_kpis.get('zero_error_runs') if overall_kpis else None
+        overall_performance_median = overall_kpis.get('performance_speed', {}).get('median') if overall_kpis else None
+        overall_behavioral = overall_kpis.get('behavioral_efficiency', {}) if overall_kpis else {}
+        overall_median_hitl_turns = overall_behavioral.get('median_hitl_turns')
+        overall_median_tool_calls = overall_behavioral.get('median_tool_calls')
+        overall_median_react_agent_calls = overall_behavioral.get('median_react_agent_calls')
+        overall_median_forbidden_tool_calls = overall_behavioral.get('median_forbidden_tool_calls')
+        
+        # Calculate deltas (None if overall value not available)
+        pass_rate_delta = (pass_rate - overall_pass_rate) if overall_pass_rate is not None else None
+        zero_error_runs_delta = (zero_error_runs - overall_zero_error_runs) if overall_zero_error_runs is not None else None
+        performance_median_delta = (time_spent_median - overall_performance_median) if overall_performance_median is not None else None
+        median_hitl_turns_delta = (median_hitl_turns - overall_median_hitl_turns) if overall_median_hitl_turns is not None else None
+        median_tool_calls_delta = (median_tool_calls - overall_median_tool_calls) if overall_median_tool_calls is not None else None
+        median_react_agent_calls_delta = (median_react_agent_calls - overall_median_react_agent_calls) if overall_median_react_agent_calls is not None else None
+        median_forbidden_tool_calls_delta = (median_forbidden_tool_calls - overall_median_forbidden_tool_calls) if overall_median_forbidden_tool_calls is not None else None
+        
         variant_kpis[variant_key] = {
             'pass_rate': pass_rate,
+            'pass_rate_delta': pass_rate_delta,
             'zero_error_runs': zero_error_runs,
+            'zero_error_runs_delta': zero_error_runs_delta,
             'performance_speed': {
                 'median': time_spent_median,
+                'median_delta': performance_median_delta,
                 'average': time_spent_average,
                 'max': time_spent_max,
                 'min': time_spent_min
             },
             'behavioral_efficiency': {
                 'median_hitl_turns': median_hitl_turns,
+                'median_hitl_turns_delta': median_hitl_turns_delta,
                 'median_tool_calls': median_tool_calls,
+                'median_tool_calls_delta': median_tool_calls_delta,
                 'median_react_agent_calls': median_react_agent_calls,
-                'median_forbidden_tool_calls': median_forbidden_tool_calls
+                'median_react_agent_calls_delta': median_react_agent_calls_delta,
+                'median_forbidden_tool_calls': median_forbidden_tool_calls,
+                'median_forbidden_tool_calls_delta': median_forbidden_tool_calls_delta
             },
             'row_count': len(variant_rows)
         }

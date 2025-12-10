@@ -86,10 +86,11 @@ def calculate_all_kpis(result_id):
                 components = []
         
         # Calculate component-level KPIs for each component
+        # Pass high_level_kpis to enable delta calculations
         component_kpis = {}
         for component_name in components:
             component_kpis[component_name] = calculate_component_kpis(
-                result_data, component_name, permutation_lookup
+                result_data, component_name, permutation_lookup, overall_kpis=high_level_kpis
             )
         
         # Build complete KPI object

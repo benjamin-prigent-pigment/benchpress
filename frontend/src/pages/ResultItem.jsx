@@ -122,6 +122,7 @@ function ResultItem() {
   const medianToolCalls = high_level.median_tool_calls ?? behavioralEfficiency.median_tool_calls;
   const medianReACTCalls = high_level.median_react_agent_calls ?? behavioralEfficiency.median_react_agent_calls;
   const medianForbiddenToolCalls = high_level.median_forbidden_tool_calls ?? behavioralEfficiency.median_forbidden_tool_calls;
+  const medianPerformanceSpeed = high_level.performance_speed?.median;
 
   // Collect all variants from all components
   const allVariants = [];
@@ -244,6 +245,22 @@ function ResultItem() {
               variants={allVariants.map(({ componentName, variantKey, variantData }) => {
                 const variantBehavioralEfficiency = variantData.behavioral_efficiency || {};
                 const variantValue = variantData.median_forbidden_tool_calls ?? variantBehavioralEfficiency.median_forbidden_tool_calls;
+                return {
+                  componentName,
+                  variantKey,
+                  variantData: {
+                    value: variantValue,
+                    n: variantData.row_count
+                  }
+                };
+              })}
+              format="number"
+            />
+            <VariantsTableRow
+              testName="Median Performance Speed"
+              overallValue={medianPerformanceSpeed}
+              variants={allVariants.map(({ componentName, variantKey, variantData }) => {
+                const variantValue = variantData.performance_speed?.median;
                 return {
                   componentName,
                   variantKey,
