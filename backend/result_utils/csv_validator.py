@@ -1,4 +1,7 @@
-"""CSV validation utilities for result files"""
+"""
+This file checks that the data from a result file is correct and makes sure it has all the right columns and information. 
+If the file is missing important information or is broken, it gives a clear error.
+"""
 
 import csv
 import io

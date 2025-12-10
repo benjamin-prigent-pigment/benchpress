@@ -1,4 +1,8 @@
-"""Permutation mapping utilities for component-level analysis"""
+"""
+This file helps the app understand how the different components in a test were combined to create the different variants. 
+It reads the files that show how the components were combined and creates a dictionary that shows which component was used in each variant.
+If the file is missing or broken, it gives a clear error.
+"""
 
 import csv
 import json

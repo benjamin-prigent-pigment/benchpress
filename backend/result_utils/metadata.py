@@ -1,4 +1,8 @@
-"""Metadata management for results"""
+"""
+This file helps the app keep track of all the results that have been uploaded. 
+It keeps a list of all the results and their information, like the file name, the template it was created with, and whether it was successful or not. 
+If something goes wrong when processing a result, it can show an error message.
+"""
 
 import csv
 from .paths import RESULTS_DIR, RESULTS_METADATA_FILE

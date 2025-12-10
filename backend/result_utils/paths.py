@@ -1,4 +1,8 @@
-"""File path utilities for result management"""
+"""
+This file helps the app find the right files to use in the rest of the app. 
+It can find the files for the results, the templates, and the permutations.
+If something is missing, it gives a clear error.
+"""
 
 import re
 from utils import DATA_DIR

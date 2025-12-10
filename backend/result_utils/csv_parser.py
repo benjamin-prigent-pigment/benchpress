@@ -1,4 +1,9 @@
-"""CSV parsing and reading utilities for result files"""
+"""
+This file helps the app read and process result files that are in CSV (spreadsheet) format. 
+If someone uploads a result file, this file checks that it has all the right columns and reads the information in. 
+It can work both with files uploaded by users or with files already saved on the computer. 
+If the file is missing important information or is broken, it gives a clear error.
+"""
 
 import csv
 import json
