@@ -162,43 +162,43 @@ function TemplateItem() {
       </div>
 
       <div className="template-preview-editor-container">
-        <TemplatePreview template={template} text={text} componentsMap={componentsMap} />
         <div className="template-editor">
-        <div className="editor-header">
-          <label htmlFor="template-text">Template (use {'{{component_name}}'} to link components)</label>
-          <div className="permutation-counter">
-            Permutations: <strong>{permutationCount}</strong>
+          <div className="editor-header">
+            <label htmlFor="template-text">Template (use {'{{component_name}}'} to link components)</label>
+            <div className="permutation-counter">
+              Permutations: <strong>{permutationCount}</strong>
+            </div>
+          </div>
+          <TemplateEditor
+            editorRef={editorRef}
+            text={text}
+            onInput={handleEditorInput}
+            onKeyDown={handleEditorKeyDown}
+            showAutocomplete={showAutocomplete}
+            autocompleteOptions={filteredComponents}
+            selectedAutocompleteIndex={selectedAutocompleteIndex}
+            onSelectComponent={selectComponent}
+            onAutocompleteMouseEnter={setSelectedAutocompleteIndex}
+            autocompletePosition={autocompletePosition}
+          />
+          <div className="editor-actions">
+            <button 
+              className="btn-primary" 
+              onClick={saveTemplate}
+              disabled={saving}
+            >
+              {saving ? 'Saving...' : 'Save'}
+            </button>
+            <button 
+              className="btn-success" 
+              onClick={generateCSV}
+              disabled={permutationCount === 0}
+            >
+              Generate CSV
+            </button> 
           </div>
         </div>
-        <TemplateEditor
-          editorRef={editorRef}
-          text={text}
-          onInput={handleEditorInput}
-          onKeyDown={handleEditorKeyDown}
-          showAutocomplete={showAutocomplete}
-          autocompleteOptions={filteredComponents}
-          selectedAutocompleteIndex={selectedAutocompleteIndex}
-          onSelectComponent={selectComponent}
-          onAutocompleteMouseEnter={setSelectedAutocompleteIndex}
-          autocompletePosition={autocompletePosition}
-        />
-        <div className="editor-actions">
-          <button 
-            className="btn-primary" 
-            onClick={saveTemplate}
-            disabled={saving}
-          >
-            {saving ? 'Saving...' : 'Save'}
-          </button>
-          <button 
-            className="btn-success" 
-            onClick={generateCSV}
-            disabled={permutationCount === 0}
-          >
-            Generate CSV
-          </button>
-        </div>
-        </div>
+        <TemplatePreview template={template} text={text} componentsMap={componentsMap} />
       </div>
     </div>
   );
