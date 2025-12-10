@@ -241,3 +241,17 @@
   line-height: 1.5;
 }
 
+.variants-table-container {
+  margin-bottom: 30px;
+  overflow-x: auto;
+}
+
+.variants-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+

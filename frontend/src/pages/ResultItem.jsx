@@ -6,7 +6,7 @@ import SecondaryPageHeader from '../components/header/SecondaryPageHeader';
 import SectionHeader from '../components/header/SectionHeader';
 import KPICard from '../components/charts/KPICard';
 import TimeSpentDistributionChart from '../components/charts/TimeSpentDistributionChart';
-import BehavioralEfficiencyCard from '../components/charts/BehavioralEfficiencyCard';
+import VariantsTableHeader from '../components/results/VariantsTableHeader';
 import './ResultItem.css';
 
 function ResultItem() {
@@ -139,8 +139,6 @@ function ResultItem() {
     });
   }
 
-
-
   return (
     <div className="result-item">
       
@@ -151,6 +149,12 @@ function ResultItem() {
         deleteLabel="Delete Result"
         deleteDisabled={isDeleting}
       />
+
+      <div className="variants-table-container">
+        <table className="variants-table">
+          <VariantsTableHeader variants={allVariants} />
+        </table>
+      </div>
     
       
       <SectionHeader 
