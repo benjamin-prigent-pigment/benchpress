@@ -1,0 +1,36 @@
+.btn-icon-primary {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: background-color 0.2s, color 0.2s, transform 0.1s, box-shadow 0.2s;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.btn-icon-primary:hover:not(:disabled) {
+  background-color: #0056b3;
+  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+}
+
+.btn-icon-primary:active:not(:disabled) {
+  background-color: #004085;
+  transform: translateY(1px);
+}
+
+.btn-icon-primary:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.btn-icon-primary svg {
+  width: 20px;
+  height: 20px;
+}
+

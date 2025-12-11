@@ -2,12 +2,9 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { componentAPI } from '../utils/api';
 import SecondaryPageHeader from '../components/header/SecondaryPageHeader';
-import ComponentCreateModal from '../components/ComponentCreateModal';
-import PrimaryButton from '../components/buttons/PrimaryButton';
-import SecondaryButton from '../components/buttons/SecondaryButton';
-import DangerButton from '../components/buttons/DangerButton';
-import TextInput from '../components/input/TextInput';
-import '../components/ComponentCreateModal.css';
+import ComponentAbout from '../components/new_temp_comp/ComponentAbout';
+import NonSplitVariableList from '../components/new_temp_comp/NonSplitVariableList';
+import SplitVariableList from '../components/new_temp_comp/SplitVariableList';
 import './ComponentItem.css';
 
 function ComponentItem() {
@@ -18,34 +15,22 @@ function ComponentItem() {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [variants, setVariants] = useState([]);
-  const [newVariant, setNewVariant] = useState('');
-  const [editingVariantId, setEditingVariantId] = useState(null);
-  const [editVariantText, setEditVariantText] = useState('');
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [showCreateModal, setShowCreateModal] = useState(false);
   const [isSplit, setIsSplit] = useState(false);
   const [splitParts, setSplitParts] = useState(['a', 'b']);
   const [numberOfSplits, setNumberOfSplits] = useState(2);
 
-  // Check if we're creating a new component - either id is 'new' or undefined (when route is /components/new)
-  const isNew = !id || id === 'new' || location.pathname === '/components/new';
-
   useEffect(() => {
     setError(null);
     
-    if (isNew) {
-      setLoading(false);
-      setShowCreateModal(true);
-    } else if (id && id !== 'undefined') {
+    if (id && id !== 'undefined') {
       loadComponent();
     } else {
       setError('Invalid component ID');
       setLoading(false);
     }
-  }, [id, location.pathname]);
+  }, [id]);
 
   const loadComponent = async () => {
     if (!id || id === 'undefined') {
@@ -72,133 +57,150 @@ function ComponentItem() {
     }
   };
 
-  const handleSave = async () => {
-    if (!name.trim()) {
-      setError('Component name is required');
+  const handleSaveAbout = async (newName, newDescription) => {
+    setName(newName);
+    setDescription(newDescription);
+    
+    const data = { 
+      name: newName, 
+      description: newDescription, 
+      variants,
+      isSplit,
+      splitParts: isSplit ? splitParts : null
+    };
+    
+    await componentAPI.update(id, data);
+    await loadComponent();
+  };
+
+  const handleVariablesChange = async (newVariants) => {
+    if (newVariants.length < 2) {
+      setError('At least 2 variables are required');
       return;
     }
 
-    if (variants.length < 2) {
-      setError('At least 2 variants are required');
+    // Validate all variables are strings
+    for (let i = 0; i < newVariants.length; i++) {
+      if (typeof newVariants[i] !== 'string' || !newVariants[i].trim()) {
+        setError(`Variable ${i + 1} must be a non-empty string`);
+        return;
+      }
+    }
+
+    try {
+      setVariants(newVariants);
+      const data = { 
+        name, 
+        description, 
+        variants: newVariants,
+        isSplit: false,
+        splitParts: null
+      };
+      
+      await componentAPI.update(id, data);
+      await loadComponent();
+      setError(null);
+    } catch (err) {
+      setError(err.message || 'Failed to save variables');
+      // Revert on error
+      await loadComponent();
+    }
+  };
+
+  const handleSplitVariablesChange = async (newVariants) => {
+    if (newVariants.length < 2) {
+      setError('At least 2 variables are required');
       return;
     }
 
-    let finalSplitParts = null;
-
-    // Validate split component structure
-    if (isSplit) {
-      if (!splitParts || splitParts.length < 2) {
-        setError('Split component must have at least 2 parts');
+    // Validate all variables are objects with all parts
+    for (let i = 0; i < newVariants.length; i++) {
+      const variant = newVariants[i];
+      if (!variant || typeof variant !== 'object') {
+        setError(`Variable ${i + 1} must be an object with all parts`);
         return;
       }
-      // Trim and validate all part names are non-empty
-      const trimmedParts = splitParts.map(part => part.trim());
-      if (trimmedParts.some(part => !part)) {
-        setError('All split part names must be non-empty');
-        return;
-      }
-      // Validate unique part names (after trimming)
-      if (trimmedParts.length !== new Set(trimmedParts).size) {
-        setError('Split part names must be unique');
-        return;
-      }
-      finalSplitParts = trimmedParts;
-      // Check all variants have all parts
-      for (let i = 0; i < variants.length; i++) {
-        const variant = variants[i];
-        if (!variant || typeof variant !== 'object') {
-          setError(`Variant ${i + 1} must be an object with all parts`);
-          return;
-        }
-        for (const part of finalSplitParts) {
-          if (!(part in variant) || variant[part].trim() === '') {
-            setError(`Variant ${i + 1} missing or empty value for part "${part}"`);
-            return;
-          }
-        }
-      }
-    } else {
-      // Validate regular variants are strings
-      for (let i = 0; i < variants.length; i++) {
-        if (typeof variants[i] !== 'string') {
-          setError(`Variant ${i + 1} must be a string`);
+      for (const part of splitParts) {
+        if (!(part in variant) || !variant[part]?.trim()) {
+          setError(`Variable ${i + 1} missing or empty value for part "${part}"`);
           return;
         }
       }
     }
 
     try {
-      setSaving(true);
+      setVariants(newVariants);
       const data = { 
         name, 
         description, 
-        variants,
-        isSplit,
-        splitParts: finalSplitParts
+        variants: newVariants,
+        isSplit: true,
+        splitParts: splitParts
       };
       
       await componentAPI.update(id, data);
       await loadComponent();
-      setShowEditModal(false);
       setError(null);
     } catch (err) {
-      setError(err.message || 'Failed to save component');
-    } finally {
-      setSaving(false);
+      setError(err.message || 'Failed to save variables');
+      // Revert on error
+      await loadComponent();
     }
   };
 
-  const handleAddVariant = () => {
-    if (isSplit) {
-      if (!splitParts.every(part => newVariant[part]?.trim())) {
-        setError('All parts must be filled');
-        return;
-      }
-      setVariants([...variants, { ...newVariant }]);
-      setNewVariant({});
-    } else {
-      if (!newVariant.trim()) return;
-      setVariants([...variants, newVariant]);
-      setNewVariant('');
-    }
-  };
-
-  const handleStartEditVariant = (index, variant) => {
-    setEditingVariantId(index);
-    if (isSplit) {
-      setEditVariantText({ ...variant });
-    } else {
-      setEditVariantText(variant);
-    }
-  };
-
-  const handleSaveEditVariant = () => {
-    if (isSplit) {
-      // Validate all parts are filled
-      if (!splitParts.every(part => editVariantText[part]?.trim())) {
-        setError('All parts must be filled');
-        return;
-      }
-      const updated = [...variants];
-      updated[editingVariantId] = { ...editVariantText };
-      setVariants(updated);
-    } else {
-      if (!editVariantText.trim()) return;
-      const updated = [...variants];
-      updated[editingVariantId] = editVariantText;
-      setVariants(updated);
-    }
-    setEditingVariantId(null);
-    setEditVariantText(isSplit ? {} : '');
-  };
-
-  const handleDeleteVariant = (index) => {
-    if (variants.length <= 2) {
-      setError('At least 2 variants are required');
+  const handleSplitPartsChange = async (newSplitParts) => {
+    if (!newSplitParts || newSplitParts.length < 2) {
+      setError('Split component must have at least 2 parts');
       return;
     }
-    const updated = variants.filter((_, i) => i !== index);
-    setVariants(updated);
+
+    // Validate unique part names
+    const trimmedParts = newSplitParts.map(part => part.trim());
+    if (trimmedParts.some(part => !part)) {
+      setError('All split part names must be non-empty');
+      return;
+    }
+    if (trimmedParts.length !== new Set(trimmedParts).size) {
+      setError('Split part names must be unique');
+      return;
+    }
+
+    // Remap existing variables to match new split parts
+    const remappedVariants = variants.map(variant => {
+      if (!variant || typeof variant !== 'object') return variant;
+      const remapped = {};
+      const oldParts = splitParts;
+      for (let i = 0; i < trimmedParts.length; i++) {
+        if (i < oldParts.length && oldParts[i] in variant) {
+          remapped[trimmedParts[i]] = variant[oldParts[i]];
+        } else {
+          remapped[trimmedParts[i]] = '';
+        }
+      }
+      return remapped;
+    });
+
+    try {
+      setSplitParts(trimmedParts);
+      setNumberOfSplits(trimmedParts.length);
+      setVariants(remappedVariants);
+      
+      const data = { 
+        name, 
+        description, 
+        variants: remappedVariants,
+        isSplit: true,
+        splitParts: trimmedParts
+      };
+      
+      await componentAPI.update(id, data);
+      await loadComponent();
+      setError(null);
+    } catch (err) {
+      setError(err.message || 'Failed to save split parts');
+      // Revert on error
+      await loadComponent();
+    }
   };
 
   const handleDeleteComponent = async () => {
@@ -214,25 +216,8 @@ function ComponentItem() {
     }
   };
 
-  const handleCreateModalClose = () => {
-    setShowCreateModal(false);
-    navigate('/components');
-  };
-
   if (loading) {
     return <div className="component-item">Loading...</div>;
-  }
-
-  // Show create modal for new components
-  if (isNew) {
-    return (
-      <>
-        <ComponentCreateModal 
-          isOpen={showCreateModal} 
-          onClose={handleCreateModalClose}
-        />
-      </>
-    );
   }
 
   return (
@@ -248,360 +233,31 @@ function ComponentItem() {
 
       {error && <div className="error">{error}</div>}
 
-      <div className="component-editor">
-        <div className="form-group">
-          <label>Component Name *</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="e.g., start city"
-            disabled={!showEditModal}
-          />
-        </div>
+      <div className="component-editor-layout">
+        <ComponentAbout
+          name={name}
+          description={description}
+          onSave={handleSaveAbout}
+          onError={setError}
+        />
 
-        <div className="form-group">
-          <label>Description</label>
-          <input
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Optional description"
-            rows={3}
-            disabled={!showEditModal}
-          />
-        </div>
-
-        {!showEditModal ? (
-          <div className="form-group">
-            <label>Component Type:</label>
-            <div style={{ padding: '8px', background: '#f5f5f5', borderRadius: '4px' }}>
-              {component?.isSplit ? 'Split Component' : 'Regular Component'}
-              {component?.isSplit && component?.splitParts && (
-                <div style={{ marginTop: '4px', fontSize: '0.9em', color: '#666' }}>
-                  Parts: {component.splitParts.join(', ')}
-                </div>
-              )}
-            </div>
-          </div>
-        ) : isSplit ? (
-          <div className="split-configuration">
-            <TextInput
-              label="Number of Split Parts"
-              helpText="Minimum 2 parts required"
-              type="number"
-              value={numberOfSplits}
-              onChange={(e) => {
-                const num = parseInt(e.target.value, 10);
-                if (num >= 2) {
-                  setNumberOfSplits(num);
-                  // Update splitParts array, preserving existing names or using defaults
-                  const newParts = [];
-                  const oldParts = splitParts;
-                  for (let i = 0; i < num; i++) {
-                    if (i < oldParts.length) {
-                      newParts.push(oldParts[i]);
-                    } else {
-                      // Generate default names: a, b, c, d, etc.
-                      newParts.push(String.fromCharCode(97 + i)); // 97 is 'a'
-                    }
-                  }
-                  
-                  // Remap variants to match new split parts
-                  const remappedVariants = variants.map(variant => {
-                    if (!variant || typeof variant !== 'object') return variant;
-                    const remapped = {};
-                    for (let i = 0; i < newParts.length; i++) {
-                      if (i < oldParts.length && oldParts[i] in variant) {
-                        // Preserve value from old part if it exists
-                        remapped[newParts[i]] = variant[oldParts[i]];
-                      } else {
-                        // New part, set empty string
-                        remapped[newParts[i]] = '';
-                      }
-                    }
-                    return remapped;
-                  });
-                  
-                  setSplitParts(newParts);
-                  setVariants(remappedVariants);
-                }
-              }}
-              min="2"
-              required
+        <div className="component-editor-main">
+          {!isSplit ? (
+            <NonSplitVariableList
+              variables={variants}
+              onVariablesChange={handleVariablesChange}
+              onError={setError}
+              disabled={false}
             />
-
-            <div className="split-parts-naming">
-              <label className="split-parts-label">
-                Split Part Names *
-                <span className="help-text">Each part must have a unique name</span>
-              </label>
-              <div className="split-parts-inputs">
-                {splitParts.map((part, index) => (
-                  <TextInput
-                    key={index}
-                    label={`Part ${index + 1} Name`}
-                    value={part}
-                    onChange={(e) => {
-                      const newName = e.target.value;
-                      const updated = [...splitParts];
-                      const oldName = updated[index];
-                      updated[index] = newName;
-                      
-                      // Remap variants to use new part name
-                      const remappedVariants = variants.map(variant => {
-                        if (!variant || typeof variant !== 'object') return variant;
-                        const remapped = { ...variant };
-                        if (oldName in remapped) {
-                          const value = remapped[oldName];
-                          delete remapped[oldName];
-                          remapped[newName] = value;
-                        } else {
-                          remapped[newName] = '';
-                        }
-                        return remapped;
-                      });
-                      
-                      setSplitParts(updated);
-                      setVariants(remappedVariants);
-                    }}
-                    placeholder={`e.g., ${String.fromCharCode(97 + index)}`}
-                    required
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="form-group">
-            <label>Component Type:</label>
-            <div style={{ padding: '8px', background: '#f5f5f5', borderRadius: '4px' }}>
-              Regular Component
-            </div>
-          </div>
-        )}
-
-        <div className="variants-section">
-          <label>Variants * (at least 2 required)</label>
-          
-          {!showEditModal ? (
-            <div className="variants-list">
-              {variants.map((variant, index) => (
-                <div key={index} className="variant-item">
-                  {isSplit ? (
-                    <div>
-                      {splitParts.map(part => (
-                        <div key={part} style={{ marginBottom: '4px' }}>
-                          <strong>{part}:</strong> {variant[part] || ''}
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <span>{variant}</span>
-                  )}
-                </div>
-              ))}
-            </div>
           ) : (
-            <>
-              <div className="variants-list">
-                {variants.map((variant, index) => (
-                  <div key={index} className="variant-item editable">
-                    {editingVariantId === index ? (
-                      <>
-                        {isSplit ? (
-                          <div>
-                            {splitParts.map(part => (
-                              <div key={part} style={{ marginBottom: '8px' }}>
-                                <label style={{ display: 'block', marginBottom: '4px' }}>
-                                  <strong>{part}:</strong>
-                                </label>
-                                <input
-                                  type="text"
-                                  value={editVariantText[part] || ''}
-                                  onChange={(e) => {
-                                    setEditVariantText({
-                                      ...editVariantText,
-                                      [part]: e.target.value
-                                    });
-                                  }}
-                                  placeholder={`Enter ${part} value`}
-                                  style={{ width: '100%', marginBottom: '4px' }}
-                                />
-                              </div>
-                            ))}
-                            <div style={{ marginTop: '8px', display: 'flex', gap: '8px' }}>
-                              <PrimaryButton 
-                                className="btn-small"
-                                onClick={handleSaveEditVariant}
-                              >
-                                Save
-                              </PrimaryButton>
-                              <SecondaryButton 
-                                className="btn-small"
-                                onClick={() => {
-                                  setEditingVariantId(null);
-                                  setEditVariantText('');
-                                }}
-                              >
-                                Cancel
-                              </SecondaryButton>
-                            </div>
-                          </div>
-                        ) : (
-                          <>
-                            <input
-                              type="text"
-                              value={editVariantText}
-                              onChange={(e) => setEditVariantText(e.target.value)}
-                              onKeyPress={(e) => e.key === 'Enter' && handleSaveEditVariant()}
-                              autoFocus
-                            />
-                            <div style={{ display: 'flex', gap: '8px' }}>
-                              <PrimaryButton 
-                                className="btn-small"
-                                onClick={handleSaveEditVariant}
-                              >
-                                Save
-                              </PrimaryButton>
-                              <SecondaryButton 
-                                className="btn-small"
-                                onClick={() => {
-                                  setEditingVariantId(null);
-                                  setEditVariantText('');
-                                }}
-                              >
-                                Cancel
-                              </SecondaryButton>
-                            </div>
-                          </>
-                        )}
-                      </>
-                    ) : (
-                      <>
-                        {isSplit ? (
-                          <div>
-                            {splitParts.map(part => (
-                              <div key={part} style={{ marginBottom: '4px' }}>
-                                <strong>{part}:</strong> {variant[part] || ''}
-                              </div>
-                            ))}
-                            <div className="variant-actions" style={{ marginTop: '8px' }}>
-                              <SecondaryButton 
-                                className="btn-small"
-                                onClick={() => handleStartEditVariant(index, variant)}
-                              >
-                                Edit
-                              </SecondaryButton>
-                              <DangerButton 
-                                className="btn-small"
-                                onClick={() => handleDeleteVariant(index)}
-                                disabled={variants.length <= 2}
-                              >
-                                Delete
-                              </DangerButton>
-                            </div>
-                          </div>
-                        ) : (
-                          <>
-                            <span>{variant}</span>
-                            <div className="variant-actions">
-                              <SecondaryButton 
-                                className="btn-small"
-                                onClick={() => handleStartEditVariant(index, variant)}
-                              >
-                                Edit
-                              </SecondaryButton>
-                              <DangerButton 
-                                className="btn-small"
-                                onClick={() => handleDeleteVariant(index)}
-                                disabled={variants.length <= 2}
-                              >
-                                Delete
-                              </DangerButton>
-                            </div>
-                          </>
-                        )}
-                      </>
-                    )}
-                  </div>
-                ))}
-              </div>
-
-              <div className="add-variant">
-                {isSplit ? (
-                  <div>
-                    <div style={{ marginBottom: '8px' }}>
-                      {splitParts.map(part => (
-                        <div key={part} style={{ marginBottom: '8px' }}>
-                          <label style={{ display: 'block', marginBottom: '4px' }}>
-                            <strong>{part}:</strong>
-                          </label>
-                          <input
-                            type="text"
-                            value={newVariant[part] || ''}
-                            onChange={(e) => {
-                              setNewVariant({
-                                ...newVariant,
-                                [part]: e.target.value
-                              });
-                            }}
-                            placeholder={`Enter ${part} value`}
-                            style={{ width: '100%' }}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                    <PrimaryButton 
-                      onClick={handleAddVariant}
-                      disabled={!splitParts.every(part => newVariant[part]?.trim())}
-                    >
-                      Add Variant
-                    </PrimaryButton>
-                  </div>
-                ) : (
-                  <>
-                    <input
-                      type="text"
-                      value={newVariant}
-                      onChange={(e) => setNewVariant(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && handleAddVariant()}
-                      placeholder="Enter new variant"
-                    />
-                    <PrimaryButton onClick={handleAddVariant}>
-                      Add Variant
-                    </PrimaryButton>
-                  </>
-                )}
-              </div>
-            </>
-          )}
-        </div>
-
-        <div className="editor-actions">
-          {!showEditModal ? (
-            <PrimaryButton 
-              onClick={() => setShowEditModal(true)}
-            >
-              Edit
-            </PrimaryButton>
-          ) : (
-            <>
-              <PrimaryButton 
-                onClick={handleSave}
-                disabled={saving}
-              >
-                {saving ? 'Saving...' : 'Save Changes'}
-              </PrimaryButton>
-              <SecondaryButton 
-                onClick={() => {
-                  setShowEditModal(false);
-                  // Reset to original component data
-                  loadComponent();
-                }}
-              >
-                Cancel
-              </SecondaryButton>
-            </>
+            <SplitVariableList
+              variables={variants}
+              splitParts={splitParts}
+              onVariablesChange={handleSplitVariablesChange}
+              onSplitPartsChange={handleSplitPartsChange}
+              onError={setError}
+              disabled={false}
+            />
           )}
         </div>
       </div>

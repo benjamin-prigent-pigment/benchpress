@@ -13,39 +13,28 @@
   margin: 0;
 }
 
-.component-editor {
+.component-editor-layout {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.component-editor-main {
+  flex: 1;
   background: white;
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 20px;
-  max-width: 880px;
+  min-width: 0;
 }
 
-.form-group {
+.component-type-info {
   margin-bottom: 20px;
-}
-
-.form-group label {
-  display: block;
-  font-weight: 500;
-  margin-bottom: 8px;
-  color: #333;
-}
-
-.form-group input,
-.form-group textarea {
-  width: 100%;
-  padding: 10px;
-  font-size: 14px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-family: inherit;
-}
-
-.form-group input:disabled,
-.form-group textarea:disabled {
+  padding: 8px;
   background: #f5f5f5;
-  cursor: not-allowed;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #666;
 }
 
 .variants-section {
@@ -57,63 +46,6 @@
   font-weight: 500;
   margin-bottom: 10px;
   color: #333;
-}
-
-.variants-list {
-  margin-bottom: 15px;
-}
-
-.variant-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  background: #f9f9f9;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  margin-bottom: 8px;
-}
-
-.variant-item.editable {
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.variant-item input {
-  flex: 1;
-  padding: 6px;
-  font-size: 14px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-.variant-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.add-variant {
-  display: flex;
-  gap: 10px;
-}
-
-.add-variant input {
-  flex: 1;
-  padding: 10px;
-  font-size: 14px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-.editor-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.btn-small {
-  padding: 4px 8px;
-  font-size: 12px;
 }
 
 .error {
