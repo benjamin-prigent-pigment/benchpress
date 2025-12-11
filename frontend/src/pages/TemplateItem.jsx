@@ -9,8 +9,6 @@ import SecondaryPageHeader from '../components/header/SecondaryPageHeader';
 import TemplateEditor from '../components/TemplateEditor';
 import TemplatePreview from '../components/TemplatePreview';
 import PermutationPicker from '../components/PermutationPicker';
-import PrimaryButton from '../components/buttons/PrimaryButton';
-import SecondaryButton from '../components/buttons/SecondaryButton';
 import IconGreyButton from '../components/buttons/IconGreyButton';
 import './TemplateItem.css';
 

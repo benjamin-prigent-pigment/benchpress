@@ -3,16 +3,14 @@
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 20px;
-  margin-bottom: 20px;
+  margin-top: 12px;
 }
 
 .permutation-picker-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 20px;
-  padding-bottom: 16px;
-  border-bottom: 2px solid #e0e0e0;
+  margin-bottom: 12px;
 }
 
 .permutation-picker-title h3 {
@@ -29,7 +27,6 @@
 }
 
 .permutation-picker-display {
-  padding: 16px;
   background: #f8f9fa;
   border-radius: 6px;
 }

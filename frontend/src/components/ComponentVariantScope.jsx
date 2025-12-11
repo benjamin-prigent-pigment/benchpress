@@ -38,9 +38,6 @@ function ComponentVariantScope({
     <div className="component-variant-scope">
       <div className="component-variant-scope-header">
         <h4 className="component-name">{componentName}</h4>
-        {component.description && (
-          <p className="component-description">{component.description}</p>
-        )}
       </div>
       <div className="component-variant-scope-variants">
         {variants.map((variant, variantIndex) => {

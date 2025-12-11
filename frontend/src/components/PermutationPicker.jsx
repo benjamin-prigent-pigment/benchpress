@@ -110,10 +110,8 @@ function PermutationPicker({
 
   if (!template || !components || components.length === 0) {
     return (
-      <div className="permutation-picker">
-        <div className="permutation-picker-empty">
-          No components found in template
-        </div>
+      <div className="permutation-picker-empty">
+        No components found in template
       </div>
     );
   }
@@ -121,12 +119,7 @@ function PermutationPicker({
   return (
     <div className="permutation-picker">
       <div className="permutation-picker-header">
-        <div className="permutation-picker-title">
-          <h3>Variant Scope Configuration</h3>
-          <p className="permutation-picker-description">
-            Control which component variants can map to which other components
-          </p>
-        </div>
+        <h3>Variants scopes</h3>
         {!isEditing && (
           <IconGreyButton
             icon={<IoPencil size={20} />}

@@ -15,7 +15,6 @@ import './VariantScopeRow.css';
  */
 function VariantScopeRow({
   variant,
-  variantIndex,
   componentName,
   isSplit,
   splitParts,
@@ -32,13 +31,10 @@ function VariantScopeRow({
   const getVariantText = () => {
     if (isSplit && typeof variant === 'object') {
       // For split components, show all parts
-      return splitParts.map(part => `${part}: ${variant[part] || ''}`).join(', ');
+      return splitParts.map(part => `${variant[part] || ''}`).join(': ');
     }
     return String(variant);
   };
-
-  // Check if all components are allowed
-  const allAllowed = otherComponents.every(comp => allowedComponents.includes(comp));
 
   // Handle checkbox change
   const handleCheckboxChange = (compName, checked) => {
@@ -53,32 +49,10 @@ function VariantScopeRow({
     }
   };
 
-  // Handle select/deselect all
-  const handleSelectAll = () => {
-    if (allAllowed) {
-      // Deselect all
-      onChange([]);
-    } else {
-      // Select all
-      onChange([...otherComponents]);
-    }
-  };
-
   return (
     <div className="variant-scope-row">
       <div className="variant-scope-row-header">
-        <div className="variant-scope-row-variant">
-          <span className="variant-index">#{variantIndex + 1}</span>
-          <span className="variant-text">{getVariantText()}</span>
-        </div>
-        <button
-          type="button"
-          className="select-all-button"
-          onClick={handleSelectAll}
-          title={allAllowed ? 'Deselect all' : 'Select all'}
-        >
-          {allAllowed ? 'Deselect All' : 'Select All'}
-        </button>
+        <span className="variant-text">{getVariantText()}</span>
       </div>
       <div className="variant-scope-row-checkboxes">
         {otherComponents.map(compName => {

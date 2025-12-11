@@ -1,18 +1,13 @@
 .variant-scope-row {
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
-  padding: 12px;
-  margin-bottom: 12px;
-  background: #fafafa;
+  margin-bottom: 20px;
+  padding-left: 24px;
 }
 
 .variant-scope-row-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 4px;
 }
 
 .variant-scope-row-variant {
@@ -68,6 +63,9 @@
   font-size: 13px;
   color: #555;
   user-select: none;
+  background: #f0f0f0;
+  padding: 2px 8px;
+  border-radius: 8px;
 }
 
 .checkbox-label input[type="checkbox"] {
