@@ -41,6 +41,7 @@ function ComponentVariantScopeList({
             componentName={componentName}
             component={component}
             otherComponents={otherComponents}
+            componentsMap={componentsMap}
             variantScopes={variantScopes}
             onScopeChange={(variantIndex, allowedComponents) => {
               onScopeChange(componentName, variantIndex, allowedComponents);

@@ -35,7 +35,8 @@ init_csv_files()
 
 def validate_variant_scopes(variant_scopes, template_components):
     """
-    Validate that variant scopes only reference components used in the template.
+    Validate that variant scopes only reference components and variants used in the template.
+    Now accepts variant identifiers in format "ComponentName:variantIndex"
     Returns (is_valid, error_message)
     """
     if not variant_scopes:
@@ -43,6 +44,10 @@ def validate_variant_scopes(variant_scopes, template_components):
     
     if not isinstance(variant_scopes, dict):
         return False, 'variantScopes must be a dictionary'
+    
+    # Load components to validate variant indices
+    components = read_components()
+    component_map = {comp['name']: comp for comp in components}
     
     template_component_set = set(template_components)
     
@@ -54,14 +59,41 @@ def validate_variant_scopes(variant_scopes, template_components):
         if not isinstance(variant_scopes_dict, dict):
             return False, f'Variant scopes for component "{component_name}" must be a dictionary'
         
-        for variant_index, allowed_components in variant_scopes_dict.items():
-            if not isinstance(allowed_components, list):
-                return False, f'Allowed components for "{component_name}" variant {variant_index} must be a list'
+        for variant_index, allowed_variants in variant_scopes_dict.items():
+            if not isinstance(allowed_variants, list):
+                return False, f'Allowed variants for "{component_name}" variant {variant_index} must be a list'
             
-            # Check that all allowed components are in the template
-            for allowed_comp in allowed_components:
-                if allowed_comp not in template_component_set:
-                    return False, f'Component "{allowed_comp}" in variant scope is not used in the template'
+            # Check that all allowed variants are valid
+            for variant_id in allowed_variants:
+                # Parse variant identifier: "ComponentName:variantIndex"
+                if not isinstance(variant_id, str) or ':' not in variant_id:
+                    return False, f'Invalid variant identifier format: "{variant_id}". Expected "ComponentName:variantIndex"'
+                
+                parts = variant_id.split(':', 1)
+                if len(parts) != 2:
+                    return False, f'Invalid variant identifier format: "{variant_id}". Expected "ComponentName:variantIndex"'
+                
+                allowed_comp_name, variant_idx_str = parts
+                
+                # Check that the component is in the template
+                if allowed_comp_name not in template_component_set:
+                    return False, f'Component "{allowed_comp_name}" in variant scope is not used in the template'
+                
+                # Check that the component exists in components
+                if allowed_comp_name not in component_map:
+                    return False, f'Component "{allowed_comp_name}" not found'
+                
+                # Validate variant index
+                try:
+                    variant_idx = int(variant_idx_str)
+                except ValueError:
+                    return False, f'Invalid variant index "{variant_idx_str}" in variant identifier "{variant_id}"'
+                
+                # Check that variant index is valid for the component
+                component = component_map[allowed_comp_name]
+                variants = component.get('variants', [])
+                if variant_idx < 0 or variant_idx >= len(variants):
+                    return False, f'Variant index {variant_idx} out of range for component "{allowed_comp_name}" (has {len(variants)} variants)'
     
     return True, None
 

@@ -8,6 +8,29 @@
   justify-content: space-between;
   align-items: center;
   padding-bottom: 4px;
+  user-select: none;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.counter-text {
+  color: #666;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.chevron-icon {
+  color: #666;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.chevron-icon.open {
+  transform: rotate(180deg);
 }
 
 .variant-scope-row-variant {

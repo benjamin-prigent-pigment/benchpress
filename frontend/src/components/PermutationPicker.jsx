@@ -41,22 +41,32 @@ function PermutationPicker({
       // Get other components for this component
       const otherComponents = components.filter(c => c !== componentName);
       
+      // Calculate total number of variants from other components
+      const totalOtherVariants = otherComponents.reduce((total, compName) => {
+        const comp = componentsMap[compName];
+        if (comp && comp.variants) {
+          return total + comp.variants.length;
+        }
+        return total;
+      }, 0);
+      
       // Initialize component entry if needed
       if (!newScopes[componentName]) {
         newScopes[componentName] = {};
       }
 
-      // If all other components are allowed, remove the scope entry (default behavior)
+      // If all other variants are allowed, remove the scope entry (default behavior)
       // Otherwise, set the scope
-      if (allowedComponents.length === otherComponents.length && otherComponents.length > 0) {
-        // All other components allowed - remove this variant's scope (use default)
+      // allowedComponents now contains variant identifiers like "ComponentName:variantIndex"
+      if (allowedComponents.length === totalOtherVariants && totalOtherVariants > 0) {
+        // All other variants allowed - remove this variant's scope (use default)
         delete newScopes[componentName][variantIndex];
         // If component has no scopes left, remove it
         if (Object.keys(newScopes[componentName]).length === 0) {
           delete newScopes[componentName];
         }
       } else {
-        // Set the scope
+        // Set the scope (allowedComponents contains variant identifiers)
         newScopes[componentName][variantIndex] = allowedComponents;
       }
 

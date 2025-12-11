@@ -25,7 +25,8 @@ def is_combination_allowed(combination, component_names, variant_scopes, compone
     Args:
         combination: tuple of variants (one per component)
         component_names: list of component names in order
-        variant_scopes: dict of {component_name: {variant_index: [allowed_component_names]}}
+        variant_scopes: dict of {component_name: {variant_index: [allowed_variant_identifiers]}}
+                        where allowed_variant_identifiers are in format "ComponentName:variantIndex"
         component_map: dict mapping component names to component objects
     
     Returns:
@@ -41,13 +42,22 @@ def is_combination_allowed(combination, component_names, variant_scopes, compone
             # Variant not found, skip this check
             continue
         
-        # Access scope - variant_index is an integer
-        scope = variant_scopes.get(component_name, {}).get(variant_index)
+        # Access scope - variant_index is an integer (but may be string key from JSON)
+        scope_dict = variant_scopes.get(component_name, {})
+        # Handle both string and int keys (JSON keys are strings)
+        scope = scope_dict.get(variant_index) or scope_dict.get(str(variant_index))
         
         if scope is not None:  # Scope defined for this variant
-            # Check all other components in combination are allowed
-            other_components = [name for j, name in enumerate(component_names) if j != i]
-            if not all(comp in scope for comp in other_components):
+            # Build variant identifiers for all other components in the combination
+            other_variant_ids = []
+            for j, (other_comp_name, other_variant) in enumerate(zip(component_names, combination)):
+                if j != i:  # Skip current component
+                    other_variant_idx = get_variant_index(other_comp_name, other_variant, component_map)
+                    if other_variant_idx is not None:
+                        other_variant_ids.append(f"{other_comp_name}:{other_variant_idx}")
+            
+            # Check if all other variant identifiers are in the scope
+            if not all(variant_id in scope for variant_id in other_variant_ids):
                 return False
     
     return True

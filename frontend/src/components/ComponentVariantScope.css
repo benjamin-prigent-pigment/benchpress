@@ -1,13 +1,30 @@
 .component-variant-scope {
   margin-bottom: 24px;
-  padding: 16px;
+  padding: 16px 16px 0px 16px;
   background: white;
   border: 1px solid #ddd;
   border-radius: 8px;
 }
 
 .component-variant-scope-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 16px;
+  user-select: none;
+}
+
+.component-variant-scope-header h4 {
+  margin: 0;
+}
+.chevron-icon {
+  color: #666;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.chevron-icon.open {
+  transform: rotate(180deg);
 }
 
 .component-name {
