@@ -2,15 +2,13 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { componentAPI } from '../utils/api';
 import PrimaryPageHeader from '../components/header/PrimaryPageHeader';
-import PrimaryButton from '../components/buttons/PrimaryButton';
-import ComponentCreateModal from '../components/ComponentCreateModal';
+import DropdownButton from '../components/buttons/DropdownButton';
 import './ComponentsList.css';
 
 function ComponentsList() {
   const [components, setComponents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showCreateModal, setShowCreateModal] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,6 +29,65 @@ function ComponentsList() {
     }
   };
 
+  const handleCreateBasicComponent = async () => {
+    try {
+      setError(null);
+      const componentData = {
+        name: 'new basic component',
+        description: 'describe the purpose of the component here',
+        variants: ['label', 'label'],
+        isSplit: false,
+        splitParts: null
+      };
+
+      const newComponent = await componentAPI.create(componentData);
+      if (newComponent && newComponent.id) {
+        await loadComponents();
+        navigate(`/components/${newComponent.id}`);
+      } else {
+        setError('Failed to create component: Invalid response from server');
+      }
+    } catch (err) {
+      setError(err.message || 'Failed to create component');
+      console.error(err);
+    }
+  };
+
+  const handleCreateSplitComponent = async () => {
+    try {
+      setError(null);
+      const componentData = {
+        name: 'new split component',
+        description: 'describe the purpose of the component here',
+        variants: [
+          { a: 'label', b: 'label' },
+          { a: 'label', b: 'label' }
+        ],
+        isSplit: true,
+        splitParts: ['a', 'b']
+      };
+
+      const newComponent = await componentAPI.create(componentData);
+      if (newComponent && newComponent.id) {
+        await loadComponents();
+        navigate(`/components/${newComponent.id}`);
+      } else {
+        setError('Failed to create component: Invalid response from server');
+      }
+    } catch (err) {
+      setError(err.message || 'Failed to create component');
+      console.error(err);
+    }
+  };
+
+  const handleDropdownSelect = (item) => {
+    if (item === 'Basic component') {
+      handleCreateBasicComponent();
+    } else if (item === 'Split component') {
+      handleCreateSplitComponent();
+    }
+  };
+
   if (loading) {
     return <div className="components-list">Loading...</div>;
   }
@@ -38,18 +95,16 @@ function ComponentsList() {
   return (
     <div className="components-list">
       <PrimaryPageHeader title="Components">
-        <PrimaryButton onClick={() => setShowCreateModal(true)}>
-          Add component
-        </PrimaryButton>
+        <DropdownButton 
+          placeholder="New component"
+          items={[
+            'Basic component',
+            'Split component'
+          ]}
+          onSelect={handleDropdownSelect}
+          width={210}
+        />
       </PrimaryPageHeader>
-
-      <ComponentCreateModal 
-        isOpen={showCreateModal}
-        onClose={() => {
-          setShowCreateModal(false);
-          loadComponents();
-        }}
-      />
 
       {error && <div className="error">{error}</div>}
 

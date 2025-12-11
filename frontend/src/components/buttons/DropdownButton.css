@@ -1,0 +1,115 @@
+.dropdown-button-container {
+  position: relative;
+  display: inline-block;
+}
+
+.btn-dropdown {
+  background-color: #ebebeb;
+  color: #495057;
+  border: 1px solid #898989;
+  padding: 0.625rem 1.25rem;
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s, transform 0.1s, box-shadow 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  text-align: left;
+  font-family: inherit;
+}
+
+.btn-dropdown:hover:not(:disabled) {
+  background-color: #e9ecef;
+  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+}
+
+.btn-dropdown:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn-dropdown:disabled {
+  background-color: #e9ecef;
+  color: #6c757d;
+  border-color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.btn-dropdown.open {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-color: transparent;
+}
+
+.dropdown-label {
+  text-align: left;
+  white-space: nowrap;
+}
+
+.dropdown-chevron {
+  color: #2d2d2d;
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+.dropdown-chevron.open {
+  transform: rotate(180deg);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #f8f9fa;
+  border: 1px solid #2d2d2d;
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  max-height: 300px;
+  overflow-y: auto;
+  overflow-x: visible;
+  margin-top: -2px;
+}
+
+.dropdown-item {
+  padding: 0.625rem 1.25rem;
+  color: #495057;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+  font-size: 1rem;
+  border: none;
+  background: none;
+  text-align: left;
+  font-family: inherit;
+  white-space: nowrap;
+  display: block;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.dropdown-item:hover {
+  background-color: #e9ecef;
+  color: #007bff;
+}
+
+.dropdown-item.selected {
+  background-color: #e9ecef;
+  color: #007bff;
+  font-weight: 500;
+}
+
+.dropdown-item:first-child {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.dropdown-item:last-child {
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+}

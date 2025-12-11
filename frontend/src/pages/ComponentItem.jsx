@@ -2,11 +2,9 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { componentAPI } from '../utils/api';
 import SecondaryPageHeader from '../components/header/SecondaryPageHeader';
-import ComponentCreateModal from '../components/ComponentCreateModal';
 import ComponentAbout from '../components/new_temp_comp/ComponentAbout';
 import NonSplitVariableList from '../components/new_temp_comp/NonSplitVariableList';
 import SplitVariableList from '../components/new_temp_comp/SplitVariableList';
-import '../components/ComponentCreateModal.css';
 import './ComponentItem.css';
 
 function ComponentItem() {
@@ -19,27 +17,20 @@ function ComponentItem() {
   const [variants, setVariants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showCreateModal, setShowCreateModal] = useState(false);
   const [isSplit, setIsSplit] = useState(false);
   const [splitParts, setSplitParts] = useState(['a', 'b']);
   const [numberOfSplits, setNumberOfSplits] = useState(2);
 
-  // Check if we're creating a new component - either id is 'new' or undefined (when route is /components/new)
-  const isNew = !id || id === 'new' || location.pathname === '/components/new';
-
   useEffect(() => {
     setError(null);
     
-    if (isNew) {
-      setLoading(false);
-      setShowCreateModal(true);
-    } else if (id && id !== 'undefined') {
+    if (id && id !== 'undefined') {
       loadComponent();
     } else {
       setError('Invalid component ID');
       setLoading(false);
     }
-  }, [id, location.pathname]);
+  }, [id]);
 
   const loadComponent = async () => {
     if (!id || id === 'undefined') {
@@ -225,25 +216,8 @@ function ComponentItem() {
     }
   };
 
-  const handleCreateModalClose = () => {
-    setShowCreateModal(false);
-    navigate('/components');
-  };
-
   if (loading) {
     return <div className="component-item">Loading...</div>;
-  }
-
-  // Show create modal for new components
-  if (isNew) {
-    return (
-      <>
-        <ComponentCreateModal 
-          isOpen={showCreateModal} 
-          onClose={handleCreateModalClose}
-        />
-      </>
-    );
   }
 
   return (
