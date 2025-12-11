@@ -1,0 +1,81 @@
+.variant-scope-row {
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 12px;
+  background: #fafafa;
+}
+
+.variant-scope-row-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.variant-scope-row-variant {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.variant-index {
+  font-weight: 600;
+  color: #666;
+  font-size: 13px;
+}
+
+.variant-text {
+  color: #333;
+  font-size: 14px;
+  word-break: break-word;
+}
+
+.select-all-button {
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 4px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  color: #555;
+  transition: all 0.2s;
+}
+
+.select-all-button:hover {
+  background: #e0e0e0;
+  border-color: #999;
+}
+
+.select-all-button:active {
+  background: #d0d0d0;
+}
+
+.variant-scope-row-checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #555;
+  user-select: none;
+}
+
+.checkbox-label input[type="checkbox"] {
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+}
+
+.checkbox-label span {
+  color: #333;
+}

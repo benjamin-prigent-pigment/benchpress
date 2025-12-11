@@ -33,6 +33,39 @@ CORS(app, expose_headers=['Content-Disposition'])  # Enable CORS for frontend an
 init_csv_files()
 
 
+def validate_variant_scopes(variant_scopes, template_components):
+    """
+    Validate that variant scopes only reference components used in the template.
+    Returns (is_valid, error_message)
+    """
+    if not variant_scopes:
+        return True, None
+    
+    if not isinstance(variant_scopes, dict):
+        return False, 'variantScopes must be a dictionary'
+    
+    template_component_set = set(template_components)
+    
+    for component_name, variant_scopes_dict in variant_scopes.items():
+        # Check that the component itself is in the template
+        if component_name not in template_component_set:
+            return False, f'Component "{component_name}" in variantScopes is not used in the template'
+        
+        if not isinstance(variant_scopes_dict, dict):
+            return False, f'Variant scopes for component "{component_name}" must be a dictionary'
+        
+        for variant_index, allowed_components in variant_scopes_dict.items():
+            if not isinstance(allowed_components, list):
+                return False, f'Allowed components for "{component_name}" variant {variant_index} must be a list'
+            
+            # Check that all allowed components are in the template
+            for allowed_comp in allowed_components:
+                if allowed_comp not in template_component_set:
+                    return False, f'Component "{allowed_comp}" in variant scope is not used in the template'
+    
+    return True, None
+
+
 # ==================== Component Endpoints ====================
 
 @app.route('/api/components', methods=['GET'])
@@ -264,6 +297,7 @@ def create_template():
         name = data.get('name', '').strip()
         description = data.get('description', '').strip()
         text = data.get('text', '')
+        variant_scopes = data.get('variantScopes', {})
         
         if not name:
             return jsonify({'error': 'Template name is required'}), 400
@@ -272,13 +306,19 @@ def create_template():
         component_usages = extract_components_from_template(text)
         unique_components = list(set(usage['name'] for usage in component_usages))
         
+        # Validate variant scopes
+        is_valid, error_message = validate_variant_scopes(variant_scopes, unique_components)
+        if not is_valid:
+            return jsonify({'error': error_message}), 400
+        
         templates = read_templates()
         new_template = {
             'id': get_next_id(templates),
             'name': name,
             'description': description,
             'text': text,
-            'components': unique_components
+            'components': unique_components,
+            'variantScopes': variant_scopes
         }
         templates.append(new_template)
         write_templates(templates)
@@ -312,17 +352,30 @@ def update_template(template_id):
         if not template:
             return jsonify({'error': 'Template not found'}), 404
         
+        # Get current component list (may be updated if text changes)
+        current_components = template.get('components', [])
+        
         if 'text' in data:
             template['text'] = data['text']
             # Extract unique component names from updated template text
             component_usages = extract_components_from_template(data['text'])
-            template['components'] = list(set(usage['name'] for usage in component_usages))
+            current_components = list(set(usage['name'] for usage in component_usages))
+            template['components'] = current_components
         
         if 'name' in data:
             template['name'] = data['name'].strip()
         
         if 'description' in data:
             template['description'] = data['description'].strip()
+        
+        # Handle variantScopes update
+        if 'variantScopes' in data:
+            variant_scopes = data['variantScopes']
+            # Validate variant scopes against current components
+            is_valid, error_message = validate_variant_scopes(variant_scopes, current_components)
+            if not is_valid:
+                return jsonify({'error': error_message}), 400
+            template['variantScopes'] = variant_scopes
         
         write_templates(templates)
         return jsonify(template), 200
@@ -361,7 +414,8 @@ def get_permutation_count(template_id):
         if not template:
             return jsonify({'error': 'Template not found'}), 404
         
-        count = calculate_permutations(template['text'])
+        variant_scopes = template.get('variantScopes', {})
+        count = calculate_permutations(template['text'], variant_scopes)
         component_usages = extract_components_from_template(template['text'])
         
         # Build breakdown string
@@ -398,7 +452,8 @@ def generate_csv(template_id):
             return jsonify({'error': 'Template not found'}), 404
         
         # Generate permutation data with IDs and mappings
-        permutation_data = generate_permutation_data(template['text'])
+        variant_scopes = template.get('variantScopes', {})
+        permutation_data = generate_permutation_data(template['text'], variant_scopes)
         
         if not permutation_data:
             return jsonify({'error': 'No permutations generated. Check that all components exist.'}), 400

@@ -1,46 +1,18 @@
-"""Permutation generation and CSV export logic"""
+"""Permutation generation logic"""
 
-import csv
 import hashlib
-import io
-import json
-import re
-from datetime import datetime
 from itertools import product
-from pathlib import Path
-import os
 
 from utils import read_components
+from .extraction import extract_components_from_template
+from .scope_filter import is_combination_allowed
 
 
-def extract_components_from_template(template_text):
+def calculate_permutations(template_text, variant_scopes=None):
     """
-    Extract component usage from template text.
-    Returns a list of dicts with 'name' and optional 'part' for split components.
-    Examples:
-    - {{component_name}} -> {'name': 'component_name', 'part': None}
-    - {{metadata/a}} -> {'name': 'metadata', 'part': 'a'}
+    Calculate the number of permutations for a template.
+    If variant_scopes is provided, only counts allowed combinations.
     """
-    # Pattern matches: {{component_name}} or {{component_name/part}}
-    pattern = r'\{\{([^}/]+)(?:/([^}]+))?\}\}'
-    matches = re.findall(pattern, template_text)
-    
-    # Convert to list of dicts, removing duplicates
-    components = []
-    seen = set()
-    for match in matches:
-        name = match[0].strip()
-        part = match[1].strip() if match[1] else None
-        key = (name, part)
-        if key not in seen:
-            seen.add(key)
-            components.append({'name': name, 'part': part})
-    
-    return components
-
-
-def calculate_permutations(template_text):
-    """Calculate the number of permutations for a template"""
     component_usages = extract_components_from_template(template_text)
     if not component_usages:
         return 0
@@ -59,18 +31,31 @@ def calculate_permutations(template_text):
         if name not in unique_components:
             unique_components[name] = component_map[name]
     
-    # Calculate total permutations
-    total = 1
-    for component in unique_components.values():
-        variant_count = len(component['variants'])
-        total *= variant_count
+    # If no variant scopes, calculate simple product
+    if not variant_scopes:
+        total = 1
+        for component in unique_components.values():
+            variant_count = len(component['variants'])
+            total *= variant_count
+        return total
     
-    return total
+    # With variant scopes, need to count allowed combinations
+    unique_component_names = list(unique_components.keys())
+    variant_lists = [unique_components[name]['variants'] for name in unique_component_names]
+    
+    count = 0
+    for combination in product(*variant_lists):
+        if is_combination_allowed(combination, unique_component_names, variant_scopes, component_map):
+            count += 1
+    
+    return count
 
 
-def generate_permutation_data(template_text):
+def generate_permutation_data(template_text, variant_scopes=None):
     """
     Generate all permutations for a template with metadata.
+    If variant_scopes is provided, only generates allowed combinations.
+    
     Returns a list of dictionaries with:
     - 'text': The generated text with placeholders replaced
     - 'mapping': List of dicts with component name and variant used (split components show all parts)
@@ -117,6 +102,10 @@ def generate_permutation_data(template_text):
     # Generate all combinations
     permutations = []
     for combination in product(*variant_lists):
+        # Apply scope filtering if variant_scopes is provided
+        if variant_scopes and not is_combination_allowed(combination, unique_component_names, variant_scopes, component_map):
+            continue
+        
         result = template_text
         mapping = []
         
@@ -159,79 +148,3 @@ def generate_permutation_data(template_text):
         })
     
     return permutations
-
-
-def sanitize_filename(name):
-    """Sanitize template name for use in filename"""
-    # Replace spaces and special characters with underscores
-    # Keep only alphanumeric, underscores, and hyphens
-    sanitized = re.sub(r'[^\w\-]', '_', name)
-    # Remove multiple consecutive underscores
-    sanitized = re.sub(r'_+', '_', sanitized)
-    # Remove leading/trailing underscores
-    sanitized = sanitized.strip('_')
-    return sanitized
-
-
-def generate_csv_file(permutation_data, template_name=None):
-    """
-    Generate CSV file from permutation data.
-    Returns tuple: (csv_bytes, filename)
-    """
-    # Create CSV in memory
-    output = io.StringIO()
-    writer = csv.writer(output)
-    
-    # Write header
-    writer.writerow(['id', 'prompt', 'permutations'])
-    
-    # Write data rows
-    for perm in permutation_data:
-        # Convert mapping to JSON string
-        mapping_json = json.dumps(perm['mapping'])
-        writer.writerow([
-            perm['id'],
-            perm['text'],
-            mapping_json
-        ])
-    
-    # Convert to bytes
-    output.seek(0)
-    csv_bytes = io.BytesIO()
-    csv_bytes.write(output.getvalue().encode('utf-8'))
-    csv_bytes.seek(0)
-    
-    # Generate filename using template name
-    if template_name:
-        sanitized_name = sanitize_filename(template_name)
-        filename = f'permutations_{sanitized_name}.csv'
-    else:
-        filename = 'permutations_unknown.csv'
-    
-    return csv_bytes, filename
-
-
-def save_csv_to_file(csv_bytes, filename, template_name=None):
-    """Save CSV file to data folder, replacing old file if it exists"""
-    data_dir = Path(__file__).parent / 'data'
-    data_dir.mkdir(exist_ok=True)
-    
-    export_file = data_dir / filename
-    
-    # Delete old file if it exists
-    if export_file.exists():
-        os.remove(export_file)
-    
-    # Reset bytes stream position and read content
-    csv_bytes.seek(0)
-    content = csv_bytes.read()
-    
-    # Write to file
-    with open(export_file, 'wb') as f:
-        f.write(content)
-    
-    # Reset bytes stream position again for potential reuse
-    csv_bytes.seek(0)
-    
-    return export_file
-

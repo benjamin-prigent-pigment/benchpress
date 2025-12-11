@@ -12,6 +12,7 @@ export const useTemplate = (templateId) => {
   const [permutationCount, setPermutationCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [savingScopes, setSavingScopes] = useState(false);
   const [error, setError] = useState(null);
 
   // Load template
@@ -180,7 +181,37 @@ export const useTemplate = (templateId) => {
     loadTemplate();
   }, [templateId]);
 
-  // Update permutation count when text or template changes
+  // Save variant scopes
+  const saveVariantScopes = async (variantScopes) => {
+    console.log('[useTemplate] saveVariantScopes called', { templateId, variantScopes });
+    try {
+      console.log('[useTemplate] Starting variant scopes save operation...');
+      setSavingScopes(true);
+      console.log('[useTemplate] Updating variant scopes via PUT /api/templates/' + templateId);
+      console.log('[useTemplate] Request payload:', JSON.stringify({ variantScopes }, null, 2));
+      const updatedTemplate = await templateAPI.update(templateId, { variantScopes });
+      console.log('[useTemplate] Variant scopes updated successfully');
+      setTemplate(updatedTemplate);
+      setError(null);
+      // Refresh the permutation count after successful save
+      await updatePermutationCount();
+    } catch (err) {
+      console.error('[useTemplate] Variant scopes save operation failed:', err);
+      console.error('[useTemplate] Error details:', {
+        message: err.message,
+        stack: err.stack,
+        name: err.name
+      });
+      setError('Failed to save variant scopes');
+      console.error(err);
+      throw err;
+    } finally {
+      setSavingScopes(false);
+      console.log('[useTemplate] saveVariantScopes finished');
+    }
+  };
+
+  // Update permutation count when text, template, or variantScopes changes
   useEffect(() => {
     if (template && text) {
       console.log('[useTemplate] Template and text available, updating permutation count');
@@ -195,9 +226,11 @@ export const useTemplate = (templateId) => {
     permutationCount,
     loading,
     saving,
+    savingScopes,
     error,
     setError,
     saveTemplate,
+    saveVariantScopes,
     generateCSV,
     deleteTemplate,
     updateTemplateMetadata,
