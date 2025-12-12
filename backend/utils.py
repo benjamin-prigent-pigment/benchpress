@@ -113,19 +113,22 @@ def read_templates():
             # Handle description with backward compatibility (default to empty string)
             description = row.get('description', '')
             
-            # Parse variant_scopes JSON if present, otherwise default to empty dict
-            variant_scopes = {}
+            # Parse variant_scopes JSON if present, otherwise default to empty array
+            variant_scopes = []
             if 'variant_scopes' in row and row['variant_scopes']:
                 try:
                     variant_scopes_raw = json.loads(row['variant_scopes'])
-                    # Convert string keys to integers (JSON keys are always strings)
-                    variant_scopes = {}
-                    for comp_name, scopes_dict in variant_scopes_raw.items():
-                        variant_scopes[comp_name] = {
-                            int(k): v for k, v in scopes_dict.items()
-                        }
+                    # Check if it's an array (new format)
+                    if isinstance(variant_scopes_raw, list):
+                        variant_scopes = variant_scopes_raw
+                    # Backward compatibility: if it's a dict (old format), convert to empty array
+                    elif isinstance(variant_scopes_raw, dict):
+                        # Old format - convert to empty array (all combinations allowed)
+                        variant_scopes = []
+                    else:
+                        variant_scopes = []
                 except (json.JSONDecodeError, ValueError, TypeError):
-                    variant_scopes = {}
+                    variant_scopes = []
             
             templates.append({
                 'id': int(row['id']),
@@ -149,8 +152,8 @@ def write_templates(templates):
             components = template.get('components', [])
             # Get description, default to empty string if not present
             description = template.get('description', '')
-            # Get variantScopes, default to empty dict if not present
-            variant_scopes = template.get('variantScopes', {})
+            # Get variantScopes, default to empty array if not present
+            variant_scopes = template.get('variantScopes', [])
             writer.writerow([
                 template['id'],
                 template['name'],

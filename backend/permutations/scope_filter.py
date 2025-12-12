@@ -21,12 +21,13 @@ def get_variant_index(component_name, variant, component_map):
 def is_combination_allowed(combination, component_names, variant_scopes, component_map):
     """
     Check if a combination of variants is allowed based on variant scopes.
+    Uses deny-list logic: variant_scopes is an array of rules that specify which variant pairs cannot be combined.
     
     Args:
         combination: tuple of variants (one per component)
         component_names: list of component names in order
-        variant_scopes: dict of {component_name: {variant_index: [allowed_variant_identifiers]}}
-                        where allowed_variant_identifiers are in format "ComponentName:variantIndex"
+        variant_scopes: array of deny rules, each rule is {variant1: "ComponentName:variantIndex", variant2: "ComponentName:variantIndex"}
+                        Also accepts empty dict {} for backward compatibility (treated as empty array)
         component_map: dict mapping component names to component objects
     
     Returns:
@@ -35,29 +36,25 @@ def is_combination_allowed(combination, component_names, variant_scopes, compone
     if not variant_scopes:  # Empty = allow all
         return True
     
-    for i, (component_name, variant) in enumerate(zip(component_names, combination)):
-        variant_index = get_variant_index(component_name, variant, component_map)
+    # Backward compatibility: treat empty dict {} as empty array []
+    if isinstance(variant_scopes, dict):
+        return True  # Legacy format - allow all combinations
+    
+    # Build variant identifiers for current combination
+    combination_variant_ids = []
+    for comp_name, variant in zip(component_names, combination):
+        variant_idx = get_variant_index(comp_name, variant, component_map)
+        if variant_idx is not None:
+            combination_variant_ids.append(f"{comp_name}:{variant_idx}")
+    
+    # Check if any deny rule matches this combination
+    # A rule matches if both variants in the rule are present in the combination
+    for rule in variant_scopes:
+        variant1_id = rule.get('variant1')
+        variant2_id = rule.get('variant2')
         
-        if variant_index is None:
-            # Variant not found, skip this check
-            continue
-        
-        # Access scope - variant_index is an integer (but may be string key from JSON)
-        scope_dict = variant_scopes.get(component_name, {})
-        # Handle both string and int keys (JSON keys are strings)
-        scope = scope_dict.get(variant_index) or scope_dict.get(str(variant_index))
-        
-        if scope is not None:  # Scope defined for this variant
-            # Build variant identifiers for all other components in the combination
-            other_variant_ids = []
-            for j, (other_comp_name, other_variant) in enumerate(zip(component_names, combination)):
-                if j != i:  # Skip current component
-                    other_variant_idx = get_variant_index(other_comp_name, other_variant, component_map)
-                    if other_variant_idx is not None:
-                        other_variant_ids.append(f"{other_comp_name}:{other_variant_idx}")
-            
-            # Check if all other variant identifiers are in the scope
-            if not all(variant_id in scope for variant_id in other_variant_ids):
-                return False
+        if variant1_id and variant2_id:
+            if variant1_id in combination_variant_ids and variant2_id in combination_variant_ids:
+                return False  # This combination is denied
     
     return True
