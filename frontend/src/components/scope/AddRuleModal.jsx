@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { IoClose } from 'react-icons/io5';
-import PrimaryButton from './buttons/PrimaryButton';
-import SecondaryButton from './buttons/SecondaryButton';
+import PrimaryButton from '../buttons/PrimaryButton';
+import SecondaryButton from '../buttons/SecondaryButton';
 import './AddRuleModal.css';
 
 /**
@@ -21,14 +21,14 @@ function AddRuleModal({
   templateComponents = []
 }) {
   const [variant1, setVariant1] = useState('');
-  const [variant2, setVariant2] = useState('');
+  const [variant2, setVariant2] = useState([]);
   const [error, setError] = useState('');
 
   // Reset form when modal opens/closes
   useEffect(() => {
     if (isOpen) {
       setVariant1('');
-      setVariant2('');
+      setVariant2([]);
       setError('');
     }
   }, [isOpen]);
@@ -64,28 +64,40 @@ function AddRuleModal({
 
   const variants = getAllVariants();
 
+  // Filter out the selected primary variant from the second dropdown options
+  const availableVariants2 = variants.filter(v => v.id !== variant1);
+
   const handleAdd = () => {
     // Validation
-    if (!variant1 || !variant2) {
-      setError('Please select both variants');
+    if (!variant1) {
+      setError('Please select a primary variant');
       return;
     }
 
-    if (variant1 === variant2) {
-      setError('Cannot select the same variant twice');
+    if (!variant2 || variant2.length === 0) {
+      setError('Please select at least one variant to deny');
       return;
     }
 
-    // Call onAdd with variant IDs
-    onAdd(variant1, variant2);
+    // Call onAdd for each selected variant2
+    variant2.forEach(v2Id => {
+      onAdd(variant1, v2Id);
+    });
+    
     onClose();
   };
 
   const handleClose = () => {
     setVariant1('');
-    setVariant2('');
+    setVariant2([]);
     setError('');
     onClose();
+  };
+
+  const handleVariant2Change = (e) => {
+    const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
+    setVariant2(selectedOptions);
+    setError('');
   };
 
   if (!isOpen) return null;
@@ -102,16 +114,17 @@ function AddRuleModal({
 
         <div className="modal-body">
           <div className="form-group">
-            <label htmlFor="variant1-select">First Variant</label>
+            <label htmlFor="variant1-select">Primary Variant</label>
             <select
               id="variant1-select"
               value={variant1}
               onChange={(e) => {
                 setVariant1(e.target.value);
+                setVariant2([]); // Reset variant2 when primary changes
                 setError('');
               }}
             >
-              <option value="">Select a variant</option>
+              <option value="">Select a primary variant</option>
               {variants.map(v => (
                 <option key={v.id} value={v.id}>
                   {v.label}
@@ -121,22 +134,37 @@ function AddRuleModal({
           </div>
 
           <div className="form-group">
-            <label htmlFor="variant2-select">Second Variant</label>
+            <label htmlFor="variant2-select">
+              Deny Variants (Select multiple)
+              {variant2.length > 0 && (
+                <span className="selection-count"> ({variant2.length} selected)</span>
+              )}
+            </label>
             <select
               id="variant2-select"
+              multiple
+              size={Math.min(8, availableVariants2.length)}
               value={variant2}
-              onChange={(e) => {
-                setVariant2(e.target.value);
-                setError('');
-              }}
+              onChange={handleVariant2Change}
+              disabled={!variant1}
+              className={!variant1 ? 'disabled-select' : ''}
             >
-              <option value="">Select a variant</option>
-              {variants.map(v => (
-                <option key={v.id} value={v.id}>
-                  {v.label}
-                </option>
-              ))}
+              {availableVariants2.length === 0 ? (
+                <option disabled>No other variants available</option>
+              ) : (
+                availableVariants2.map(v => (
+                  <option key={v.id} value={v.id}>
+                    {v.label}
+                  </option>
+                ))
+              )}
             </select>
+            {!variant1 && (
+              <div className="field-hint">Please select a primary variant first</div>
+            )}
+            {variant1 && (
+              <div className="field-hint">Hold Ctrl/Cmd to select multiple variants</div>
+            )}
           </div>
 
           {error && (
@@ -150,7 +178,7 @@ function AddRuleModal({
               Cancel
             </SecondaryButton>
             <PrimaryButton onClick={handleAdd}>
-              Add Rule
+              Add {variant2.length > 0 ? `${variant2.length} Rule${variant2.length > 1 ? 's' : ''}` : 'Rule'}
             </PrimaryButton>
           </div>
         </div>

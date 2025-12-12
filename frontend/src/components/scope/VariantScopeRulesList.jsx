@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { IoAdd, IoTrash } from 'react-icons/io5';
 import AddRuleModal from './AddRuleModal';
-import IconPrimaryButton from './buttons/IconPrimaryButton';
-import IconDestructionButton from './buttons/IconDestructionButton';
+import IconPrimaryButton from '../buttons/IconPrimaryButton';
+import IconDestructionButton from '../buttons/IconDestructionButton';
 import './VariantScopeRulesList.css';
 
 /**

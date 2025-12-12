@@ -99,45 +99,90 @@ def read_templates():
         return []
     
     templates = []
-    with open(TEMPLATES_FILE, 'r', newline='', encoding='utf-8') as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            # Parse components JSON if present, otherwise default to empty list
-            components = []
-            if 'components' in row and row['components']:
+    try:
+        with open(TEMPLATES_FILE, 'r', newline='', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            expected_columns = ['id', 'name', 'description', 'text', 'components', 'variant_scopes']
+            
+            # Validate header
+            if not reader.fieldnames:
+                print("Error: CSV file has no header row")
+                return []
+            
+            # Check if all expected columns are present
+            missing_columns = [col for col in expected_columns if col not in reader.fieldnames]
+            if missing_columns:
+                print(f"Warning: CSV file missing columns: {missing_columns}")
+            
+            for row_num, row in enumerate(reader, start=2):  # start=2 because row 1 is header
                 try:
-                    components = json.loads(row['components'])
-                except (json.JSONDecodeError, ValueError):
+                    # Validate that we have an 'id' field and it's a valid integer
+                    if 'id' not in row or not row.get('id', '').strip():
+                        print(f"Warning: Row {row_num} missing 'id' field, skipping")
+                        continue
+                    
+                    # Clean the id field - remove any whitespace
+                    id_value = row['id'].strip()
+                    
+                    # Check if id looks like JSON (starts with { or [) - indicates corruption
+                    if id_value.startswith('{') or id_value.startswith('[') or (id_value.startswith('"') and '"' in id_value[1:]):
+                        print(f"Error: Row {row_num} has corrupted 'id' field (looks like JSON): '{id_value[:50]}...'")
+                        print(f"Full row data: {dict(row)}")
+                        continue
+                    
+                    try:
+                        template_id = int(id_value)
+                    except (ValueError, TypeError) as e:
+                        print(f"Error: Row {row_num} has invalid 'id' value '{id_value[:50]}...': {e}")
+                        print(f"Row keys: {list(row.keys())}")
+                        print(f"Row values (first 100 chars each): {[str(v)[:100] for v in row.values()]}")
+                        continue
+                    
+                    # Parse components JSON if present, otherwise default to empty list
                     components = []
-            
-            # Handle description with backward compatibility (default to empty string)
-            description = row.get('description', '')
-            
-            # Parse variant_scopes JSON if present, otherwise default to empty array
-            variant_scopes = []
-            if 'variant_scopes' in row and row['variant_scopes']:
-                try:
-                    variant_scopes_raw = json.loads(row['variant_scopes'])
-                    # Check if it's an array (new format)
-                    if isinstance(variant_scopes_raw, list):
-                        variant_scopes = variant_scopes_raw
-                    # Backward compatibility: if it's a dict (old format), convert to empty array
-                    elif isinstance(variant_scopes_raw, dict):
-                        # Old format - convert to empty array (all combinations allowed)
-                        variant_scopes = []
-                    else:
-                        variant_scopes = []
-                except (json.JSONDecodeError, ValueError, TypeError):
+                    if 'components' in row and row.get('components'):
+                        try:
+                            components = json.loads(row['components'])
+                        except (json.JSONDecodeError, ValueError):
+                            components = []
+                    
+                    # Handle description with backward compatibility (default to empty string)
+                    description = row.get('description', '')
+                    
+                    # Parse variant_scopes JSON if present, otherwise default to empty array
                     variant_scopes = []
-            
-            templates.append({
-                'id': int(row['id']),
-                'name': row['name'],
-                'description': description,
-                'text': row['text'],
-                'components': components,
-                'variantScopes': variant_scopes
-            })
+                    if 'variant_scopes' in row and row.get('variant_scopes'):
+                        try:
+                            variant_scopes_raw = json.loads(row['variant_scopes'])
+                            # Check if it's an array (new format)
+                            if isinstance(variant_scopes_raw, list):
+                                variant_scopes = variant_scopes_raw
+                            # Backward compatibility: if it's a dict (old format), convert to empty array
+                            elif isinstance(variant_scopes_raw, dict):
+                                # Old format - convert to empty array (all combinations allowed)
+                                variant_scopes = []
+                            else:
+                                variant_scopes = []
+                        except (json.JSONDecodeError, ValueError, TypeError) as e:
+                            print(f"Warning: Row {row_num} has invalid variant_scopes JSON, using empty array: {e}")
+                            variant_scopes = []
+                    
+                    templates.append({
+                        'id': template_id,
+                        'name': row.get('name', ''),
+                        'description': description,
+                        'text': row.get('text', ''),
+                        'components': components,
+                        'variantScopes': variant_scopes
+                    })
+                except Exception as e:
+                    print(f"Error reading row {row_num}: {e}")
+                    print(f"Row data: {dict(row) if row else 'None'}")
+                    continue
+    except Exception as e:
+        print(f"Fatal error reading templates CSV: {e}")
+        import traceback
+        traceback.print_exc()
     return templates
 
 
@@ -145,7 +190,8 @@ def write_templates(templates):
     """Write all templates to CSV"""
     ensure_data_dir()
     with open(TEMPLATES_FILE, 'w', newline='', encoding='utf-8') as f:
-        writer = csv.writer(f)
+        # Use QUOTE_ALL to ensure all fields are properly quoted, especially JSON fields
+        writer = csv.writer(f, quoting=csv.QUOTE_ALL)
         writer.writerow(['id', 'name', 'description', 'text', 'components', 'variant_scopes'])
         for template in templates:
             # Get components, default to empty list if not present
@@ -154,11 +200,12 @@ def write_templates(templates):
             description = template.get('description', '')
             # Get variantScopes, default to empty array if not present
             variant_scopes = template.get('variantScopes', [])
+            # Ensure all values are strings for CSV writing
             writer.writerow([
-                template['id'],
-                template['name'],
-                description,
-                template['text'],
+                str(template['id']),
+                str(template.get('name', '')),
+                str(description),
+                str(template.get('text', '')),
                 json.dumps(components),
                 json.dumps(variant_scopes)
             ])

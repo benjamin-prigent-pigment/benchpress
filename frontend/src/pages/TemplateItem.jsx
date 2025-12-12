@@ -8,7 +8,7 @@ import { useTemplateEditor } from '../hooks/useTemplateEditor';
 import SecondaryPageHeader from '../components/header/SecondaryPageHeader';
 import TemplateEditor from '../components/TemplateEditor';
 import TemplatePreview from '../components/TemplatePreview';
-import PermutationPicker from '../components/PermutationPicker';
+import PermutationPicker from '../components/scope/PermutationPicker';
 import IconGreyButton from '../components/buttons/IconGreyButton';
 import './TemplateItem.css';
 
