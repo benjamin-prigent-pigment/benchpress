@@ -143,7 +143,7 @@ function AddRuleModal({
             <select
               id="variant2-select"
               multiple
-              size={Math.min(8, availableVariants2.length)}
+              size={Math.max(1, Math.min(8, availableVariants2.length))}
               value={variant2}
               onChange={handleVariant2Change}
               disabled={!variant1}
