@@ -17,6 +17,19 @@
 .component-variant-scope-header h4 {
   margin: 0;
 }
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.counter-text {
+  color: #666;
+  font-size: 13px;
+  font-weight: 500;
+}
+
 .chevron-icon {
   color: #666;
   transition: transform 0.2s ease;

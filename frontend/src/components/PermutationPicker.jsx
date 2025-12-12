@@ -55,6 +55,113 @@ function PermutationPicker({
         newScopes[componentName] = {};
       }
 
+      // Get current scope for this variant (before update)
+      const currentVariantId = `${componentName}:${variantIndex}`;
+      const oldAllowedComponents = newScopes[componentName][variantIndex] || [];
+      const oldAllowedSet = new Set(oldAllowedComponents);
+      const newAllowedSet = new Set(allowedComponents);
+
+      // Find variants that were added or removed
+      const addedVariants = allowedComponents.filter(v => !oldAllowedSet.has(v));
+      const removedVariants = oldAllowedComponents.filter(v => !newAllowedSet.has(v));
+
+      // Helper function to get all possible variant IDs for a component (excluding itself)
+      const getAllVariantIdsForComponent = (compName) => {
+        return components
+          .filter(c => c !== compName)
+          .flatMap(comp => {
+            const compData = componentsMap[comp];
+            if (!compData || !compData.variants) return [];
+            return compData.variants.map((_, idx) => `${comp}:${idx}`);
+          });
+      };
+
+      // Update bidirectional relationships
+      // When we add a variant to this scope, also add this variant to that variant's scope
+      addedVariants.forEach(otherVariantId => {
+        const [otherCompName, otherVariantIdxStr] = otherVariantId.split(':');
+        const otherVariantIdx = parseInt(otherVariantIdxStr);
+        
+        // Initialize other component's scope if needed
+        if (!newScopes[otherCompName]) {
+          newScopes[otherCompName] = {};
+        }
+        
+        // Get current allowed list for the other variant
+        const otherVariantCurrentScope = newScopes[otherCompName][otherVariantIdx];
+        
+        // If no scope exists, it means all variants are allowed by default (including current variant)
+        // So we don't need to do anything - it already allows the current variant
+        if (otherVariantCurrentScope !== undefined) {
+          // Scope exists, add current variant if not already present
+          if (!otherVariantCurrentScope.includes(currentVariantId)) {
+            newScopes[otherCompName][otherVariantIdx] = [...otherVariantCurrentScope, currentVariantId];
+          }
+        }
+        // If scope doesn't exist, no action needed (default allows all)
+      });
+
+      // When we remove a variant from this scope, also remove this variant from that variant's scope
+      removedVariants.forEach(otherVariantId => {
+        const [otherCompName, otherVariantIdxStr] = otherVariantId.split(':');
+        const otherVariantIdx = parseInt(otherVariantIdxStr);
+        
+        // Initialize other component's scope if needed
+        if (!newScopes[otherCompName]) {
+          newScopes[otherCompName] = {};
+        }
+        
+        const otherVariantCurrentScope = newScopes[otherCompName][otherVariantIdx];
+        
+        if (otherVariantCurrentScope === undefined) {
+          // No scope exists - means all variants are allowed by default
+          // Create a scope with all variants EXCEPT the current variant
+          const allOtherVariants = getAllVariantIdsForComponent(otherCompName);
+          const updatedOtherAllowed = allOtherVariants.filter(v => v !== currentVariantId);
+          
+          // Calculate total variants for the other component
+          const totalOtherVariantsForOther = components
+            .filter(c => c !== otherCompName)
+            .reduce((total, compName) => {
+              const comp = componentsMap[compName];
+              if (comp && comp.variants) {
+                return total + comp.variants.length;
+              }
+              return total;
+            }, 0);
+          
+          // Only create scope entry if not all variants are allowed
+          if (updatedOtherAllowed.length < totalOtherVariantsForOther) {
+            newScopes[otherCompName][otherVariantIdx] = updatedOtherAllowed;
+          }
+        } else {
+          // Scope exists, remove current variant from it
+          const updatedOtherAllowed = otherVariantCurrentScope.filter(v => v !== currentVariantId);
+          
+          // Check if we should remove the scope entry (if all variants are now allowed)
+          const totalOtherVariantsForOther = components
+            .filter(c => c !== otherCompName)
+            .reduce((total, compName) => {
+              const comp = componentsMap[compName];
+              if (comp && comp.variants) {
+                return total + comp.variants.length;
+              }
+              return total;
+            }, 0);
+          
+          if (updatedOtherAllowed.length === totalOtherVariantsForOther && totalOtherVariantsForOther > 0) {
+            // All variants allowed - remove scope entry (use default)
+            delete newScopes[otherCompName][otherVariantIdx];
+            if (Object.keys(newScopes[otherCompName]).length === 0) {
+              delete newScopes[otherCompName];
+            }
+          } else {
+            // Update the scope
+            newScopes[otherCompName][otherVariantIdx] = updatedOtherAllowed;
+          }
+        }
+      });
+
       // If all other variants are allowed, remove the scope entry (default behavior)
       // Otherwise, set the scope
       // allowedComponents now contains variant identifiers like "ComponentName:variantIndex"
