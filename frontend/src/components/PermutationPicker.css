@@ -1,0 +1,59 @@
+.permutation-picker {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 12px;
+}
+
+.permutation-picker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 4px;
+}
+
+.permutation-picker-title h3 {
+  margin: 0 0 6px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.permutation-picker-description {
+  margin: 0;
+  font-size: 13px;
+  color: #666;
+}
+
+.permutation-picker-display {
+  background: #f8f9fa;
+  border-radius: 6px;
+}
+
+.permutation-picker-summary {
+  color: #555;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.permutation-picker-edit {
+  display: flex;
+  flex-direction: column;
+}
+
+.permutation-picker-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.permutation-picker-empty {
+  padding: 40px;
+  text-align: center;
+  color: #999;
+  font-style: italic;
+}

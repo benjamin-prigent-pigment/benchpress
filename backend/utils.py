@@ -35,7 +35,7 @@ def init_csv_files():
     if not TEMPLATES_FILE.exists():
         with open(TEMPLATES_FILE, 'w', newline='', encoding='utf-8') as f:
             writer = csv.writer(f)
-            writer.writerow(['id', 'name', 'description', 'text', 'components'])
+            writer.writerow(['id', 'name', 'description', 'text', 'components', 'variant_scopes'])
     
     # Initialize results_metadata.csv
     if not RESULTS_METADATA_FILE.exists():
@@ -113,12 +113,30 @@ def read_templates():
             # Handle description with backward compatibility (default to empty string)
             description = row.get('description', '')
             
+            # Parse variant_scopes JSON if present, otherwise default to empty array
+            variant_scopes = []
+            if 'variant_scopes' in row and row['variant_scopes']:
+                try:
+                    variant_scopes_raw = json.loads(row['variant_scopes'])
+                    # Check if it's an array (new format)
+                    if isinstance(variant_scopes_raw, list):
+                        variant_scopes = variant_scopes_raw
+                    # Backward compatibility: if it's a dict (old format), convert to empty array
+                    elif isinstance(variant_scopes_raw, dict):
+                        # Old format - convert to empty array (all combinations allowed)
+                        variant_scopes = []
+                    else:
+                        variant_scopes = []
+                except (json.JSONDecodeError, ValueError, TypeError):
+                    variant_scopes = []
+            
             templates.append({
                 'id': int(row['id']),
                 'name': row['name'],
                 'description': description,
                 'text': row['text'],
-                'components': components
+                'components': components,
+                'variantScopes': variant_scopes
             })
     return templates
 
@@ -128,18 +146,21 @@ def write_templates(templates):
     ensure_data_dir()
     with open(TEMPLATES_FILE, 'w', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
-        writer.writerow(['id', 'name', 'description', 'text', 'components'])
+        writer.writerow(['id', 'name', 'description', 'text', 'components', 'variant_scopes'])
         for template in templates:
             # Get components, default to empty list if not present
             components = template.get('components', [])
             # Get description, default to empty string if not present
             description = template.get('description', '')
+            # Get variantScopes, default to empty array if not present
+            variant_scopes = template.get('variantScopes', [])
             writer.writerow([
                 template['id'],
                 template['name'],
                 description,
                 template['text'],
-                json.dumps(components)
+                json.dumps(components),
+                json.dumps(variant_scopes)
             ])
 
 

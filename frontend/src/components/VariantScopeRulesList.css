@@ -1,0 +1,70 @@
+.variant-scope-rules-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.rules-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rules-list-header h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.rules-list-empty {
+  padding: 40px 20px;
+  text-align: center;
+  color: #999;
+  font-style: italic;
+  background: #f8f9fa;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.rules-list-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rule-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.rule-item:hover {
+  background: #f0f0f0;
+  border-color: #ccc;
+}
+
+.rule-item-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.rule-variant {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+}
+
+.rule-separator {
+  font-size: 16px;
+  color: #999;
+  font-weight: 600;
+}
+

@@ -8,8 +8,7 @@ import { useTemplateEditor } from '../hooks/useTemplateEditor';
 import SecondaryPageHeader from '../components/header/SecondaryPageHeader';
 import TemplateEditor from '../components/TemplateEditor';
 import TemplatePreview from '../components/TemplatePreview';
-import PrimaryButton from '../components/buttons/PrimaryButton';
-import SecondaryButton from '../components/buttons/SecondaryButton';
+import PermutationPicker from '../components/PermutationPicker';
 import IconGreyButton from '../components/buttons/IconGreyButton';
 import './TemplateItem.css';
 
@@ -29,8 +28,10 @@ function TemplateItem() {
     permutationCount,
     loading,
     saving,
+    savingScopes,
     error,
     saveTemplate,
+    saveVariantScopes,
     generateCSV,
     deleteTemplate,
     updateTemplateMetadata
@@ -205,6 +206,14 @@ function TemplateItem() {
         </div>
         <TemplatePreview template={template} text={text} componentsMap={componentsMap} />
         </div>
+
+        <PermutationPicker
+          template={template}
+          componentsMap={componentsMap}
+          variantScopes={template?.variantScopes || []}
+          onSave={saveVariantScopes}
+          saving={savingScopes}
+        />
       </div>
     </div>
   );
