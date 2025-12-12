@@ -210,7 +210,7 @@ function TemplateItem() {
         <PermutationPicker
           template={template}
           componentsMap={componentsMap}
-          variantScopes={template?.variantScopes || {}}
+          variantScopes={template?.variantScopes || []}
           onSave={saveVariantScopes}
           saving={savingScopes}
         />
