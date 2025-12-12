@@ -17,16 +17,32 @@ function SplitVariable({
   const [editValues, setEditValues] = useState({});
 
   useEffect(() => {
-    if (variable && typeof variable === 'object') {
-      setEditValues({ ...variable });
-    } else {
-      // Initialize with empty values for each part
-      const initialValues = {};
-      splitParts.forEach(part => {
+    // Always initialize editValues in the order of splitParts to preserve order
+    const initialValues = {};
+    splitParts.forEach(part => {
+      // If variable exists and has this part, use its value, otherwise use empty string
+      if (variable && typeof variable === 'object' && part in variable) {
+        initialValues[part] = variable[part];
+      } else {
         initialValues[part] = '';
-      });
-      setEditValues(initialValues);
+      }
+    });
+    
+    // Log order preservation for debugging
+    if (variable && typeof variable === 'object' && splitParts.length > 0) {
+      const variableKeys = Object.keys(variable);
+      const splitPartsStr = splitParts.join(', ');
+      const variableKeysStr = variableKeys.join(', ');
+      if (splitPartsStr !== variableKeysStr) {
+        console.log('[SplitVariable] Order mismatch detected:', {
+          splitParts: splitPartsStr,
+          variableKeys: variableKeysStr,
+          correcting: true
+        });
+      }
     }
+    
+    setEditValues(initialValues);
   }, [variable, splitParts]);
 
   // If variable is null/undefined/empty, start in edit mode (for new variables)
@@ -40,15 +56,31 @@ function SplitVariable({
 
   const handleStartEdit = () => {
     setIsEditing(true);
-    if (variable && typeof variable === 'object') {
-      setEditValues({ ...variable });
-    }
+    // Reinitialize editValues in splitParts order to ensure correct order
+    const orderedValues = {};
+    splitParts.forEach(part => {
+      if (variable && typeof variable === 'object' && part in variable) {
+        orderedValues[part] = variable[part];
+      } else {
+        orderedValues[part] = '';
+      }
+    });
+    setEditValues(orderedValues);
   };
 
   const handleCancel = () => {
     if (variable && typeof variable === 'object') {
       setIsEditing(false);
-      setEditValues({ ...variable });
+      // Reinitialize editValues in splitParts order to ensure correct order
+      const orderedValues = {};
+      splitParts.forEach(part => {
+        if (part in variable) {
+          orderedValues[part] = variable[part];
+        } else {
+          orderedValues[part] = '';
+        }
+      });
+      setEditValues(orderedValues);
     } else {
       onDelete?.();
     }
@@ -59,10 +91,19 @@ function SplitVariable({
     if (!splitParts.every(part => editValues[part]?.trim())) {
       return;
     }
+    // Always create the saved object in splitParts order to preserve order
     const trimmedValues = {};
     splitParts.forEach(part => {
       trimmedValues[part] = editValues[part]?.trim() || '';
     });
+    
+    // Log to verify order is preserved
+    console.log('[SplitVariable] Saving variable with order:', {
+      splitParts: splitParts.join(', '),
+      savedKeys: Object.keys(trimmedValues).join(', '),
+      match: splitParts.join(', ') === Object.keys(trimmedValues).join(', ')
+    });
+    
     onSave?.(trimmedValues);
     setIsEditing(false);
   };

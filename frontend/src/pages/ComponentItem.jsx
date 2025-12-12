@@ -45,10 +45,43 @@ function ComponentItem() {
       setComponent(data);
       setName(data.name || '');
       setDescription(data.description || '');
-      setVariants(data.variants || []);
+      
+      // Normalize variants to ensure they're in the correct order
+      const loadedSplitParts = data.splitParts || ['a', 'b'];
+      let normalizedVariants = data.variants || [];
+      
+      // If it's a split component, normalize each variable to match splitParts order
+      if (data.isSplit && normalizedVariants.length > 0) {
+        normalizedVariants = normalizedVariants.map((variant, index) => {
+          if (!variant || typeof variant !== 'object') return variant;
+          
+          // Check if order matches
+          const variantKeys = Object.keys(variant);
+          const keysMatch = variantKeys.length === loadedSplitParts.length &&
+                           variantKeys.every((key, i) => key === loadedSplitParts[i]);
+          
+          if (!keysMatch) {
+            console.log(`[ComponentItem] Normalizing variable ${index} order:`, {
+              splitParts: loadedSplitParts.join(', '),
+              variantKeys: variantKeys.join(', '),
+              correcting: true
+            });
+            
+            // Reorder to match splitParts
+            const ordered = {};
+            loadedSplitParts.forEach(part => {
+              ordered[part] = variant[part] || '';
+            });
+            return ordered;
+          }
+          return variant;
+        });
+      }
+      
+      setVariants(normalizedVariants);
       setIsSplit(data.isSplit || false);
-      setSplitParts(data.splitParts || ['a', 'b']);
-      setNumberOfSplits(data.splitParts ? data.splitParts.length : 2);
+      setSplitParts(loadedSplitParts);
+      setNumberOfSplits(loadedSplitParts.length);
       setError(null);
     } catch (err) {
       setError('Failed to load component');

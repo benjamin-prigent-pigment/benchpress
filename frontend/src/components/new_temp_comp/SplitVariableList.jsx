@@ -26,7 +26,20 @@ function SplitVariableList({
       if (onError) onError('All parts must be filled');
       return;
     }
-    onVariablesChange([...variables, value]);
+    
+    // Ensure value keys are in splitParts order
+    const orderedValue = {};
+    splitParts.forEach(part => {
+      orderedValue[part] = value[part]?.trim() || '';
+    });
+    
+    console.log('[SplitVariableList] Adding new variable with order:', {
+      splitParts: splitParts.join(', '),
+      valueKeys: Object.keys(value).join(', '),
+      orderedKeys: Object.keys(orderedValue).join(', ')
+    });
+    
+    onVariablesChange([...variables, orderedValue]);
     setNewVariable(null);
     if (onError) onError(null);
   };
@@ -41,8 +54,25 @@ function SplitVariableList({
       if (onError) onError('All parts must be filled');
       return;
     }
+    
+    // Ensure value keys are in splitParts order
+    const orderedValue = {};
+    splitParts.forEach(part => {
+      orderedValue[part] = value[part]?.trim() || '';
+    });
+    
+    const valueKeys = Object.keys(value).join(', ');
+    const orderedKeys = Object.keys(orderedValue).join(', ');
+    if (valueKeys !== orderedKeys) {
+      console.log('[SplitVariableList] Reordering variable at index', index, ':', {
+        splitParts: splitParts.join(', '),
+        originalKeys: valueKeys,
+        orderedKeys: orderedKeys
+      });
+    }
+    
     const updated = [...variables];
-    updated[index] = value;
+    updated[index] = orderedValue;
     onVariablesChange(updated);
     if (onError) onError(null);
   };

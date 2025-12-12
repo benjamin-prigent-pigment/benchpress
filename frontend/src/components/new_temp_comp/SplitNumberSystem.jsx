@@ -68,6 +68,19 @@ function SplitNumberSystem({
       if (onError) onError('Split part names must be unique');
       return;
     }
+    
+    // Log order changes for debugging
+    const oldPartsStr = splitParts.join(', ');
+    const newPartsStr = trimmedParts.join(', ');
+    if (oldPartsStr !== newPartsStr) {
+      console.log('[SplitNumberSystem] Split parts order changed:', {
+        old: oldPartsStr,
+        new: newPartsStr,
+        orderChanged: splitParts.length === trimmedParts.length && 
+                     splitParts.some((part, i) => part !== trimmedParts[i])
+      });
+    }
+    
     onSplitPartsChange(trimmedParts);
     setIsEditing(false);
     if (onError) onError(null);
