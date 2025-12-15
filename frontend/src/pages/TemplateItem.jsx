@@ -204,7 +204,12 @@ function TemplateItem() {
             autocompletePosition={autocompletePosition}
           />
         </div>
-        <TemplatePreview template={template} text={text} componentsMap={componentsMap} />
+        <TemplatePreview 
+          template={template} 
+          text={text} 
+          componentsMap={componentsMap}
+          variantScopes={template?.variantScopes || []}
+        />
         </div>
 
         <PermutationPicker

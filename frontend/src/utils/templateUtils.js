@@ -224,13 +224,91 @@ export const extractComponentsFromTemplate = (templateText) => {
 };
 
 /**
+ * Get the index of a variant within a component's variants list
+ * @param {string} componentName - Name of the component
+ * @param {any} variant - The variant value (string for regular, object for split)
+ * @param {Object} componentsMap - Map of component names to component objects
+ * @returns {number|null} The variant index or null if not found
+ */
+const getVariantIndex = (componentName, variant, componentsMap) => {
+  const component = componentsMap[componentName];
+  if (!component) return null;
+  
+  const variants = component.variants || [];
+  for (let i = 0; i < variants.length; i++) {
+    // For objects (split components), do deep comparison
+    if (typeof variant === 'object' && variant !== null) {
+      if (JSON.stringify(variants[i]) === JSON.stringify(variant)) {
+        return i;
+      }
+    } else {
+      if (variants[i] === variant) {
+        return i;
+      }
+    }
+  }
+  
+  return null;
+};
+
+/**
+ * Check if a combination of variants is allowed based on variant scopes
+ * Uses deny-list logic: variant_scopes is an array of rules that specify which variant pairs cannot be combined
+ * @param {Object} selectedVariants - Map of component names to selected variants
+ * @param {Array<string>} componentNames - List of component names in order
+ * @param {Array} variantScopes - Array of deny rules, each rule is {variant1: "ComponentName:variantIndex", variant2: "ComponentName:variantIndex"}
+ * @param {Object} componentsMap - Map of component names to component objects
+ * @returns {boolean} True if combination is allowed, False if restricted
+ */
+const isCombinationAllowed = (selectedVariants, componentNames, variantScopes, componentsMap) => {
+  // Empty scopes = allow all
+  if (!variantScopes || variantScopes.length === 0) {
+    return true;
+  }
+  
+  // Backward compatibility: treat empty dict {} as empty array []
+  if (typeof variantScopes === 'object' && !Array.isArray(variantScopes)) {
+    return true; // Legacy format - allow all combinations
+  }
+  
+  // Build variant identifiers for current combination
+  const combinationVariantIds = [];
+  for (const compName of componentNames) {
+    const variant = selectedVariants[compName];
+    if (variant !== undefined) {
+      const variantIdx = getVariantIndex(compName, variant, componentsMap);
+      if (variantIdx !== null) {
+        combinationVariantIds.push(`${compName}:${variantIdx}`);
+      }
+    }
+  }
+  
+  // Check if any deny rule matches this combination
+  // A rule matches if both variants in the rule are present in the combination
+  for (const rule of variantScopes) {
+    const variant1Id = rule?.variant1;
+    const variant2Id = rule?.variant2;
+    
+    if (variant1Id && variant2Id) {
+      if (combinationVariantIds.includes(variant1Id) && combinationVariantIds.includes(variant2Id)) {
+        return false; // This combination is denied
+      }
+    }
+  }
+  
+  return true;
+};
+
+/**
  * Generate a random preview of the template by replacing placeholders with random variants
  * This generates one random permutation (one row from the permutations CSV)
+ * Respects variant scope rules if provided
  * @param {string} templateText - The template text with placeholders
  * @param {Object} componentsMap - Map of component names to component objects
+ * @param {Array} variantScopes - Optional array of deny rules for variant combinations
  * @returns {string} The generated text with placeholders replaced
  */
-export const generateRandomPreview = (templateText, componentsMap) => {
+export const generateRandomPreview = (templateText, componentsMap, variantScopes = []) => {
   if (!templateText || !componentsMap) return templateText || '';
   
   // Extract all component usages from template
@@ -260,19 +338,39 @@ export const generateRandomPreview = (templateText, componentsMap) => {
     }
   }
   
-  // Randomly select one variant for each unique component
-  const selectedVariants = {};
-  for (const [name, group] of Object.entries(componentGroups)) {
-    const component = group.component;
-    const variants = component.variants || [];
-    
-    if (variants.length === 0) {
-      continue; // No variants available
+  const componentNames = Object.keys(componentGroups);
+  
+  // Try to find a valid combination (respecting variant scopes if provided)
+  // Maximum retries to avoid infinite loops
+  const maxRetries = 1000;
+  let selectedVariants = {};
+  
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    // Randomly select one variant for each unique component
+    selectedVariants = {};
+    for (const [name, group] of Object.entries(componentGroups)) {
+      const component = group.component;
+      const variants = component.variants || [];
+      
+      if (variants.length === 0) {
+        continue; // No variants available
+      }
+      
+      // Randomly select one variant
+      const randomIndex = Math.floor(Math.random() * variants.length);
+      selectedVariants[name] = variants[randomIndex];
     }
     
-    // Randomly select one variant
-    const randomIndex = Math.floor(Math.random() * variants.length);
-    selectedVariants[name] = variants[randomIndex];
+    // Check if this combination is allowed
+    if (isCombinationAllowed(selectedVariants, componentNames, variantScopes, componentsMap)) {
+      break; // Found a valid combination
+    }
+    
+    // If we've exhausted retries and still no valid combination, use the last one anyway
+    // (This shouldn't happen if rules are valid, but prevents infinite loops)
+    if (attempt === maxRetries - 1) {
+      console.warn('Could not find a valid combination after max retries, using last attempt');
+    }
   }
   
   // Replace placeholders in template text

@@ -7,22 +7,22 @@ import './TemplatePreview.css';
 /**
  * TemplatePreview component - displays a random preview of the template
  */
-function TemplatePreview({ template, text, componentsMap }) {
+function TemplatePreview({ template, text, componentsMap, variantScopes = [] }) {
   const [previewText, setPreviewText] = useState('');
 
-  // Generate preview when text or componentsMap changes
+  // Generate preview when text, componentsMap, or variantScopes changes
   useEffect(() => {
     if (text && componentsMap && Object.keys(componentsMap).length > 0) {
-      const preview = generateRandomPreview(text, componentsMap);
+      const preview = generateRandomPreview(text, componentsMap, variantScopes);
       setPreviewText(preview);
     } else {
       setPreviewText('');
     }
-  }, [text, componentsMap]);
+  }, [text, componentsMap, variantScopes]);
 
   const handleReload = () => {
     if (text && componentsMap && Object.keys(componentsMap).length > 0) {
-      const preview = generateRandomPreview(text, componentsMap);
+      const preview = generateRandomPreview(text, componentsMap, variantScopes);
       setPreviewText(preview);
     }
   };
