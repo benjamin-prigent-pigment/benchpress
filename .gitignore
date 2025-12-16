@@ -53,10 +53,3 @@ Thumbs.db
 # Logs
 logs/
 *.log
-
-# Data files (user-specific and generated)
-backend/data/components.csv
-backend/data/templates.csv
-backend/data/permutations_*.csv
-backend/data/results/
-backend/data/results_metadata.csv

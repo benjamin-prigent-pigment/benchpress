@@ -1,0 +1,1201 @@
+id,prompt,permutations
+737fadb216c6396e1f2fdb1ab0bebec6,"# Persona
+You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.
+
+# Goal
+Your goal is to edit 2 metadata of inside the Dimension called ""Region"".
+
+# Instructions
+On the block named ""Region"", Modify the name with ""new_block_name"", and then go modify the name, and replace with the new value ""new name"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Dimension"",
+    ""name"": ""Region"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new_block_name"",
+  },
+  {
+    ""block_type"":""Dimension"",
+    ""name"": ""Region"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new name"",
+  }
+]","[{""persona"": ""You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.""}, {""block_type_and_name"": {""a"": ""Dimension"", ""b"": ""Region""}}, {""property"": {""a"": ""name"", ""b"": ""new_block_name""}}, {""property_2"": {""a"": ""name"", ""b"": ""new name""}}]"
+5fa30d7cac8c215dac8c92fddb437116,"# Persona
+You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.
+
+# Goal
+Your goal is to edit 2 metadata of inside the Dimension called ""Region"".
+
+# Instructions
+On the block named ""Region"", Modify the name with ""new_block_name"", and then go modify the description, and replace with the new value ""new description"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Dimension"",
+    ""name"": ""Region"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new_block_name"",
+  },
+  {
+    ""block_type"":""Dimension"",
+    ""name"": ""Region"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""new description"",
+  }
+]","[{""persona"": ""You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.""}, {""block_type_and_name"": {""a"": ""Dimension"", ""b"": ""Region""}}, {""property"": {""a"": ""name"", ""b"": ""new_block_name""}}, {""property_2"": {""a"": ""description"", ""b"": ""new description""}}]"
+633085f06202f57d28a812623da443d2,"# Persona
+You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.
+
+# Goal
+Your goal is to edit 2 metadata of inside the Dimension called ""Region"".
+
+# Instructions
+On the block named ""Region"", Modify the description with ""this is a new block description for this block"", and then go modify the name, and replace with the new value ""new name"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Dimension"",
+    ""name"": ""Region"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""this is a new block description for this block"",
+  },
+  {
+    ""block_type"":""Dimension"",
+    ""name"": ""Region"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new name"",
+  }
+]","[{""persona"": ""You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.""}, {""block_type_and_name"": {""a"": ""Dimension"", ""b"": ""Region""}}, {""property"": {""a"": ""description"", ""b"": ""this is a new block description for this block""}}, {""property_2"": {""a"": ""name"", ""b"": ""new name""}}]"
+4c78f1a28c4f35e1cef404f832d854ca,"# Persona
+You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.
+
+# Goal
+Your goal is to edit 2 metadata of inside the Dimension called ""Region"".
+
+# Instructions
+On the block named ""Region"", Modify the description with ""this is a new block description for this block"", and then go modify the description, and replace with the new value ""new description"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Dimension"",
+    ""name"": ""Region"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""this is a new block description for this block"",
+  },
+  {
+    ""block_type"":""Dimension"",
+    ""name"": ""Region"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""new description"",
+  }
+]","[{""persona"": ""You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.""}, {""block_type_and_name"": {""a"": ""Dimension"", ""b"": ""Region""}}, {""property"": {""a"": ""description"", ""b"": ""this is a new block description for this block""}}, {""property_2"": {""a"": ""description"", ""b"": ""new description""}}]"
+be6eab2e4c2ef70a7d8a7bb598f44acb,"# Persona
+You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.
+
+# Goal
+Your goal is to edit 2 metadata of inside the Dimension called ""Region"".
+
+# Instructions
+On the block named ""Region"", Modify the folder_path with ""allblocks/new"", and then go modify the name, and replace with the new value ""new name"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Dimension"",
+    ""name"": ""Region"",
+    ""metadata to update"": ""folder_path"",
+    ""new value"": ""allblocks/new"",
+  },
+  {
+    ""block_type"":""Dimension"",
+    ""name"": ""Region"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new name"",
+  }
+]","[{""persona"": ""You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.""}, {""block_type_and_name"": {""a"": ""Dimension"", ""b"": ""Region""}}, {""property"": {""a"": ""folder_path"", ""b"": ""allblocks/new""}}, {""property_2"": {""a"": ""name"", ""b"": ""new name""}}]"
+af0f1e86274efb57efa2ba963162948b,"# Persona
+You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.
+
+# Goal
+Your goal is to edit 2 metadata of inside the Dimension called ""Region"".
+
+# Instructions
+On the block named ""Region"", Modify the folder_path with ""allblocks/new"", and then go modify the description, and replace with the new value ""new description"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Dimension"",
+    ""name"": ""Region"",
+    ""metadata to update"": ""folder_path"",
+    ""new value"": ""allblocks/new"",
+  },
+  {
+    ""block_type"":""Dimension"",
+    ""name"": ""Region"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""new description"",
+  }
+]","[{""persona"": ""You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.""}, {""block_type_and_name"": {""a"": ""Dimension"", ""b"": ""Region""}}, {""property"": {""a"": ""folder_path"", ""b"": ""allblocks/new""}}, {""property_2"": {""a"": ""description"", ""b"": ""new description""}}]"
+c3da32c402be0b2b60101732107d8247,"# Persona
+You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.
+
+# Goal
+Your goal is to edit 2 metadata of inside the Table called ""PnL"".
+
+# Instructions
+On the block named ""PnL"", Modify the name with ""new_block_name"", and then go modify the name, and replace with the new value ""new name"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Table"",
+    ""name"": ""PnL"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new_block_name"",
+  },
+  {
+    ""block_type"":""Table"",
+    ""name"": ""PnL"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new name"",
+  }
+]","[{""persona"": ""You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.""}, {""block_type_and_name"": {""a"": ""Table"", ""b"": ""PnL""}}, {""property"": {""a"": ""name"", ""b"": ""new_block_name""}}, {""property_2"": {""a"": ""name"", ""b"": ""new name""}}]"
+0910dd1393b940d83817da0fe508d683,"# Persona
+You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.
+
+# Goal
+Your goal is to edit 2 metadata of inside the Table called ""PnL"".
+
+# Instructions
+On the block named ""PnL"", Modify the name with ""new_block_name"", and then go modify the description, and replace with the new value ""new description"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Table"",
+    ""name"": ""PnL"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new_block_name"",
+  },
+  {
+    ""block_type"":""Table"",
+    ""name"": ""PnL"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""new description"",
+  }
+]","[{""persona"": ""You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.""}, {""block_type_and_name"": {""a"": ""Table"", ""b"": ""PnL""}}, {""property"": {""a"": ""name"", ""b"": ""new_block_name""}}, {""property_2"": {""a"": ""description"", ""b"": ""new description""}}]"
+cd50031117f6a76b4879a980f479d2a6,"# Persona
+You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.
+
+# Goal
+Your goal is to edit 2 metadata of inside the Table called ""PnL"".
+
+# Instructions
+On the block named ""PnL"", Modify the description with ""this is a new block description for this block"", and then go modify the name, and replace with the new value ""new name"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Table"",
+    ""name"": ""PnL"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""this is a new block description for this block"",
+  },
+  {
+    ""block_type"":""Table"",
+    ""name"": ""PnL"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new name"",
+  }
+]","[{""persona"": ""You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.""}, {""block_type_and_name"": {""a"": ""Table"", ""b"": ""PnL""}}, {""property"": {""a"": ""description"", ""b"": ""this is a new block description for this block""}}, {""property_2"": {""a"": ""name"", ""b"": ""new name""}}]"
+7e7a904c70ac4cf696d660086e78174f,"# Persona
+You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.
+
+# Goal
+Your goal is to edit 2 metadata of inside the Table called ""PnL"".
+
+# Instructions
+On the block named ""PnL"", Modify the description with ""this is a new block description for this block"", and then go modify the description, and replace with the new value ""new description"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Table"",
+    ""name"": ""PnL"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""this is a new block description for this block"",
+  },
+  {
+    ""block_type"":""Table"",
+    ""name"": ""PnL"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""new description"",
+  }
+]","[{""persona"": ""You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.""}, {""block_type_and_name"": {""a"": ""Table"", ""b"": ""PnL""}}, {""property"": {""a"": ""description"", ""b"": ""this is a new block description for this block""}}, {""property_2"": {""a"": ""description"", ""b"": ""new description""}}]"
+75ef58d511f1c94e1ad8e1b17277f295,"# Persona
+You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.
+
+# Goal
+Your goal is to edit 2 metadata of inside the Table called ""PnL"".
+
+# Instructions
+On the block named ""PnL"", Modify the folder_path with ""allblocks/new"", and then go modify the name, and replace with the new value ""new name"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Table"",
+    ""name"": ""PnL"",
+    ""metadata to update"": ""folder_path"",
+    ""new value"": ""allblocks/new"",
+  },
+  {
+    ""block_type"":""Table"",
+    ""name"": ""PnL"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new name"",
+  }
+]","[{""persona"": ""You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.""}, {""block_type_and_name"": {""a"": ""Table"", ""b"": ""PnL""}}, {""property"": {""a"": ""folder_path"", ""b"": ""allblocks/new""}}, {""property_2"": {""a"": ""name"", ""b"": ""new name""}}]"
+d102bff438b8fcbb418d92fd1979bd8a,"# Persona
+You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.
+
+# Goal
+Your goal is to edit 2 metadata of inside the Table called ""PnL"".
+
+# Instructions
+On the block named ""PnL"", Modify the folder_path with ""allblocks/new"", and then go modify the description, and replace with the new value ""new description"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Table"",
+    ""name"": ""PnL"",
+    ""metadata to update"": ""folder_path"",
+    ""new value"": ""allblocks/new"",
+  },
+  {
+    ""block_type"":""Table"",
+    ""name"": ""PnL"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""new description"",
+  }
+]","[{""persona"": ""You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.""}, {""block_type_and_name"": {""a"": ""Table"", ""b"": ""PnL""}}, {""property"": {""a"": ""folder_path"", ""b"": ""allblocks/new""}}, {""property_2"": {""a"": ""description"", ""b"": ""new description""}}]"
+72e979ee98f1c51954c36e09749b1be0,"# Persona
+You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.
+
+# Goal
+Your goal is to edit 2 metadata of inside the Metric called ""COGS"".
+
+# Instructions
+On the block named ""COGS"", Modify the name with ""new_block_name"", and then go modify the name, and replace with the new value ""new name"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Metric"",
+    ""name"": ""COGS"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new_block_name"",
+  },
+  {
+    ""block_type"":""Metric"",
+    ""name"": ""COGS"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new name"",
+  }
+]","[{""persona"": ""You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.""}, {""block_type_and_name"": {""a"": ""Metric"", ""b"": ""COGS""}}, {""property"": {""a"": ""name"", ""b"": ""new_block_name""}}, {""property_2"": {""a"": ""name"", ""b"": ""new name""}}]"
+d4d8307ee5802ce3259d8415c7034b4c,"# Persona
+You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.
+
+# Goal
+Your goal is to edit 2 metadata of inside the Metric called ""COGS"".
+
+# Instructions
+On the block named ""COGS"", Modify the name with ""new_block_name"", and then go modify the description, and replace with the new value ""new description"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Metric"",
+    ""name"": ""COGS"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new_block_name"",
+  },
+  {
+    ""block_type"":""Metric"",
+    ""name"": ""COGS"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""new description"",
+  }
+]","[{""persona"": ""You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.""}, {""block_type_and_name"": {""a"": ""Metric"", ""b"": ""COGS""}}, {""property"": {""a"": ""name"", ""b"": ""new_block_name""}}, {""property_2"": {""a"": ""description"", ""b"": ""new description""}}]"
+8d46c701a30639322d2563a695be710f,"# Persona
+You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.
+
+# Goal
+Your goal is to edit 2 metadata of inside the Metric called ""COGS"".
+
+# Instructions
+On the block named ""COGS"", Modify the description with ""this is a new block description for this block"", and then go modify the name, and replace with the new value ""new name"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Metric"",
+    ""name"": ""COGS"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""this is a new block description for this block"",
+  },
+  {
+    ""block_type"":""Metric"",
+    ""name"": ""COGS"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new name"",
+  }
+]","[{""persona"": ""You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.""}, {""block_type_and_name"": {""a"": ""Metric"", ""b"": ""COGS""}}, {""property"": {""a"": ""description"", ""b"": ""this is a new block description for this block""}}, {""property_2"": {""a"": ""name"", ""b"": ""new name""}}]"
+beaa4d9cebf095e3191ecb52c09e6ce9,"# Persona
+You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.
+
+# Goal
+Your goal is to edit 2 metadata of inside the Metric called ""COGS"".
+
+# Instructions
+On the block named ""COGS"", Modify the description with ""this is a new block description for this block"", and then go modify the description, and replace with the new value ""new description"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Metric"",
+    ""name"": ""COGS"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""this is a new block description for this block"",
+  },
+  {
+    ""block_type"":""Metric"",
+    ""name"": ""COGS"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""new description"",
+  }
+]","[{""persona"": ""You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.""}, {""block_type_and_name"": {""a"": ""Metric"", ""b"": ""COGS""}}, {""property"": {""a"": ""description"", ""b"": ""this is a new block description for this block""}}, {""property_2"": {""a"": ""description"", ""b"": ""new description""}}]"
+2d6189ae35cee13c37cdbded10aba363,"# Persona
+You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.
+
+# Goal
+Your goal is to edit 2 metadata of inside the Metric called ""COGS"".
+
+# Instructions
+On the block named ""COGS"", Modify the folder_path with ""allblocks/new"", and then go modify the name, and replace with the new value ""new name"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Metric"",
+    ""name"": ""COGS"",
+    ""metadata to update"": ""folder_path"",
+    ""new value"": ""allblocks/new"",
+  },
+  {
+    ""block_type"":""Metric"",
+    ""name"": ""COGS"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new name"",
+  }
+]","[{""persona"": ""You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.""}, {""block_type_and_name"": {""a"": ""Metric"", ""b"": ""COGS""}}, {""property"": {""a"": ""folder_path"", ""b"": ""allblocks/new""}}, {""property_2"": {""a"": ""name"", ""b"": ""new name""}}]"
+efd31149911a4c9da5b8dfb2f28cc1bf,"# Persona
+You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.
+
+# Goal
+Your goal is to edit 2 metadata of inside the Metric called ""COGS"".
+
+# Instructions
+On the block named ""COGS"", Modify the folder_path with ""allblocks/new"", and then go modify the description, and replace with the new value ""new description"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Metric"",
+    ""name"": ""COGS"",
+    ""metadata to update"": ""folder_path"",
+    ""new value"": ""allblocks/new"",
+  },
+  {
+    ""block_type"":""Metric"",
+    ""name"": ""COGS"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""new description"",
+  }
+]","[{""persona"": ""You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.""}, {""block_type_and_name"": {""a"": ""Metric"", ""b"": ""COGS""}}, {""property"": {""a"": ""folder_path"", ""b"": ""allblocks/new""}}, {""property_2"": {""a"": ""description"", ""b"": ""new description""}}]"
+b48f4b17d79e49f46c13cc3b7fd89b44,"# Persona
+You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.
+
+# Goal
+Your goal is to edit 2 metadata of inside the Transaction List called ""Orders"".
+
+# Instructions
+On the block named ""Orders"", Modify the name with ""new_block_name"", and then go modify the name, and replace with the new value ""new name"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Transaction List"",
+    ""name"": ""Orders"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new_block_name"",
+  },
+  {
+    ""block_type"":""Transaction List"",
+    ""name"": ""Orders"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new name"",
+  }
+]","[{""persona"": ""You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.""}, {""block_type_and_name"": {""a"": ""Transaction List"", ""b"": ""Orders""}}, {""property"": {""a"": ""name"", ""b"": ""new_block_name""}}, {""property_2"": {""a"": ""name"", ""b"": ""new name""}}]"
+2f42e719f0b881ab8a69226f06ea2a98,"# Persona
+You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.
+
+# Goal
+Your goal is to edit 2 metadata of inside the Transaction List called ""Orders"".
+
+# Instructions
+On the block named ""Orders"", Modify the name with ""new_block_name"", and then go modify the description, and replace with the new value ""new description"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Transaction List"",
+    ""name"": ""Orders"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new_block_name"",
+  },
+  {
+    ""block_type"":""Transaction List"",
+    ""name"": ""Orders"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""new description"",
+  }
+]","[{""persona"": ""You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.""}, {""block_type_and_name"": {""a"": ""Transaction List"", ""b"": ""Orders""}}, {""property"": {""a"": ""name"", ""b"": ""new_block_name""}}, {""property_2"": {""a"": ""description"", ""b"": ""new description""}}]"
+cb3a034f89c17f5b094b24a46b38f469,"# Persona
+You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.
+
+# Goal
+Your goal is to edit 2 metadata of inside the Transaction List called ""Orders"".
+
+# Instructions
+On the block named ""Orders"", Modify the description with ""this is a new block description for this block"", and then go modify the name, and replace with the new value ""new name"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Transaction List"",
+    ""name"": ""Orders"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""this is a new block description for this block"",
+  },
+  {
+    ""block_type"":""Transaction List"",
+    ""name"": ""Orders"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new name"",
+  }
+]","[{""persona"": ""You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.""}, {""block_type_and_name"": {""a"": ""Transaction List"", ""b"": ""Orders""}}, {""property"": {""a"": ""description"", ""b"": ""this is a new block description for this block""}}, {""property_2"": {""a"": ""name"", ""b"": ""new name""}}]"
+e355215772164ea48d42b3097084e3c2,"# Persona
+You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.
+
+# Goal
+Your goal is to edit 2 metadata of inside the Transaction List called ""Orders"".
+
+# Instructions
+On the block named ""Orders"", Modify the description with ""this is a new block description for this block"", and then go modify the description, and replace with the new value ""new description"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Transaction List"",
+    ""name"": ""Orders"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""this is a new block description for this block"",
+  },
+  {
+    ""block_type"":""Transaction List"",
+    ""name"": ""Orders"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""new description"",
+  }
+]","[{""persona"": ""You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.""}, {""block_type_and_name"": {""a"": ""Transaction List"", ""b"": ""Orders""}}, {""property"": {""a"": ""description"", ""b"": ""this is a new block description for this block""}}, {""property_2"": {""a"": ""description"", ""b"": ""new description""}}]"
+743aac99d36348f0b111258c390aad30,"# Persona
+You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.
+
+# Goal
+Your goal is to edit 2 metadata of inside the Transaction List called ""Orders"".
+
+# Instructions
+On the block named ""Orders"", Modify the folder_path with ""allblocks/new"", and then go modify the name, and replace with the new value ""new name"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Transaction List"",
+    ""name"": ""Orders"",
+    ""metadata to update"": ""folder_path"",
+    ""new value"": ""allblocks/new"",
+  },
+  {
+    ""block_type"":""Transaction List"",
+    ""name"": ""Orders"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new name"",
+  }
+]","[{""persona"": ""You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.""}, {""block_type_and_name"": {""a"": ""Transaction List"", ""b"": ""Orders""}}, {""property"": {""a"": ""folder_path"", ""b"": ""allblocks/new""}}, {""property_2"": {""a"": ""name"", ""b"": ""new name""}}]"
+0e9e4a7d7f132785965fec4a31c3d5f0,"# Persona
+You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.
+
+# Goal
+Your goal is to edit 2 metadata of inside the Transaction List called ""Orders"".
+
+# Instructions
+On the block named ""Orders"", Modify the folder_path with ""allblocks/new"", and then go modify the description, and replace with the new value ""new description"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Transaction List"",
+    ""name"": ""Orders"",
+    ""metadata to update"": ""folder_path"",
+    ""new value"": ""allblocks/new"",
+  },
+  {
+    ""block_type"":""Transaction List"",
+    ""name"": ""Orders"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""new description"",
+  }
+]","[{""persona"": ""You are a senior modeler at Pigment. You know everything there is to know about Pigment. You explain yourself very clearly.""}, {""block_type_and_name"": {""a"": ""Transaction List"", ""b"": ""Orders""}}, {""property"": {""a"": ""folder_path"", ""b"": ""allblocks/new""}}, {""property_2"": {""a"": ""description"", ""b"": ""new description""}}]"
+7a99e5e3533999b60696174abf18611b,"# Persona
+You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance
+
+# Goal
+Your goal is to edit 2 metadata of inside the Dimension called ""Region"".
+
+# Instructions
+On the block named ""Region"", Modify the name with ""new_block_name"", and then go modify the name, and replace with the new value ""new name"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Dimension"",
+    ""name"": ""Region"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new_block_name"",
+  },
+  {
+    ""block_type"":""Dimension"",
+    ""name"": ""Region"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new name"",
+  }
+]","[{""persona"": ""You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance""}, {""block_type_and_name"": {""a"": ""Dimension"", ""b"": ""Region""}}, {""property"": {""a"": ""name"", ""b"": ""new_block_name""}}, {""property_2"": {""a"": ""name"", ""b"": ""new name""}}]"
+b817d2ab06de42b9fdd5a10340412bd9,"# Persona
+You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance
+
+# Goal
+Your goal is to edit 2 metadata of inside the Dimension called ""Region"".
+
+# Instructions
+On the block named ""Region"", Modify the name with ""new_block_name"", and then go modify the description, and replace with the new value ""new description"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Dimension"",
+    ""name"": ""Region"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new_block_name"",
+  },
+  {
+    ""block_type"":""Dimension"",
+    ""name"": ""Region"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""new description"",
+  }
+]","[{""persona"": ""You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance""}, {""block_type_and_name"": {""a"": ""Dimension"", ""b"": ""Region""}}, {""property"": {""a"": ""name"", ""b"": ""new_block_name""}}, {""property_2"": {""a"": ""description"", ""b"": ""new description""}}]"
+b319ca9702141b1a6143e4e1eab04217,"# Persona
+You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance
+
+# Goal
+Your goal is to edit 2 metadata of inside the Dimension called ""Region"".
+
+# Instructions
+On the block named ""Region"", Modify the description with ""this is a new block description for this block"", and then go modify the name, and replace with the new value ""new name"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Dimension"",
+    ""name"": ""Region"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""this is a new block description for this block"",
+  },
+  {
+    ""block_type"":""Dimension"",
+    ""name"": ""Region"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new name"",
+  }
+]","[{""persona"": ""You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance""}, {""block_type_and_name"": {""a"": ""Dimension"", ""b"": ""Region""}}, {""property"": {""a"": ""description"", ""b"": ""this is a new block description for this block""}}, {""property_2"": {""a"": ""name"", ""b"": ""new name""}}]"
+dc467246c91cd202604487dfba49d60d,"# Persona
+You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance
+
+# Goal
+Your goal is to edit 2 metadata of inside the Dimension called ""Region"".
+
+# Instructions
+On the block named ""Region"", Modify the description with ""this is a new block description for this block"", and then go modify the description, and replace with the new value ""new description"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Dimension"",
+    ""name"": ""Region"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""this is a new block description for this block"",
+  },
+  {
+    ""block_type"":""Dimension"",
+    ""name"": ""Region"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""new description"",
+  }
+]","[{""persona"": ""You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance""}, {""block_type_and_name"": {""a"": ""Dimension"", ""b"": ""Region""}}, {""property"": {""a"": ""description"", ""b"": ""this is a new block description for this block""}}, {""property_2"": {""a"": ""description"", ""b"": ""new description""}}]"
+94e655ace568b475bc1393aaf42c9ac5,"# Persona
+You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance
+
+# Goal
+Your goal is to edit 2 metadata of inside the Dimension called ""Region"".
+
+# Instructions
+On the block named ""Region"", Modify the folder_path with ""allblocks/new"", and then go modify the name, and replace with the new value ""new name"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Dimension"",
+    ""name"": ""Region"",
+    ""metadata to update"": ""folder_path"",
+    ""new value"": ""allblocks/new"",
+  },
+  {
+    ""block_type"":""Dimension"",
+    ""name"": ""Region"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new name"",
+  }
+]","[{""persona"": ""You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance""}, {""block_type_and_name"": {""a"": ""Dimension"", ""b"": ""Region""}}, {""property"": {""a"": ""folder_path"", ""b"": ""allblocks/new""}}, {""property_2"": {""a"": ""name"", ""b"": ""new name""}}]"
+2298dc84141a52dbd9dbc04ca3f3e393,"# Persona
+You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance
+
+# Goal
+Your goal is to edit 2 metadata of inside the Dimension called ""Region"".
+
+# Instructions
+On the block named ""Region"", Modify the folder_path with ""allblocks/new"", and then go modify the description, and replace with the new value ""new description"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Dimension"",
+    ""name"": ""Region"",
+    ""metadata to update"": ""folder_path"",
+    ""new value"": ""allblocks/new"",
+  },
+  {
+    ""block_type"":""Dimension"",
+    ""name"": ""Region"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""new description"",
+  }
+]","[{""persona"": ""You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance""}, {""block_type_and_name"": {""a"": ""Dimension"", ""b"": ""Region""}}, {""property"": {""a"": ""folder_path"", ""b"": ""allblocks/new""}}, {""property_2"": {""a"": ""description"", ""b"": ""new description""}}]"
+13446ee9b97738b903324eb5886736e9,"# Persona
+You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance
+
+# Goal
+Your goal is to edit 2 metadata of inside the Table called ""PnL"".
+
+# Instructions
+On the block named ""PnL"", Modify the name with ""new_block_name"", and then go modify the name, and replace with the new value ""new name"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Table"",
+    ""name"": ""PnL"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new_block_name"",
+  },
+  {
+    ""block_type"":""Table"",
+    ""name"": ""PnL"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new name"",
+  }
+]","[{""persona"": ""You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance""}, {""block_type_and_name"": {""a"": ""Table"", ""b"": ""PnL""}}, {""property"": {""a"": ""name"", ""b"": ""new_block_name""}}, {""property_2"": {""a"": ""name"", ""b"": ""new name""}}]"
+1df83404d0cc117d96ec196a244f29f0,"# Persona
+You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance
+
+# Goal
+Your goal is to edit 2 metadata of inside the Table called ""PnL"".
+
+# Instructions
+On the block named ""PnL"", Modify the name with ""new_block_name"", and then go modify the description, and replace with the new value ""new description"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Table"",
+    ""name"": ""PnL"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new_block_name"",
+  },
+  {
+    ""block_type"":""Table"",
+    ""name"": ""PnL"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""new description"",
+  }
+]","[{""persona"": ""You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance""}, {""block_type_and_name"": {""a"": ""Table"", ""b"": ""PnL""}}, {""property"": {""a"": ""name"", ""b"": ""new_block_name""}}, {""property_2"": {""a"": ""description"", ""b"": ""new description""}}]"
+084c42cea1b93a90f663a3c7f82fb39f,"# Persona
+You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance
+
+# Goal
+Your goal is to edit 2 metadata of inside the Table called ""PnL"".
+
+# Instructions
+On the block named ""PnL"", Modify the description with ""this is a new block description for this block"", and then go modify the name, and replace with the new value ""new name"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Table"",
+    ""name"": ""PnL"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""this is a new block description for this block"",
+  },
+  {
+    ""block_type"":""Table"",
+    ""name"": ""PnL"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new name"",
+  }
+]","[{""persona"": ""You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance""}, {""block_type_and_name"": {""a"": ""Table"", ""b"": ""PnL""}}, {""property"": {""a"": ""description"", ""b"": ""this is a new block description for this block""}}, {""property_2"": {""a"": ""name"", ""b"": ""new name""}}]"
+1058b8b141a2628dd695b06636890bfc,"# Persona
+You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance
+
+# Goal
+Your goal is to edit 2 metadata of inside the Table called ""PnL"".
+
+# Instructions
+On the block named ""PnL"", Modify the description with ""this is a new block description for this block"", and then go modify the description, and replace with the new value ""new description"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Table"",
+    ""name"": ""PnL"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""this is a new block description for this block"",
+  },
+  {
+    ""block_type"":""Table"",
+    ""name"": ""PnL"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""new description"",
+  }
+]","[{""persona"": ""You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance""}, {""block_type_and_name"": {""a"": ""Table"", ""b"": ""PnL""}}, {""property"": {""a"": ""description"", ""b"": ""this is a new block description for this block""}}, {""property_2"": {""a"": ""description"", ""b"": ""new description""}}]"
+3bb3f0895a82842902b6bf8ff24df4f6,"# Persona
+You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance
+
+# Goal
+Your goal is to edit 2 metadata of inside the Table called ""PnL"".
+
+# Instructions
+On the block named ""PnL"", Modify the folder_path with ""allblocks/new"", and then go modify the name, and replace with the new value ""new name"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Table"",
+    ""name"": ""PnL"",
+    ""metadata to update"": ""folder_path"",
+    ""new value"": ""allblocks/new"",
+  },
+  {
+    ""block_type"":""Table"",
+    ""name"": ""PnL"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new name"",
+  }
+]","[{""persona"": ""You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance""}, {""block_type_and_name"": {""a"": ""Table"", ""b"": ""PnL""}}, {""property"": {""a"": ""folder_path"", ""b"": ""allblocks/new""}}, {""property_2"": {""a"": ""name"", ""b"": ""new name""}}]"
+9b4ff370fd837e648737e8336ca7b0b9,"# Persona
+You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance
+
+# Goal
+Your goal is to edit 2 metadata of inside the Table called ""PnL"".
+
+# Instructions
+On the block named ""PnL"", Modify the folder_path with ""allblocks/new"", and then go modify the description, and replace with the new value ""new description"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Table"",
+    ""name"": ""PnL"",
+    ""metadata to update"": ""folder_path"",
+    ""new value"": ""allblocks/new"",
+  },
+  {
+    ""block_type"":""Table"",
+    ""name"": ""PnL"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""new description"",
+  }
+]","[{""persona"": ""You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance""}, {""block_type_and_name"": {""a"": ""Table"", ""b"": ""PnL""}}, {""property"": {""a"": ""folder_path"", ""b"": ""allblocks/new""}}, {""property_2"": {""a"": ""description"", ""b"": ""new description""}}]"
+82a176c3d47ddb089b574d4cffd80509,"# Persona
+You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance
+
+# Goal
+Your goal is to edit 2 metadata of inside the Metric called ""COGS"".
+
+# Instructions
+On the block named ""COGS"", Modify the name with ""new_block_name"", and then go modify the name, and replace with the new value ""new name"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Metric"",
+    ""name"": ""COGS"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new_block_name"",
+  },
+  {
+    ""block_type"":""Metric"",
+    ""name"": ""COGS"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new name"",
+  }
+]","[{""persona"": ""You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance""}, {""block_type_and_name"": {""a"": ""Metric"", ""b"": ""COGS""}}, {""property"": {""a"": ""name"", ""b"": ""new_block_name""}}, {""property_2"": {""a"": ""name"", ""b"": ""new name""}}]"
+8c75da853baa5a15103cb0bb3304e519,"# Persona
+You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance
+
+# Goal
+Your goal is to edit 2 metadata of inside the Metric called ""COGS"".
+
+# Instructions
+On the block named ""COGS"", Modify the name with ""new_block_name"", and then go modify the description, and replace with the new value ""new description"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Metric"",
+    ""name"": ""COGS"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new_block_name"",
+  },
+  {
+    ""block_type"":""Metric"",
+    ""name"": ""COGS"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""new description"",
+  }
+]","[{""persona"": ""You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance""}, {""block_type_and_name"": {""a"": ""Metric"", ""b"": ""COGS""}}, {""property"": {""a"": ""name"", ""b"": ""new_block_name""}}, {""property_2"": {""a"": ""description"", ""b"": ""new description""}}]"
+fa17dfb01b4fd2c472d82056f3d39387,"# Persona
+You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance
+
+# Goal
+Your goal is to edit 2 metadata of inside the Metric called ""COGS"".
+
+# Instructions
+On the block named ""COGS"", Modify the description with ""this is a new block description for this block"", and then go modify the name, and replace with the new value ""new name"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Metric"",
+    ""name"": ""COGS"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""this is a new block description for this block"",
+  },
+  {
+    ""block_type"":""Metric"",
+    ""name"": ""COGS"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new name"",
+  }
+]","[{""persona"": ""You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance""}, {""block_type_and_name"": {""a"": ""Metric"", ""b"": ""COGS""}}, {""property"": {""a"": ""description"", ""b"": ""this is a new block description for this block""}}, {""property_2"": {""a"": ""name"", ""b"": ""new name""}}]"
+a60c722dee602aa77459e25dc9dfd544,"# Persona
+You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance
+
+# Goal
+Your goal is to edit 2 metadata of inside the Metric called ""COGS"".
+
+# Instructions
+On the block named ""COGS"", Modify the description with ""this is a new block description for this block"", and then go modify the description, and replace with the new value ""new description"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Metric"",
+    ""name"": ""COGS"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""this is a new block description for this block"",
+  },
+  {
+    ""block_type"":""Metric"",
+    ""name"": ""COGS"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""new description"",
+  }
+]","[{""persona"": ""You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance""}, {""block_type_and_name"": {""a"": ""Metric"", ""b"": ""COGS""}}, {""property"": {""a"": ""description"", ""b"": ""this is a new block description for this block""}}, {""property_2"": {""a"": ""description"", ""b"": ""new description""}}]"
+2bbec8833c615630e9e7d48be6f66bea,"# Persona
+You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance
+
+# Goal
+Your goal is to edit 2 metadata of inside the Metric called ""COGS"".
+
+# Instructions
+On the block named ""COGS"", Modify the folder_path with ""allblocks/new"", and then go modify the name, and replace with the new value ""new name"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Metric"",
+    ""name"": ""COGS"",
+    ""metadata to update"": ""folder_path"",
+    ""new value"": ""allblocks/new"",
+  },
+  {
+    ""block_type"":""Metric"",
+    ""name"": ""COGS"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new name"",
+  }
+]","[{""persona"": ""You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance""}, {""block_type_and_name"": {""a"": ""Metric"", ""b"": ""COGS""}}, {""property"": {""a"": ""folder_path"", ""b"": ""allblocks/new""}}, {""property_2"": {""a"": ""name"", ""b"": ""new name""}}]"
+b082f82bb67ef5c311324669147b0d54,"# Persona
+You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance
+
+# Goal
+Your goal is to edit 2 metadata of inside the Metric called ""COGS"".
+
+# Instructions
+On the block named ""COGS"", Modify the folder_path with ""allblocks/new"", and then go modify the description, and replace with the new value ""new description"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Metric"",
+    ""name"": ""COGS"",
+    ""metadata to update"": ""folder_path"",
+    ""new value"": ""allblocks/new"",
+  },
+  {
+    ""block_type"":""Metric"",
+    ""name"": ""COGS"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""new description"",
+  }
+]","[{""persona"": ""You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance""}, {""block_type_and_name"": {""a"": ""Metric"", ""b"": ""COGS""}}, {""property"": {""a"": ""folder_path"", ""b"": ""allblocks/new""}}, {""property_2"": {""a"": ""description"", ""b"": ""new description""}}]"
+5a081102d9fa6325c98720344d81f135,"# Persona
+You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance
+
+# Goal
+Your goal is to edit 2 metadata of inside the Transaction List called ""Orders"".
+
+# Instructions
+On the block named ""Orders"", Modify the name with ""new_block_name"", and then go modify the name, and replace with the new value ""new name"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Transaction List"",
+    ""name"": ""Orders"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new_block_name"",
+  },
+  {
+    ""block_type"":""Transaction List"",
+    ""name"": ""Orders"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new name"",
+  }
+]","[{""persona"": ""You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance""}, {""block_type_and_name"": {""a"": ""Transaction List"", ""b"": ""Orders""}}, {""property"": {""a"": ""name"", ""b"": ""new_block_name""}}, {""property_2"": {""a"": ""name"", ""b"": ""new name""}}]"
+8b2332a87ce6a98efe9365e687205634,"# Persona
+You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance
+
+# Goal
+Your goal is to edit 2 metadata of inside the Transaction List called ""Orders"".
+
+# Instructions
+On the block named ""Orders"", Modify the name with ""new_block_name"", and then go modify the description, and replace with the new value ""new description"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Transaction List"",
+    ""name"": ""Orders"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new_block_name"",
+  },
+  {
+    ""block_type"":""Transaction List"",
+    ""name"": ""Orders"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""new description"",
+  }
+]","[{""persona"": ""You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance""}, {""block_type_and_name"": {""a"": ""Transaction List"", ""b"": ""Orders""}}, {""property"": {""a"": ""name"", ""b"": ""new_block_name""}}, {""property_2"": {""a"": ""description"", ""b"": ""new description""}}]"
+9458453a61d53bf80d122de4c963776c,"# Persona
+You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance
+
+# Goal
+Your goal is to edit 2 metadata of inside the Transaction List called ""Orders"".
+
+# Instructions
+On the block named ""Orders"", Modify the description with ""this is a new block description for this block"", and then go modify the name, and replace with the new value ""new name"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Transaction List"",
+    ""name"": ""Orders"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""this is a new block description for this block"",
+  },
+  {
+    ""block_type"":""Transaction List"",
+    ""name"": ""Orders"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new name"",
+  }
+]","[{""persona"": ""You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance""}, {""block_type_and_name"": {""a"": ""Transaction List"", ""b"": ""Orders""}}, {""property"": {""a"": ""description"", ""b"": ""this is a new block description for this block""}}, {""property_2"": {""a"": ""name"", ""b"": ""new name""}}]"
+2fb614dd46036c5c9b84a6574e68c579,"# Persona
+You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance
+
+# Goal
+Your goal is to edit 2 metadata of inside the Transaction List called ""Orders"".
+
+# Instructions
+On the block named ""Orders"", Modify the description with ""this is a new block description for this block"", and then go modify the description, and replace with the new value ""new description"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Transaction List"",
+    ""name"": ""Orders"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""this is a new block description for this block"",
+  },
+  {
+    ""block_type"":""Transaction List"",
+    ""name"": ""Orders"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""new description"",
+  }
+]","[{""persona"": ""You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance""}, {""block_type_and_name"": {""a"": ""Transaction List"", ""b"": ""Orders""}}, {""property"": {""a"": ""description"", ""b"": ""this is a new block description for this block""}}, {""property_2"": {""a"": ""description"", ""b"": ""new description""}}]"
+525ae42ec5b3621b38d5b784f82ae257,"# Persona
+You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance
+
+# Goal
+Your goal is to edit 2 metadata of inside the Transaction List called ""Orders"".
+
+# Instructions
+On the block named ""Orders"", Modify the folder_path with ""allblocks/new"", and then go modify the name, and replace with the new value ""new name"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Transaction List"",
+    ""name"": ""Orders"",
+    ""metadata to update"": ""folder_path"",
+    ""new value"": ""allblocks/new"",
+  },
+  {
+    ""block_type"":""Transaction List"",
+    ""name"": ""Orders"",
+    ""metadata to update"": ""name"",
+    ""new value"": ""new name"",
+  }
+]","[{""persona"": ""You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance""}, {""block_type_and_name"": {""a"": ""Transaction List"", ""b"": ""Orders""}}, {""property"": {""a"": ""folder_path"", ""b"": ""allblocks/new""}}, {""property_2"": {""a"": ""name"", ""b"": ""new name""}}]"
+9b7df144171de35832f30abc83311487,"# Persona
+You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance
+
+# Goal
+Your goal is to edit 2 metadata of inside the Transaction List called ""Orders"".
+
+# Instructions
+On the block named ""Orders"", Modify the folder_path with ""allblocks/new"", and then go modify the description, and replace with the new value ""new description"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""Transaction List"",
+    ""name"": ""Orders"",
+    ""metadata to update"": ""folder_path"",
+    ""new value"": ""allblocks/new"",
+  },
+  {
+    ""block_type"":""Transaction List"",
+    ""name"": ""Orders"",
+    ""metadata to update"": ""description"",
+    ""new value"": ""new description"",
+  }
+]","[{""persona"": ""You are a beginner modeler at Pigment. You don't really know how Pigment works. You need guidance""}, {""block_type_and_name"": {""a"": ""Transaction List"", ""b"": ""Orders""}}, {""property"": {""a"": ""folder_path"", ""b"": ""allblocks/new""}}, {""property_2"": {""a"": ""description"", ""b"": ""new description""}}]"

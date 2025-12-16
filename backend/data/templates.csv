@@ -1,0 +1,66 @@
+"id","name","description","pigment_app","text","components","variant_scopes"
+"4","Edit_2_CRUD","The benchmark set is testing the edition of 2 CRUD actions","https://staging.pigment.app/w/aiagents/application/9cc955c0-bfd6-4d00-b24d-6a4fb967eec3/boards/5ad9aaf8-0ebc-42d1-abe0-c2253aa3a919","# Persona
+{{persona}}
+
+# Instructions
+Your goal is to edit 2 metadata of inside the {{block/type}} called ""{{block/name}}"".
+- First, {{metadata/verb}} the {{metadata/name}} with ""{{metadata/value}}"".
+- Second, {{metadata/verb}} the {{metadata/name}} with ""{{metadata/value}}"".
+
+# End result
+The end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""{{block/type}}"",
+    ""name"": ""{{block/name}}"",
+    ""metadata to update"": ""{{metadata/name}}"",
+    ""new value"": ""{{metadata/value}}"",
+  },
+  {
+    ""block_type"":""{{block/type}}"",
+    ""name"": ""{{block/name}}"",
+    ""metadata to update"": ""{{metadata/name}}"",
+    ""new value"": ""{{metadata/value}}"",
+  }
+]","[""persona"", ""block"", ""metadata""]","[]"
+"5","Edit_1_CRUD","Edition of one simple CRUD metadata of a block.","https://staging.pigment.app/w/aiagents/application/9cc955c0-bfd6-4d00-b24d-6a4fb967eec3/boards/5ad9aaf8-0ebc-42d1-abe0-c2253aa3a919","# Persona
+{{persona}}
+
+# Instructions
+Your goal is to edit 1 metadata of inside the {{block/type}} called ""{{block/name}}"". On the block named ""{{block/name}}"", {{metadata/verb}} the {{metadata/name}} with the following value: ""{{metadata/value}}"".
+
+# Secret end result
+Below is the end result state of the app you would like to achieve:
+[
+  {
+    ""block_type"":""{{block/type}}"",
+    ""name"": ""{{block/name}}"",
+    ""metadata to update"": ""{{metadata/name}}"",
+    ""new value"": ""{{metadata/value}}"",
+  }
+]","[""block"", ""metadata"", ""persona""]","[{""variant1"": ""block:1"", ""variant2"": ""metadata:2""}, {""variant1"": ""block:1"", ""variant2"": ""metadata:4""}, {""variant1"": ""block:4"", ""variant2"": ""metadata:0""}, {""variant1"": ""block:4"", ""variant2"": ""metadata:2""}, {""variant1"": ""block:4"", ""variant2"": ""metadata:4""}, {""variant1"": ""block:4"", ""variant2"": ""metadata:5""}, {""variant1"": ""block:0"", ""variant2"": ""metadata:2""}, {""variant1"": ""block:0"", ""variant2"": ""metadata:5""}, {""variant1"": ""metadata:5"", ""variant2"": ""block:2""}, {""variant1"": ""metadata:5"", ""variant2"": ""block:3""}, {""variant1"": ""block:2"", ""variant2"": ""metadata:4""}]"
+"6","usecase_basic","Simple but business-oriented use cases.","https://staging.pigment.app/w/aiagents/application/9cc955c0-bfd6-4d00-b24d-6a4fb967eec3/boards/5ad9aaf8-0ebc-42d1-abe0-c2253aa3a919","# Persona
+{{persona}}
+
+# Instructions
+{{usecase_basic/instruction}}
+
+# Secret end result
+Below is the end result state of the app you would like to achieve:
+{
+{{usecase_basic/validation}}
+}","[""persona"", ""usecase_basic""]","[]"
+"7","usecase_with_data","Usecases where the user is adding data in the context","https://staging.pigment.app/w/aiagents/application/9cc955c0-bfd6-4d00-b24d-6a4fb967eec3/boards/5ad9aaf8-0ebc-42d1-abe0-c2253aa3a919","# Persona
+{{persona}}
+
+# Instructions
+{{usecase_upload/instruction}}
+
+#Data
+{{usecase_upload/data}}
+
+# Secret end result
+Below is the end result state of the app you would like to achieve:
+{
+{{usecase_upload/validation}}
+}","[""usecase_upload"", ""persona""]","[]"
