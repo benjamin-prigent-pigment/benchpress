@@ -2,6 +2,8 @@
 
 from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
+import requests
+from bs4 import BeautifulSoup
 from utils import (
     read_components, write_components,
     read_templates, write_templates,
@@ -39,17 +41,29 @@ def validate_variant_scopes(variant_scopes, template_components):
     variant_scopes is an array of deny rules, each rule is {variant1: "ComponentName:variantIndex", variant2: "ComponentName:variantIndex"}
     Returns (is_valid, error_message)
     """
+    print(f'[Backend] [validate_variant_scopes] Starting validation')
+    print(f'[Backend] [validate_variant_scopes] variant_scopes type: {type(variant_scopes)}')
+    print(f'[Backend] [validate_variant_scopes] variant_scopes value: {variant_scopes}')
+    print(f'[Backend] [validate_variant_scopes] template_components: {template_components}')
+    
     if not variant_scopes:
+        print(f'[Backend] [validate_variant_scopes] Empty variant_scopes, returning valid')
         return True, None
     
     # Backward compatibility: accept empty dict {} as equivalent to empty array []
     if isinstance(variant_scopes, dict):
+        print(f'[Backend] [validate_variant_scopes] variant_scopes is a dict')
         if len(variant_scopes) == 0:
+            print(f'[Backend] [validate_variant_scopes] Empty dict, returning valid')
             return True, None
+        print(f'[Backend] [validate_variant_scopes] Non-empty dict, returning error')
         return False, 'variantScopes must be an array (legacy dict format is no longer supported)'
     
     if not isinstance(variant_scopes, list):
+        print(f'[Backend] [validate_variant_scopes] variant_scopes is not a list, returning error')
         return False, 'variantScopes must be an array'
+    
+    print(f'[Backend] [validate_variant_scopes] variant_scopes is a list with {len(variant_scopes)} rules')
     
     # Load components to validate variant indices
     components = read_components()
@@ -60,62 +74,86 @@ def validate_variant_scopes(variant_scopes, template_components):
     seen_rules = set()  # Track duplicate rules
     
     for i, rule in enumerate(variant_scopes):
+        print(f'[Backend] [validate_variant_scopes] Validating rule {i}: {rule}')
+        
         if not isinstance(rule, dict):
+            print(f'[Backend] [validate_variant_scopes] Rule {i} is not a dict')
             return False, f'Rule {i} must be an object'
         
         variant1_id = rule.get('variant1')
         variant2_id = rule.get('variant2')
         
+        print(f'[Backend] [validate_variant_scopes] Rule {i} - variant1_id: {variant1_id}, variant2_id: {variant2_id}')
+        
         # Check that both variant fields are present
         if not variant1_id or not variant2_id:
+            print(f'[Backend] [validate_variant_scopes] Rule {i} missing variant1 or variant2')
             return False, f'Rule {i} must have both "variant1" and "variant2" fields'
         
         # Check that both are strings
         if not isinstance(variant1_id, str) or not isinstance(variant2_id, str):
+            print(f'[Backend] [validate_variant_scopes] Rule {i} variant1 or variant2 is not a string')
             return False, f'Rule {i} must have string values for "variant1" and "variant2"'
         
         # Check for duplicate rule (order-independent)
         rule_key = tuple(sorted([variant1_id, variant2_id]))
         if rule_key in seen_rules:
+            print(f'[Backend] [validate_variant_scopes] Rule {i} is a duplicate')
             return False, f'Rule {i} is a duplicate of a previous rule'
         seen_rules.add(rule_key)
         
         # Check that variants are not the same
         if variant1_id == variant2_id:
+            print(f'[Backend] [validate_variant_scopes] Rule {i} has same variant for both fields')
             return False, f'Rule {i} cannot have the same variant for both "variant1" and "variant2"'
         
         # Validate both variant identifiers
         for variant_id, field_name in [(variant1_id, 'variant1'), (variant2_id, 'variant2')]:
+            print(f'[Backend] [validate_variant_scopes] Validating {field_name}: {variant_id}')
+            
             # Parse variant identifier: "ComponentName:variantIndex"
             if ':' not in variant_id:
+                print(f'[Backend] [validate_variant_scopes] Rule {i} {field_name} missing colon: {variant_id}')
                 return False, f'Rule {i} has invalid {field_name} format: "{variant_id}". Expected "ComponentName:variantIndex"'
             
             parts = variant_id.split(':', 1)
             if len(parts) != 2:
+                print(f'[Backend] [validate_variant_scopes] Rule {i} {field_name} split failed: {variant_id}')
                 return False, f'Rule {i} has invalid {field_name} format: "{variant_id}". Expected "ComponentName:variantIndex"'
             
             comp_name, variant_idx_str = parts
+            print(f'[Backend] [validate_variant_scopes] Rule {i} {field_name} parsed - component: {comp_name}, index: {variant_idx_str}')
             
             # Check that the component is in the template
             if comp_name not in template_component_set:
+                print(f'[Backend] [validate_variant_scopes] Rule {i} component {comp_name} not in template')
                 return False, f'Rule {i} references component "{comp_name}" in {field_name} which is not used in the template'
             
             # Check that the component exists in components
             if comp_name not in component_map:
+                print(f'[Backend] [validate_variant_scopes] Rule {i} component {comp_name} does not exist')
                 return False, f'Rule {i} references component "{comp_name}" in {field_name} which does not exist'
             
             # Validate variant index
             try:
                 variant_idx = int(variant_idx_str)
+                print(f'[Backend] [validate_variant_scopes] Rule {i} {field_name} variant index parsed: {variant_idx}')
             except ValueError:
+                print(f'[Backend] [validate_variant_scopes] Rule {i} {field_name} variant index invalid: {variant_idx_str}')
                 return False, f'Rule {i} has invalid variant index "{variant_idx_str}" in {field_name} "{variant_id}"'
             
             # Check that variant index is valid for the component
             component = component_map[comp_name]
             variants = component.get('variants', [])
+            print(f'[Backend] [validate_variant_scopes] Rule {i} component {comp_name} has {len(variants)} variants')
+            
             if variant_idx < 0 or variant_idx >= len(variants):
+                print(f'[Backend] [validate_variant_scopes] Rule {i} {field_name} variant index {variant_idx} out of range (0-{len(variants)-1})')
                 return False, f'Rule {i} has variant index {variant_idx} out of range for component "{comp_name}" in {field_name} (has {len(variants)} variants)'
+            
+            print(f'[Backend] [validate_variant_scopes] Rule {i} {field_name} validation passed')
     
+    print(f'[Backend] [validate_variant_scopes] ✅ All rules validated successfully')
     return True, None
 
 
@@ -405,6 +443,7 @@ def create_template():
         data = request.get_json()
         name = data.get('name', '').strip()
         description = data.get('description', '').strip()
+        pigment_app = data.get('pigmentApp', '').strip() or None
         text = data.get('text', '')
         variant_scopes = data.get('variantScopes', [])
         
@@ -425,6 +464,7 @@ def create_template():
             'id': get_next_id(templates),
             'name': name,
             'description': description,
+            'pigmentApp': pigment_app,
             'text': text,
             'components': unique_components,
             'variantScopes': variant_scopes
@@ -454,12 +494,21 @@ def get_template(template_id):
 def update_template(template_id):
     """Update a template"""
     try:
+        print(f'[Backend] ===== PUT /api/templates/{template_id} called =====')
         data = request.get_json()
+        print(f'[Backend] Received data keys: {list(data.keys()) if data else "None"}')
+        
+        if data and 'variantScopes' in data:
+            print(f'[Backend] variantScopes key present in request data')
+        
         templates = read_templates()
         template = next((t for t in templates if t['id'] == template_id), None)
         
         if not template:
+            print(f'[Backend] Template {template_id} not found')
             return jsonify({'error': 'Template not found'}), 404
+        
+        print(f'[Backend] Template {template_id} found: {template.get("name", "Unnamed")}')
         
         # Get current component list (may be updated if text changes)
         current_components = template.get('components', [])
@@ -477,18 +526,59 @@ def update_template(template_id):
         if 'description' in data:
             template['description'] = data['description'].strip()
         
+        if 'pigmentApp' in data:
+            pigment_app = data['pigmentApp']
+            template['pigmentApp'] = pigment_app.strip() if pigment_app else None
+        
         # Handle variantScopes update
         if 'variantScopes' in data:
+            print(f'[Backend] ===== Processing variantScopes update for template {template_id} =====')
             variant_scopes = data['variantScopes']
+            print(f'[Backend] Received variant_scopes type: {type(variant_scopes)}')
+            print(f'[Backend] Received variant_scopes value: {variant_scopes}')
+            
+            if isinstance(variant_scopes, list):
+                print(f'[Backend] variant_scopes is a list with {len(variant_scopes)} rules')
+                if len(variant_scopes) > 0:
+                    print(f'[Backend] First rule: {variant_scopes[0]}')
+                    print(f'[Backend] Last rule: {variant_scopes[-1]}')
+            else:
+                print(f'[Backend] WARNING: variant_scopes is not a list!')
+            
+            print(f'[Backend] Current template components: {current_components}')
+            print(f'[Backend] Validating variant scopes...')
+            
             # Validate variant scopes against current components
             is_valid, error_message = validate_variant_scopes(variant_scopes, current_components)
+            
             if not is_valid:
+                print(f'[Backend] ❌ Validation failed: {error_message}')
                 return jsonify({'error': error_message}), 400
+            
+            print(f'[Backend] ✅ Validation passed')
+            print(f'[Backend] Updating template variantScopes...')
+            print(f'[Backend] Previous variantScopes count: {len(template.get("variantScopes", [])) if isinstance(template.get("variantScopes"), list) else "N/A"}')
+            
             template['variantScopes'] = variant_scopes
+            
+            print(f'[Backend] New variantScopes count: {len(template["variantScopes"]) if isinstance(template["variantScopes"], list) else "N/A"}')
+            print(f'[Backend] ===== variantScopes update complete =====')
         
+        print(f'[Backend] Writing templates to file...')
         write_templates(templates)
+        print(f'[Backend] ✅ Templates written successfully')
+        
+        # Log final state if variantScopes was updated
+        if 'variantScopes' in data:
+            final_scopes = template.get('variantScopes', [])
+            print(f'[Backend] Final template variantScopes count: {len(final_scopes) if isinstance(final_scopes, list) else "N/A"}')
+        
+        print(f'[Backend] ===== PUT /api/templates/{template_id} completed successfully =====')
         return jsonify(template), 200
     except Exception as e:
+        print(f'[Backend] ❌ Error in update_template: {str(e)}')
+        import traceback
+        print(f'[Backend] Traceback: {traceback.format_exc()}')
         return jsonify({'error': str(e)}), 500
 
 
@@ -892,6 +982,43 @@ def delete_result_endpoint(result_id):
         if not success:
             return jsonify({'error': error_message}), 404 if 'not found' in error_message.lower() else 500
         return jsonify({'message': 'Result deleted successfully'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/fetch-url-title', methods=['POST'])
+def fetch_url_title():
+    """Fetch the HTML title from a URL"""
+    try:
+        data = request.get_json()
+        url = data.get('url', '').strip()
+        
+        if not url:
+            return jsonify({'error': 'URL is required'}), 400
+        
+        # Add protocol if missing
+        if not url.startswith(('http://', 'https://')):
+            url = 'https://' + url
+        
+        # Fetch the URL
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+        response = requests.get(url, headers=headers, timeout=10, allow_redirects=True)
+        response.raise_for_status()
+        
+        # Parse HTML and extract title
+        soup = BeautifulSoup(response.content, 'html.parser')
+        title_tag = soup.find('title')
+        
+        if title_tag:
+            title = title_tag.get_text().strip()
+            return jsonify({'title': title}), 200
+        else:
+            return jsonify({'title': None}), 200
+        
+    except requests.exceptions.RequestException as e:
+        return jsonify({'error': f'Failed to fetch URL: {str(e)}'}), 400
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 

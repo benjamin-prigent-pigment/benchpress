@@ -10,6 +10,7 @@ import TemplateEditor from '../components/TemplateEditor';
 import TemplatePreview from '../components/TemplatePreview';
 import PermutationPicker from '../components/scope/PermutationPicker';
 import IconGreyButton from '../components/buttons/IconGreyButton';
+import { templateAPI } from '../utils/api';
 import './TemplateItem.css';
 
 function TemplateItem() {
@@ -18,6 +19,9 @@ function TemplateItem() {
   const [isEditingMetadata, setIsEditingMetadata] = useState(false);
   const [editName, setEditName] = useState('');
   const [editDescription, setEditDescription] = useState('');
+  const [editPigmentApp, setEditPigmentApp] = useState('');
+  const [pigmentAppTitle, setPigmentAppTitle] = useState(null);
+  const [loadingTitle, setLoadingTitle] = useState(false);
   const [savingMetadata, setSavingMetadata] = useState(false);
   
   // Template operations
@@ -59,8 +63,33 @@ function TemplateItem() {
     if (template) {
       setEditName(template.name || '');
       setEditDescription(template.description || '');
+      setEditPigmentApp(template.pigmentApp || '');
     }
   }, [template, isEditingMetadata]);
+
+  // Fetch title for pigmentApp URL
+  useEffect(() => {
+    const fetchTitle = async () => {
+      if (template?.pigmentApp) {
+        setLoadingTitle(true);
+        try {
+          const result = await templateAPI.fetchUrlTitle(template.pigmentApp);
+          setPigmentAppTitle(result.title || null);
+        } catch (err) {
+          console.error('Failed to fetch URL title:', err);
+          setPigmentAppTitle(null);
+        } finally {
+          setLoadingTitle(false);
+        }
+      } else {
+        setPigmentAppTitle(null);
+      }
+    };
+
+    if (template && !isEditingMetadata) {
+      fetchTitle();
+    }
+  }, [template?.pigmentApp, isEditingMetadata]);
 
   const handleStartEdit = () => {
     setIsEditingMetadata(true);
@@ -71,6 +100,7 @@ function TemplateItem() {
     if (template) {
       setEditName(template.name || '');
       setEditDescription(template.description || '');
+      setEditPigmentApp(template.pigmentApp || '');
     }
   };
 
@@ -81,7 +111,8 @@ function TemplateItem() {
 
     try {
       setSavingMetadata(true);
-      await updateTemplateMetadata(editName.trim(), editDescription.trim());
+      const pigmentAppValue = editPigmentApp.trim() || null;
+      await updateTemplateMetadata(editName.trim(), editDescription.trim(), pigmentAppValue);
       setIsEditingMetadata(false);
     } catch (err) {
       console.error('Failed to save template metadata:', err);
@@ -139,6 +170,17 @@ function TemplateItem() {
                   disabled={savingMetadata}
                 />
               </div>
+              <div className="metadata-edit-field">
+                <label htmlFor="template-pigment-app">Pigment App</label>
+                <input
+                  id="template-pigment-app"
+                  type="url"
+                  value={editPigmentApp}
+                  onChange={(e) => setEditPigmentApp(e.target.value)}
+                  placeholder="https://app.pigment.com/..."
+                  disabled={savingMetadata}
+                />
+              </div>
               <div className="metadata-edit-actions">
                 <IconGreyButton
                   icon={<IoClose size={20} />}
@@ -161,6 +203,19 @@ function TemplateItem() {
               {template.description && (
                 <div className="template-description">
                   {template.description}
+                </div>
+              )}
+              {template.pigmentApp && (
+                <div className="template-pigment-app">
+                  <span className="template-pigment-app-label">Pigment App:</span>
+                  <a
+                    href={template.pigmentApp}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="template-pigment-app-link"
+                  >
+                    {loadingTitle ? 'Loading...' : (pigmentAppTitle || template.pigmentApp)}
+                  </a>
                 </div>
               )}
             </div>

@@ -315,6 +315,33 @@
   line-height: 1;
 }
 
+.template-pigment-app {
+  padding-left: 56px;
+  margin-bottom: 20px;
+  color: #666;
+  font-size: 12px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.template-pigment-app-label {
+  font-weight: 500;
+  color: #333;
+}
+
+.template-pigment-app-link {
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.template-pigment-app-link:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
 .template-metadata-edit {
   background: white;
   border: 1px solid #ddd;

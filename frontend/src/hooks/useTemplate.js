@@ -117,14 +117,14 @@ export const useTemplate = (templateId) => {
     }
   };
 
-  // Update template metadata (name and description)
-  const updateTemplateMetadata = async (name, description) => {
-    console.log('[useTemplate] updateTemplateMetadata called', { templateId, name, description });
+  // Update template metadata (name, description, and pigmentApp)
+  const updateTemplateMetadata = async (name, description, pigmentApp) => {
+    console.log('[useTemplate] updateTemplateMetadata called', { templateId, name, description, pigmentApp });
     try {
       console.log('[useTemplate] Starting metadata update...');
       setSaving(true);
       console.log('[useTemplate] Updating template metadata via PUT /api/templates/' + templateId);
-      const updatedTemplate = await templateAPI.update(templateId, { name, description });
+      const updatedTemplate = await templateAPI.update(templateId, { name, description, pigmentApp });
       console.log('[useTemplate] Template metadata updated successfully');
       setTemplate(updatedTemplate);
       setError(null);
@@ -183,20 +183,38 @@ export const useTemplate = (templateId) => {
 
   // Save variant scopes
   const saveVariantScopes = async (variantScopes) => {
-    console.log('[useTemplate] saveVariantScopes called', { templateId, variantScopes });
+    console.log('[useTemplate] ===== saveVariantScopes called =====');
+    console.log('[useTemplate] Template ID:', templateId);
+    console.log('[useTemplate] Variant scopes to save:', variantScopes);
+    console.log('[useTemplate] Variant scopes type:', Array.isArray(variantScopes) ? 'array' : typeof variantScopes);
+    console.log('[useTemplate] Variant scopes length:', Array.isArray(variantScopes) ? variantScopes.length : 'N/A');
+    
+    if (Array.isArray(variantScopes) && variantScopes.length > 0) {
+      console.log('[useTemplate] First rule:', variantScopes[0]);
+      console.log('[useTemplate] Last rule:', variantScopes[variantScopes.length - 1]);
+    }
+    
     try {
       console.log('[useTemplate] Starting variant scopes save operation...');
       setSavingScopes(true);
       console.log('[useTemplate] Updating variant scopes via PUT /api/templates/' + templateId);
       console.log('[useTemplate] Request payload:', JSON.stringify({ variantScopes }, null, 2));
+      
       const updatedTemplate = await templateAPI.update(templateId, { variantScopes });
-      console.log('[useTemplate] Variant scopes updated successfully');
+      
+      console.log('[useTemplate] ✅ Variant scopes updated successfully');
+      console.log('[useTemplate] Response template variantScopes:', updatedTemplate?.variantScopes);
+      console.log('[useTemplate] Response template variantScopes length:', Array.isArray(updatedTemplate?.variantScopes) ? updatedTemplate.variantScopes.length : 'N/A');
+      
       setTemplate(updatedTemplate);
       setError(null);
+      
       // Refresh the permutation count after successful save
+      console.log('[useTemplate] Refreshing permutation count...');
       await updatePermutationCount();
+      console.log('[useTemplate] Permutation count refreshed');
     } catch (err) {
-      console.error('[useTemplate] Variant scopes save operation failed:', err);
+      console.error('[useTemplate] ❌ Variant scopes save operation failed:', err);
       console.error('[useTemplate] Error details:', {
         message: err.message,
         stack: err.stack,
@@ -207,7 +225,7 @@ export const useTemplate = (templateId) => {
       throw err;
     } finally {
       setSavingScopes(false);
-      console.log('[useTemplate] saveVariantScopes finished');
+      console.log('[useTemplate] ===== saveVariantScopes finished =====');
     }
   };
 

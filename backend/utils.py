@@ -35,7 +35,7 @@ def init_csv_files():
     if not TEMPLATES_FILE.exists():
         with open(TEMPLATES_FILE, 'w', newline='', encoding='utf-8') as f:
             writer = csv.writer(f)
-            writer.writerow(['id', 'name', 'description', 'text', 'components', 'variant_scopes'])
+            writer.writerow(['id', 'name', 'description', 'pigment_app', 'text', 'components', 'variant_scopes'])
     
     # Initialize results_metadata.csv
     if not RESULTS_METADATA_FILE.exists():
@@ -119,7 +119,7 @@ def read_templates():
     try:
         with open(TEMPLATES_FILE, 'r', newline='', encoding='utf-8') as f:
             reader = csv.DictReader(f)
-            expected_columns = ['id', 'name', 'description', 'text', 'components', 'variant_scopes']
+            expected_columns = ['id', 'name', 'description', 'pigment_app', 'text', 'components', 'variant_scopes']
             
             # Validate header
             if not reader.fieldnames:
@@ -166,6 +166,9 @@ def read_templates():
                     # Handle description with backward compatibility (default to empty string)
                     description = row.get('description', '')
                     
+                    # Handle pigment_app with backward compatibility (default to empty string/null)
+                    pigment_app = row.get('pigment_app', '').strip() or None
+                    
                     # Parse variant_scopes JSON if present, otherwise default to empty array
                     variant_scopes = []
                     if 'variant_scopes' in row and row.get('variant_scopes'):
@@ -188,6 +191,7 @@ def read_templates():
                         'id': template_id,
                         'name': row.get('name', ''),
                         'description': description,
+                        'pigmentApp': pigment_app,
                         'text': row.get('text', ''),
                         'components': components,
                         'variantScopes': variant_scopes
@@ -209,12 +213,14 @@ def write_templates(templates):
     with open(TEMPLATES_FILE, 'w', newline='', encoding='utf-8') as f:
         # Use QUOTE_ALL to ensure all fields are properly quoted, especially JSON fields
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
-        writer.writerow(['id', 'name', 'description', 'text', 'components', 'variant_scopes'])
+        writer.writerow(['id', 'name', 'description', 'pigment_app', 'text', 'components', 'variant_scopes'])
         for template in templates:
             # Get components, default to empty list if not present
             components = template.get('components', [])
             # Get description, default to empty string if not present
             description = template.get('description', '')
+            # Get pigmentApp, default to empty string if not present
+            pigment_app = template.get('pigmentApp', '') or ''
             # Get variantScopes, default to empty array if not present
             variant_scopes = template.get('variantScopes', [])
             # Ensure all values are strings for CSV writing
@@ -222,6 +228,7 @@ def write_templates(templates):
                 str(template['id']),
                 str(template.get('name', '')),
                 str(description),
+                str(pigment_app),
                 str(template.get('text', '')),
                 json.dumps(components),
                 json.dumps(variant_scopes)

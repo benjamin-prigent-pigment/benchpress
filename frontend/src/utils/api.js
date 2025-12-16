@@ -109,10 +109,26 @@ export const templateAPI = {
     return apiCall('/templates', { method: 'POST', body: data });
   },
   update: (id, data) => {
-    console.log('[templateAPI.update] Called with id:', id, 'data:', data);
+    console.log('[templateAPI.update] ===== Called =====');
+    console.log('[templateAPI.update] Template ID:', id);
+    console.log('[templateAPI.update] Data keys:', Object.keys(data));
+    
+    if (data.variantScopes) {
+      console.log('[templateAPI.update] variantScopes present in data');
+      console.log('[templateAPI.update] variantScopes type:', Array.isArray(data.variantScopes) ? 'array' : typeof data.variantScopes);
+      console.log('[templateAPI.update] variantScopes length:', Array.isArray(data.variantScopes) ? data.variantScopes.length : 'N/A');
+      if (Array.isArray(data.variantScopes) && data.variantScopes.length > 0) {
+        console.log('[templateAPI.update] First variant scope rule:', data.variantScopes[0]);
+        console.log('[templateAPI.update] Last variant scope rule:', data.variantScopes[data.variantScopes.length - 1]);
+      }
+    }
+    
     if (!id || id === 'undefined') {
+      console.error('[templateAPI.update] Invalid template ID');
       return Promise.reject(new Error('Invalid template ID'));
     }
+    
+    console.log('[templateAPI.update] Making API call...');
     return apiCall(`/templates/${id}`, { method: 'PUT', body: data });
   },
   delete: (id) => {
@@ -181,6 +197,11 @@ export const templateAPI = {
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
       });
+  },
+  
+  // Fetch URL title
+  fetchUrlTitle: (url) => {
+    return apiCall('/fetch-url-title', { method: 'POST', body: { url } });
   },
 };
 
