@@ -192,19 +192,26 @@ def get_component(component_id):
 def update_component(component_id):
     """Update a component (but cannot change isSplit status)"""
     try:
+        print(f'\n[BACKEND] ===== update_component called =====')
+        print(f'[BACKEND] Component ID: {component_id}')
+        
         data = request.get_json()
-        print(f'[update_component] Received update for component {component_id}')
-        print(f'[update_component] Data keys: {list(data.keys()) if data else None}')
+        print(f'[BACKEND] 📥 Received data keys: {list(data.keys()) if data else None}')
+        print(f'[BACKEND] Request data: {data}')
         
         components = read_components()
         component = next((c for c in components if c['id'] == component_id), None)
         
         if not component:
+            print(f'[BACKEND] ❌ Component not found')
             return jsonify({'error': 'Component not found'}), 404
+        
+        print(f'[BACKEND] Found component: name={component.get("name")}, isSplit={component.get("isSplit")}, current variants={len(component.get("variants", []))}')
         
         # Prevent changing isSplit status
         if 'isSplit' in data:
             if data['isSplit'] != component.get('isSplit', False):
+                print(f'[BACKEND] ❌ Cannot change isSplit status')
                 return jsonify({'error': 'Cannot change component type (split/regular). Delete and recreate the component.'}), 400
         
         # Update fields
@@ -222,28 +229,63 @@ def update_component(component_id):
             component['description'] = data['description'].strip()
         
         if 'variants' in data:
-            print(f'[update_component] Updating variants: {len(data["variants"])} variants')
+            print(f'[BACKEND] 📝 Updating variants: {len(data["variants"])} variants')
             if component.get('isSplit', False) and data['variants']:
-                print(f'[update_component] First variant keys: {list(data["variants"][0].keys()) if isinstance(data["variants"][0], dict) else "not a dict"}')
-                print(f'[update_component] Split parts: {data.get("splitParts", "not provided")}')
+                print(f'[BACKEND] First variant keys: {list(data["variants"][0].keys()) if isinstance(data["variants"][0], dict) else "not a dict"}')
+                print(f'[BACKEND] First variant: {data["variants"][0]}')
+                if len(data["variants"]) > 1:
+                    print(f'[BACKEND] Last variant keys: {list(data["variants"][-1].keys()) if isinstance(data["variants"][-1], dict) else "not a dict"}')
+                    print(f'[BACKEND] Last variant: {data["variants"][-1]}')
+                print(f'[BACKEND] Request splitParts: {data.get("splitParts", "not provided")}')
+                print(f'[BACKEND] Component splitParts: {component.get("splitParts", "not set")}')
             component['variants'] = data['variants']
+            print(f'[BACKEND] ✅ Variants updated in component object')
         
         if 'splitParts' in data:
             component['splitParts'] = data['splitParts'] if component.get('isSplit', False) else None
+            print(f'[BACKEND] ✅ splitParts updated: {component["splitParts"]}')
         
         # Validate component structure
-        print(f'[update_component] Validating component structure...')
+        print(f'[BACKEND] 🔍 Validating component structure...')
+        print(f'[BACKEND] Component state before validation:')
+        print(f'  - isSplit: {component.get("isSplit")}')
+        print(f'  - splitParts: {component.get("splitParts")}')
+        print(f'  - variants count: {len(component.get("variants", []))}')
+        if component.get('variants'):
+            for i, variant in enumerate(component.get('variants', [])):
+                if isinstance(variant, dict):
+                    print(f'  - variant {i} keys: {list(variant.keys())}')
+                    print(f'  - variant {i}: {variant}')
+        
         is_valid, error_message = validate_split_component(component)
         if not is_valid:
-            print(f'[update_component] Validation failed: {error_message}')
+            print(f'[BACKEND] ❌ Validation failed: {error_message}')
+            print(f'[BACKEND] Component state: {component}')
             return jsonify({'error': error_message}), 400
         
-        print(f'[update_component] Validation passed, writing to file...')
+        print(f'[BACKEND] ✅ Validation passed')
+        print(f'[BACKEND] 💾 Writing to file...')
         write_components(components)
-        print(f'[update_component] Successfully updated component {component_id}')
+        print(f'[BACKEND] ✅ Successfully written to file')
+        
+        # Verify what was written by reading back
+        components_after = read_components()
+        component_after = next((c for c in components_after if c['id'] == component_id), None)
+        if component_after:
+            print(f'[BACKEND] 📖 Verification - Component after write:')
+            print(f'  - isSplit: {component_after.get("isSplit")}')
+            print(f'  - splitParts: {component_after.get("splitParts")}')
+            print(f'  - variants count: {len(component_after.get("variants", []))}')
+            if component_after.get('variants'):
+                for i, variant in enumerate(component_after.get('variants', [])):
+                    if isinstance(variant, dict):
+                        print(f'  - variant {i} keys: {list(variant.keys())}')
+        
+        print(f'[BACKEND] ✅ Successfully updated component {component_id}')
+        print(f'[BACKEND] ===== update_component complete =====\n')
         return jsonify(component), 200
     except Exception as e:
-        print(f'[update_component] Exception: {str(e)}')
+        print(f'[BACKEND] ❌ Exception: {str(e)}')
         import traceback
         traceback.print_exc()
         return jsonify({'error': str(e)}), 500

@@ -87,12 +87,17 @@ function SplitVariable({
   };
 
   const handleSave = () => {
+    console.log('[SplitVariable] ===== handleSave called =====');
+    console.log('[SplitVariable] splitParts:', splitParts);
+    console.log('[SplitVariable] editValues:', editValues);
+    
     // Validate all parts are filled
     const missingParts = splitParts.filter(part => !editValues[part]?.trim());
     if (missingParts.length > 0) {
-      console.warn('[SplitVariable] Cannot save: missing parts', missingParts);
+      console.warn('[SplitVariable] ❌ Cannot save: missing parts', missingParts);
       return;
     }
+    
     // Always create the saved object in splitParts order to preserve order
     const trimmedValues = {};
     splitParts.forEach(part => {
@@ -103,15 +108,17 @@ function SplitVariable({
     const splitPartsStr = splitParts.join(', ');
     const savedKeysStr = Object.keys(trimmedValues).join(', ');
     const match = splitPartsStr === savedKeysStr;
-    console.log('[SplitVariable] Saving variable with order:', {
+    console.log('[SplitVariable] ✅ Saving variable with order:', {
       splitParts: splitPartsStr,
       savedKeys: savedKeysStr,
       match: match,
       trimmedValues: trimmedValues
     });
     
+    console.log('[SplitVariable] Calling onSave callback...');
     onSave?.(trimmedValues);
     setIsEditing(false);
+    console.log('[SplitVariable] ===== handleSave complete =====');
   };
 
   const handleDelete = () => {

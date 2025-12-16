@@ -21,16 +21,16 @@ function SplitVariableList({
   };
 
   const handleSaveNew = (value) => {
-    console.log('[SplitVariableList] handleSaveNew called with:', {
-      value: value,
-      valueKeys: Object.keys(value || {}).join(', '),
-      splitParts: splitParts.join(', ')
-    });
+    console.log('[SplitVariableList] ===== handleSaveNew called =====');
+    console.log('[SplitVariableList] Received value:', value);
+    console.log('[SplitVariableList] valueKeys:', Object.keys(value || {}).join(', '));
+    console.log('[SplitVariableList] splitParts:', splitParts.join(', '));
+    console.log('[SplitVariableList] Current variables count:', variables.length);
     
     // Validate all parts are filled
     const missingParts = splitParts.filter(part => !value[part]?.trim());
     if (missingParts.length > 0) {
-      console.warn('[SplitVariableList] Cannot save: missing parts', missingParts);
+      console.warn('[SplitVariableList] ❌ Cannot save: missing parts', missingParts);
       if (onError) onError(`All parts must be filled. Missing: ${missingParts.join(', ')}`);
       return;
     }
@@ -41,7 +41,7 @@ function SplitVariableList({
       orderedValue[part] = value[part]?.trim() || '';
     });
     
-    console.log('[SplitVariableList] Adding new variable with order:', {
+    console.log('[SplitVariableList] ✅ Ordered value:', {
       splitParts: splitParts.join(', '),
       valueKeys: Object.keys(value).join(', '),
       orderedKeys: Object.keys(orderedValue).join(', '),
@@ -49,10 +49,16 @@ function SplitVariableList({
     });
     
     const newVariables = [...variables, orderedValue];
-    console.log('[SplitVariableList] Calling onVariablesChange with', newVariables.length, 'variables');
+    console.log('[SplitVariableList] New variables array:', {
+      oldCount: variables.length,
+      newCount: newVariables.length,
+      lastVariant: newVariables[newVariables.length - 1]
+    });
+    console.log('[SplitVariableList] Calling onVariablesChange...');
     onVariablesChange(newVariables);
     setNewVariable(null);
     if (onError) onError(null);
+    console.log('[SplitVariableList] ===== handleSaveNew complete =====');
   };
 
   const handleCancelNew = () => {

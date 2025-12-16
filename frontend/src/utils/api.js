@@ -17,20 +17,39 @@ async function apiCall(endpoint, options = {}) {
   }
 
   try {
-    console.log('[API] Making request:', { method: config.method || 'GET', url, body: config.body });
+    console.log('[API] ===== Making request =====');
+    console.log('[API] Method:', config.method || 'GET');
+    console.log('[API] URL:', url);
+    if (config.body) {
+      const bodyObj = typeof config.body === 'string' ? JSON.parse(config.body) : config.body;
+      console.log('[API] Request body:', bodyObj);
+      if (bodyObj.variants) {
+        console.log('[API] Request variants count:', bodyObj.variants.length);
+        if (bodyObj.variants.length > 0) {
+          console.log('[API] Last variant in request:', bodyObj.variants[bodyObj.variants.length - 1]);
+        }
+      }
+    }
     const response = await fetch(url, config);
     console.log('[API] Response status:', response.status, response.statusText);
     const data = await response.json();
     console.log('[API] Response data:', data);
+    if (data.variants) {
+      console.log('[API] Response variants count:', data.variants.length);
+      if (data.variants.length > 0) {
+        console.log('[API] Last variant in response:', data.variants[data.variants.length - 1]);
+      }
+    }
     if (!response.ok) {
       const errorMessage = data.error || `API error: ${response.status} ${response.statusText}`;
-      console.error('[API] Request failed:', errorMessage);
+      console.error('[API] ❌ Request failed:', errorMessage);
       throw new Error(errorMessage);
     }
-    console.log('[API] Request successful');
+    console.log('[API] ✅ Request successful');
+    console.log('[API] ===== Request complete =====');
     return data;
   } catch (error) {
-    console.error('[API] API call failed:', error);
+    console.error('[API] ❌ API call failed:', error);
     console.error('[API] Error details:', {
       message: error.message,
       stack: error.stack,
