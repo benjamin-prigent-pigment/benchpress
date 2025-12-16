@@ -162,11 +162,26 @@ function ComponentItem() {
     }
 
     try {
-      setVariants(newVariants);
+      // Ensure all variants have keys in splitParts order
+      const normalizedVariants = newVariants.map(variant => {
+        const ordered = {};
+        splitParts.forEach(part => {
+          ordered[part] = variant[part]?.trim() || '';
+        });
+        return ordered;
+      });
+
+      console.log('[ComponentItem] Saving split variables:', {
+        count: normalizedVariants.length,
+        splitParts: splitParts.join(', '),
+        firstVariantKeys: Object.keys(normalizedVariants[0] || {}).join(', ')
+      });
+
+      setVariants(normalizedVariants);
       const data = { 
         name, 
         description, 
-        variants: newVariants,
+        variants: normalizedVariants,
         isSplit: true,
         splitParts: splitParts
       };
@@ -175,6 +190,7 @@ function ComponentItem() {
       await loadComponent();
       setError(null);
     } catch (err) {
+      console.error('[ComponentItem] Error saving split variables:', err);
       setError(err.message || 'Failed to save variables');
       // Revert on error
       await loadComponent();

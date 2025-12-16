@@ -193,6 +193,9 @@ def update_component(component_id):
     """Update a component (but cannot change isSplit status)"""
     try:
         data = request.get_json()
+        print(f'[update_component] Received update for component {component_id}')
+        print(f'[update_component] Data keys: {list(data.keys()) if data else None}')
+        
         components = read_components()
         component = next((c for c in components if c['id'] == component_id), None)
         
@@ -219,19 +222,30 @@ def update_component(component_id):
             component['description'] = data['description'].strip()
         
         if 'variants' in data:
+            print(f'[update_component] Updating variants: {len(data["variants"])} variants')
+            if component.get('isSplit', False) and data['variants']:
+                print(f'[update_component] First variant keys: {list(data["variants"][0].keys()) if isinstance(data["variants"][0], dict) else "not a dict"}')
+                print(f'[update_component] Split parts: {data.get("splitParts", "not provided")}')
             component['variants'] = data['variants']
         
         if 'splitParts' in data:
             component['splitParts'] = data['splitParts'] if component.get('isSplit', False) else None
         
         # Validate component structure
+        print(f'[update_component] Validating component structure...')
         is_valid, error_message = validate_split_component(component)
         if not is_valid:
+            print(f'[update_component] Validation failed: {error_message}')
             return jsonify({'error': error_message}), 400
         
+        print(f'[update_component] Validation passed, writing to file...')
         write_components(components)
+        print(f'[update_component] Successfully updated component {component_id}')
         return jsonify(component), 200
     except Exception as e:
+        print(f'[update_component] Exception: {str(e)}')
+        import traceback
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
 

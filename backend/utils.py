@@ -29,7 +29,7 @@ def init_csv_files():
     if not COMPONENTS_FILE.exists():
         with open(COMPONENTS_FILE, 'w', newline='', encoding='utf-8') as f:
             writer = csv.writer(f)
-            writer.writerow(['id', 'name', 'description', 'variants'])
+            writer.writerow(['id', 'name', 'description', 'variants', 'isSplit', 'splitParts'])
     
     # Initialize templates.csv
     if not TEMPLATES_FILE.exists():
@@ -56,15 +56,30 @@ def read_components():
             # Parse variants JSON
             variants = json.loads(row['variants']) if row['variants'] else []
             
-            # Determine if component is split based on variant structure
+            # Try to read isSplit and splitParts from CSV (new format)
             is_split = False
             split_parts = None
             
-            if variants and isinstance(variants[0], dict):
-                # Variants are objects, so this is a split component
-                is_split = True
-                # Extract split parts from first variant
-                split_parts = list(variants[0].keys()) if variants else []
+            if 'isSplit' in row and row.get('isSplit'):
+                # New format: read from CSV
+                try:
+                    is_split = json.loads(row['isSplit']) if row['isSplit'] else False
+                except (json.JSONDecodeError, ValueError):
+                    # If not valid JSON, try as string
+                    is_split = row['isSplit'].lower() in ('true', '1', 'yes')
+                
+                if 'splitParts' in row and row.get('splitParts'):
+                    try:
+                        split_parts = json.loads(row['splitParts']) if row['splitParts'] else None
+                    except (json.JSONDecodeError, ValueError):
+                        split_parts = None
+            else:
+                # Backward compatibility: determine from variant structure
+                if variants and isinstance(variants[0], dict):
+                    # Variants are objects, so this is a split component
+                    is_split = True
+                    # Extract split parts from first variant
+                    split_parts = list(variants[0].keys()) if variants else []
             
             component = {
                 'id': int(row['id']),
@@ -83,13 +98,15 @@ def write_components(components):
     ensure_data_dir()
     with open(COMPONENTS_FILE, 'w', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
-        writer.writerow(['id', 'name', 'description', 'variants'])
+        writer.writerow(['id', 'name', 'description', 'variants', 'isSplit', 'splitParts'])
         for comp in components:
             writer.writerow([
                 comp['id'],
                 comp['name'],
                 comp['description'],
-                json.dumps(comp['variants'])
+                json.dumps(comp['variants']),
+                json.dumps(comp.get('isSplit', False)),
+                json.dumps(comp.get('splitParts', None))
             ])
 
 

@@ -21,9 +21,17 @@ function SplitVariableList({
   };
 
   const handleSaveNew = (value) => {
+    console.log('[SplitVariableList] handleSaveNew called with:', {
+      value: value,
+      valueKeys: Object.keys(value || {}).join(', '),
+      splitParts: splitParts.join(', ')
+    });
+    
     // Validate all parts are filled
-    if (!splitParts.every(part => value[part]?.trim())) {
-      if (onError) onError('All parts must be filled');
+    const missingParts = splitParts.filter(part => !value[part]?.trim());
+    if (missingParts.length > 0) {
+      console.warn('[SplitVariableList] Cannot save: missing parts', missingParts);
+      if (onError) onError(`All parts must be filled. Missing: ${missingParts.join(', ')}`);
       return;
     }
     
@@ -36,10 +44,13 @@ function SplitVariableList({
     console.log('[SplitVariableList] Adding new variable with order:', {
       splitParts: splitParts.join(', '),
       valueKeys: Object.keys(value).join(', '),
-      orderedKeys: Object.keys(orderedValue).join(', ')
+      orderedKeys: Object.keys(orderedValue).join(', '),
+      orderedValue: orderedValue
     });
     
-    onVariablesChange([...variables, orderedValue]);
+    const newVariables = [...variables, orderedValue];
+    console.log('[SplitVariableList] Calling onVariablesChange with', newVariables.length, 'variables');
+    onVariablesChange(newVariables);
     setNewVariable(null);
     if (onError) onError(null);
   };

@@ -88,7 +88,9 @@ function SplitVariable({
 
   const handleSave = () => {
     // Validate all parts are filled
-    if (!splitParts.every(part => editValues[part]?.trim())) {
+    const missingParts = splitParts.filter(part => !editValues[part]?.trim());
+    if (missingParts.length > 0) {
+      console.warn('[SplitVariable] Cannot save: missing parts', missingParts);
       return;
     }
     // Always create the saved object in splitParts order to preserve order
@@ -98,10 +100,14 @@ function SplitVariable({
     });
     
     // Log to verify order is preserved
+    const splitPartsStr = splitParts.join(', ');
+    const savedKeysStr = Object.keys(trimmedValues).join(', ');
+    const match = splitPartsStr === savedKeysStr;
     console.log('[SplitVariable] Saving variable with order:', {
-      splitParts: splitParts.join(', '),
-      savedKeys: Object.keys(trimmedValues).join(', '),
-      match: splitParts.join(', ') === Object.keys(trimmedValues).join(', ')
+      splitParts: splitPartsStr,
+      savedKeys: savedKeysStr,
+      match: match,
+      trimmedValues: trimmedValues
     });
     
     onSave?.(trimmedValues);
