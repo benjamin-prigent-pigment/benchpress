@@ -11,7 +11,8 @@ import './VariantScopeRulesList.css';
  * - rules: array of deny rules [{variant1: "ComponentName:variantIndex", variant2: "ComponentName:variantIndex"}, ...]
  * - componentsMap: map of component name -> component object
  * - templateComponents: array of component names in template
- * - onAddRule: callback(variant1Id, variant2Id) when rule is added
+ * - onAddRule: callback(variant1Id, variant2Id) when rule is added (single rule)
+ * - onAddRulesBatch: optional callback(variant1Id, variant2Ids[]) when multiple rules are added (batch)
  * - onDeleteRule: callback(index) when rule is deleted
  */
 function VariantScopeRulesList({
@@ -19,6 +20,7 @@ function VariantScopeRulesList({
   componentsMap,
   templateComponents = [],
   onAddRule,
+  onAddRulesBatch,
   onDeleteRule
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -50,6 +52,8 @@ function VariantScopeRulesList({
   };
 
   const handleAddRule = (variant1Id, variant2Id) => {
+    console.log('[VariantScopeRulesList] handleAddRule called', { variant1Id, variant2Id, currentRulesCount: rules.length });
+    
     // Check for duplicate rule (order-independent)
     const ruleKey1 = [variant1Id, variant2Id].sort().join('|');
     const isDuplicate = rules.some(rule => {
@@ -58,11 +62,53 @@ function VariantScopeRulesList({
     });
 
     if (isDuplicate) {
+      console.log('[VariantScopeRulesList] Duplicate rule detected, not adding:', { variant1Id, variant2Id, ruleKey: ruleKey1 });
       alert('This rule already exists');
       return;
     }
 
+    console.log('[VariantScopeRulesList] Rule is not duplicate, calling onAddRule:', { variant1Id, variant2Id });
     onAddRule(variant1Id, variant2Id);
+    console.log('[VariantScopeRulesList] onAddRule call completed');
+  };
+
+  const handleAddRulesBatch = (variant1Id, variant2Ids) => {
+    console.log('[VariantScopeRulesList] handleAddRulesBatch called', { variant1Id, variant2Ids, variant2Count: variant2Ids.length, currentRulesCount: rules.length });
+    
+    if (!onAddRulesBatch) {
+      console.log('[VariantScopeRulesList] onAddRulesBatch not available, falling back to individual calls');
+      variant2Ids.forEach(v2Id => handleAddRule(variant1Id, v2Id));
+      return;
+    }
+
+    // Filter out duplicates before calling batch handler
+    const rulesToAdd = variant2Ids.filter(v2Id => {
+      const ruleKey = [variant1Id, v2Id].sort().join('|');
+      const isDuplicate = rules.some(rule => {
+        const existingKey = [rule.variant1, rule.variant2].sort().join('|');
+        return existingKey === ruleKey;
+      });
+      
+      if (isDuplicate) {
+        console.log('[VariantScopeRulesList] Skipping duplicate in batch:', { variant1Id, variant2Id: v2Id });
+      }
+      
+      return !isDuplicate;
+    });
+
+    if (rulesToAdd.length === 0) {
+      console.log('[VariantScopeRulesList] All rules in batch are duplicates');
+      alert('All selected rules already exist');
+      return;
+    }
+
+    if (rulesToAdd.length < variant2Ids.length) {
+      console.log('[VariantScopeRulesList] Some rules were duplicates, adding', rulesToAdd.length, 'out of', variant2Ids.length);
+    }
+
+    console.log('[VariantScopeRulesList] Calling onAddRulesBatch with', rulesToAdd.length, 'rules');
+    onAddRulesBatch(variant1Id, rulesToAdd);
+    console.log('[VariantScopeRulesList] onAddRulesBatch call completed');
   };
 
   return (
@@ -110,8 +156,10 @@ function VariantScopeRulesList({
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onAdd={handleAddRule}
+        onAddBatch={onAddRulesBatch ? handleAddRulesBatch : undefined}
         componentsMap={componentsMap}
         templateComponents={templateComponents}
+        existingRules={rules}
       />
     </div>
   );

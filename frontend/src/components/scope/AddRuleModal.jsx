@@ -9,16 +9,20 @@ import './AddRuleModal.css';
  * Props:
  * - isOpen: boolean, whether modal is open
  * - onClose: callback when closing modal
- * - onAdd: callback(variant1Id, variant2Id) when rule is added
+ * - onAdd: callback(variant1Id, variant2Id) when rule is added (single rule)
+ * - onAddBatch: optional callback(variant1Id, variant2Ids[]) when multiple rules are added (batch)
  * - componentsMap: map of component name -> component object
  * - templateComponents: array of component names in template
+ * - existingRules: array of existing deny rules [{variant1, variant2}, ...]
  */
 function AddRuleModal({
   isOpen,
   onClose,
   onAdd,
+  onAddBatch,
   componentsMap,
-  templateComponents = []
+  templateComponents = [],
+  existingRules = []
 }) {
   const [variant1, setVariant1] = useState('');
   const [variant2, setVariant2] = useState([]);
@@ -64,26 +68,73 @@ function AddRuleModal({
 
   const variants = getAllVariants();
 
-  // Filter out the selected primary variant from the second dropdown options
-  const availableVariants2 = variants.filter(v => v.id !== variant1);
+  // Filter out the selected primary variant, all variants from the same component,
+  // and variants that already have a deny rule with the primary variant
+  // Variant ID format: "ComponentName:variantIndex"
+  const availableVariants2 = variant1
+    ? variants.filter(v => {
+        // Extract component name from primary variant (part before the colon)
+        const primaryComponent = variant1.split(':')[0];
+        // Extract component name from current variant
+        const variantComponent = v.id.split(':')[0];
+        // Exclude variants from the same component
+        if (variantComponent === primaryComponent) {
+          return false;
+        }
+        
+        // Check if there's already a deny rule between primary variant and this variant
+        // Rules are order-independent, so check both directions
+        const hasExistingRule = existingRules.some(rule => {
+          const ruleKey1 = [rule.variant1, rule.variant2].sort().join('|');
+          const ruleKey2 = [variant1, v.id].sort().join('|');
+          return ruleKey1 === ruleKey2;
+        });
+        
+        // Exclude variants that already have a deny rule
+        return !hasExistingRule;
+      })
+    : variants;
 
   const handleAdd = () => {
+    console.log('[AddRuleModal] handleAdd called', { variant1, variant2, variant2Count: variant2?.length });
+    
     // Validation
     if (!variant1) {
+      console.log('[AddRuleModal] Validation failed: no primary variant selected');
       setError('Please select a primary variant');
       return;
     }
 
     if (!variant2 || variant2.length === 0) {
+      console.log('[AddRuleModal] Validation failed: no deny variants selected');
       setError('Please select at least one variant to deny');
       return;
     }
 
-    // Call onAdd for each selected variant2
-    variant2.forEach(v2Id => {
-      onAdd(variant1, v2Id);
+    console.log('[AddRuleModal] Validation passed, adding rules:', {
+      primaryVariant: variant1,
+      denyVariants: variant2,
+      rulesToAdd: variant2.length
     });
+
+    // If onAddBatch is provided and we have multiple rules, use batch mode
+    // Otherwise, fall back to individual calls
+    if (onAddBatch && variant2.length > 1) {
+      console.log('[AddRuleModal] Using batch mode to add all rules at once');
+      onAddBatch(variant1, variant2);
+    } else {
+      console.log('[AddRuleModal] Using individual mode, adding rules one by one');
+      // Call onAdd for each selected variant2
+      variant2.forEach((v2Id, index) => {
+        console.log(`[AddRuleModal] Calling onAdd for rule ${index + 1}/${variant2.length}:`, {
+          variant1,
+          variant2: v2Id
+        });
+        onAdd(variant1, v2Id);
+      });
+    }
     
+    console.log('[AddRuleModal] All rules processed, closing modal');
     onClose();
   };
 
